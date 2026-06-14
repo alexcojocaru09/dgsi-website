@@ -277,7 +277,7 @@ export default function App() {
             <span className="text-[#1de9b6]">Ecosystem.</span>
           </h2>
 
-          <div className="grid md:grid-cols-5 gap-px bg-[#1de9b6]/10">
+          <div className="grid md:grid-cols-5 gap-6">
             {[
               { cat: 'Machining', items: ['Holemaking & Boring', 'Threading & Tapping', 'Parting & Cutting', 'Turning', 'Milling'] },
               { cat: 'Toolholding', items: ['Toolholders', 'Chucks & Collets', 'Machine Vises', 'Clamping Systems'] },
@@ -285,15 +285,39 @@ export default function App() {
               { cat: 'Abrasives', items: ['Abrasive Discs', 'Saw Blades', 'Wire Brushes', 'Precision Files', 'Spare Parts'] },
               { cat: 'Hand Tools', items: ['Assembly Tools', 'Torque Tools', 'Impact Tools', 'Cutting Tools', 'Tool Sets'] },
             ].map((prod, i) => (
-              <div key={i} className="bg-[#080808] p-6 group hover:bg-[#0F0F0F] transition-all">
-                <h3 className="text-sm font-black uppercase tracking-wider text-white mb-4">{prod.cat}</h3>
-                <ul className="space-y-2">
-                  {prod.items.map(item => (
-                    <li key={item} className="text-[11px] text-[#5A5A5A] group-hover:text-[#7A7A7A] transition-colors">
-                      • {item}
-                    </li>
-                  ))}
-                </ul>
+              <div 
+                key={i} 
+                className="group relative bg-gradient-to-br from-[#1de9b6]/15 via-[#1de9b6]/8 to-[#1de9b6]/3 border border-[#1de9b6]/30 hover:border-[#1de9b6]/70 rounded-xl p-8 transition-all duration-300 hover:shadow-[0_0_40px_rgba(29,233,182,0.2)] hover:-translate-y-2 cursor-pointer overflow-hidden backdrop-blur-md"
+              >
+                {/* Gradient overlay on hover */}
+                <div className="absolute inset-0 bg-gradient-to-br from-[#1de9b6]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl" />
+                
+                <div className="relative z-10">
+                  {/* Category Title */}
+                  <h3 className="text-lg md:text-xl font-black uppercase tracking-wider text-white mb-6 pb-4 border-b border-[#1de9b6]/30 group-hover:border-[#1de9b6]/60 transition-all">
+                    {prod.cat}
+                  </h3>
+                  
+                  {/* Subcategory Items as Buttons */}
+                  <div className="space-y-3">
+                    {prod.items.map((item, idx) => (
+                      <a
+                        key={item}
+                        href="#"
+                        onClick={(e) => e.preventDefault()}
+                        className="flex items-center gap-3 px-4 py-3 bg-white/90 text-black rounded-lg hover:bg-white hover:shadow-lg hover:shadow-[#1de9b6]/30 transition-all duration-300 group/btn transform hover:translate-x-1 cursor-pointer"
+                      >
+                        <span className="text-[#1de9b6] font-black text-sm group-hover/btn:text-lg transition-all">▸</span>
+                        <span className="text-[13px] font-semibold text-gray-800 group-hover/btn:text-black transition-colors">
+                          {item}
+                        </span>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Decorative corner accent */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#1de9b6]/5 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </div>
             ))}
           </div>
@@ -363,55 +387,56 @@ export default function App() {
       <Section id="clients" light>
         <div className="max-w-7xl mx-auto">
           <Eyebrow code="05 /" label="Trusted By" />
-          <h2 className="text-4xl md:text-5xl font-black uppercase leading-tight tracking-tight text-white mb-14">
+          <h2 className="text-4xl md:text-5xl font-black uppercase leading-tight tracking-tight text-white mb-16">
             Trusted by Industry<br />
             <span className="text-[#1de9b6]">Leaders Across Europe.</span>
           </h2>
 
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-            {[
-              { name: 'Dacia', url: 'https://www.dacia.com', logo: 'https://upload.wikimedia.org/wikipedia/commons/3/32/DACIALOGOTYPE.png' },
-              { name: 'Kirchhoff', url: 'https://www.kirchhoff-automotive.com', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Kirchhoff_Logo.svg/3840px-Kirchhoff_Logo.svg.png' },
-              { name: 'Martur Fompak', url: 'https://www.martur.com.tr', logo: 'https://www.sap.com/dam/application/shared/logos/customer/h-q/martur-fompak-customer-logo.png' },
-              { name: 'Farplas', url: 'https://www.farplas.com', logo: 'https://faraero.com.tr/wp-content/uploads/2020/08/farplas-logo.png' },
-              { name: 'Kärcher', url: 'https://www.karcher.com', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/K%C3%A4rcher_Logo_2015.svg/1280px-K%C3%A4rcher_Logo_2015.svg.png' },
-              { name: 'Timken', url: 'https://www.timken.com', logo: 'https://cdn.freebiesupply.com/logos/large/2x/timken-logo-png-transparent.png' },
-              { name: 'HORSE', url: 'https://dcassetcdn.com/design_img/876564/468725/468725_5124623_876564_thumbnail.jpg', logo: 'https://upload.wikimedia.org/wikipedia/commons/2/23/Coat_of_arms_of_Kent.svg' },
-              { name: 'Beyçelik Gestamp', url: 'https://www.beycelikgestamp.com', logo: 'https://www.beycelikgestamp.com.tr/dacegug/2025/10/gestamp_logo.svg' },
-              { name: 'UKS', url: 'https://www.uksstamping.com', logo: 'https://www.uksstamping.com/assets/img/uks-logo.png' },
-              { name: 'Opsan', url: 'https://www.opsan.com.tr', logo: 'https://images.crunchbase.com/image/upload/c_pad,h_256,w_256,f_auto,q_auto:eco,dpr_1/el5grzb45tlvtvmmcbyg?ik-sanitizeSvg=true' },
-            ].map((client, i) => (
-              <a
-                key={i}
-                href={client.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group relative h-28 bg-white/5 border border-[#1de9b6]/15 hover:border-[#1de9b6]/50 transition-all flex items-center justify-center overflow-hidden cursor-pointer hover:bg-white/10"
-              >
-                {/* Glow effect on hover */}
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-gradient-to-br from-[#1de9b6]/5 to-transparent" />
-                
-                {/* Logo image */}
-                <div className="relative z-10 flex flex-col items-center justify-center h-full px-4">
-                  <img 
-                    src={client.logo} 
-                    alt={client.name}
-                    className="max-w-[85%] max-h-[70%] object-contain grayscale group-hover:grayscale-0 transition-all duration-300 drop-shadow-sm"
-                    onError={(e) => {
-                      e.target.style.display = 'none';
-                      if (e.target.nextElementSibling) e.target.nextElementSibling.style.display = 'block';
-                    }}
-                  />
-                  {/* Fallback text if logo doesn't load */}
-                  <p className="hidden text-[10px] font-black uppercase tracking-widest text-white group-hover:text-[#1de9b6] transition-colors text-center leading-tight">
-                    {client.name}
-                  </p>
-                </div>
-              </a>
-            ))}
+          <div className="bg-gradient-to-br from-white/8 via-white/5 to-white/3 border border-white/15 rounded-lg p-12 backdrop-blur-sm">
+            <div className="flex flex-wrap gap-6 justify-center lg:justify-start items-center">
+              {[
+                { name: 'Dacia', url: 'https://www.dacia.com', logo: 'https://upload.wikimedia.org/wikipedia/commons/3/32/DACIALOGOTYPE.png' },
+                { name: 'Kirchhoff', url: 'https://www.kirchhoff-automotive.com', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Kirchhoff_Logo.svg/3840px-Kirchhoff_Logo.svg.png' },
+                { name: 'Martur Fompak', url: 'https://i.ytimg.com/vi/P51XJF6wpXY/maxresdefault.jpg', logo: 'https://www.sap.com/dam/application/shared/logos/customer/h-q/martur-fompak-customer-logo.png' },
+                { name: 'Farplas', url: 'https://www.farplas.com', logo: 'https://faraero.com.tr/wp-content/uploads/2020/08/farplas-logo.png' },
+                { name: 'Kärcher', url: 'https://www.karcher.com', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/K%C3%A4rcher_Logo_2015.svg/1280px-K%C3%A4rcher_Logo_2015.svg.png' },
+                { name: 'Timken', url: 'https://www.timken.com', logo: 'https://cdn.freebiesupply.com/logos/large/2x/timken-logo-png-transparent.png' },
+                { name: 'HORSE Powertrain', url: 'https://www.horse.cars', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Horse_Powertrain_Limited_logo.svg/1280px-Horse_Powertrain_Limited_logo.svg.png' },
+                { name: 'Beyçelik Gestamp', url: 'https://www.beycelikgestamp.com', logo: 'https://www.beycelikgestamp.com.tr/dacegug/2025/10/gestamp_logo.svg' },
+                { name: 'Coskunoz Holding', url: 'https://www.coskunozholding.com.tr/en/companies/automotive', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Co%C5%9Fkun%C3%B6z_Holding.svg/3840px-Co%C5%9Fkun%C3%B6z_Holding.svg.png' },
+                { name: 'GIC NOSAG', url: 'https://www.gicnosag.com', logo: 'https://cdn.abacus.ai/images/e5f1d495-d26a-46f0-a653-3a7add4030b6.png' },
+                { name: 'UKS', url: 'https://www.uksstamping.com', logo: 'https://www.uksstamping.com/assets/img/uks-logo.png' },
+                { name: 'Opsan', url: 'https://www.opsan.com.tr', logo: 'https://images.crunchbase.com/image/upload/c_pad,h_256,w_256,f_auto,q_auto:eco,dpr_1/el5grzb45tlvtvmmcbyg?ik-sanitizeSvg=true' },
+              ].map((client, i) => (
+                <a
+                  key={i}
+                  href={client.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-shrink-0 h-32 w-40 bg-white/90 border border-white/40 hover:border-white hover:shadow-lg hover:bg-white transition-all duration-300 flex items-center justify-center overflow-hidden cursor-pointer rounded-md"
+                >
+                  {/* Logo container */}
+                  <div className="flex items-center justify-center h-full w-full px-4">
+                    <img 
+                      src={client.logo} 
+                      alt={client.name}
+                      className="max-w-[92%] max-h-[85%] object-contain transition-all duration-300"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                        if (e.target.nextElementSibling) e.target.nextElementSibling.style.display = 'block';
+                      }}
+                    />
+                    {/* Fallback text if logo doesn't load */}
+                    <p className="hidden text-[10px] font-black uppercase tracking-widest text-black transition-all duration-300 text-center leading-tight">
+                      {client.name}
+                    </p>
+                  </div>
+                </a>
+              ))}
+            </div>
           </div>
 
-          <p className="text-[12px] text-[#5A5A5A] text-center mt-12 border-t border-[#1A1A1A] pt-8">
+          <p className="text-[12px] text-[#5A5A5A] text-center mt-14 border-t border-[#1A1A1A] pt-10">
             ...and 300+ industrial clients across automotive, packaging, metallurgy, food processing, and manufacturing sectors.
           </p>
         </div>
