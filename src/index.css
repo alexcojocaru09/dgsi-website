@@ -1,1 +1,82 @@
 @import "tailwindcss";
+
+/* ═══════════════════════════════════════════════════════════════════
+   DGSI — Custom Animations
+   ═══════════════════════════════════════════════════════════════════ */
+
+
+/* ───────────────────────────────────────────────────────────────────
+   1. CNC MILLING LOGO (capul de frezare pe axele X/Y)
+   ─────────────────────────────────────────────────────────────────── */
+@keyframes cnc-mill {
+  0%   { transform: translate(0, 0); }
+  20%  { transform: translate(-14px, 0); }   /* stânga pe X */
+  40%  { transform: translate(14px, 0); }    /* dreapta pe X */
+  60%  { transform: translate(14px, 8px); }  /* coboară pe Y */
+  80%  { transform: translate(-14px, 8px); } /* stânga jos */
+  100% { transform: translate(0, 0); }       /* revine la centru */
+}
+
+.animate-cnc-mill {
+  animation: cnc-mill 2.5s ease-in-out infinite;
+}
+
+/* Așchii (chips) care sar din zona de tăiere */
+@keyframes chip1 {
+  0%   { transform: translate(0, 0); opacity: 1; }
+  100% { transform: translate(-8px, 6px); opacity: 0; }
+}
+@keyframes chip2 {
+  0%   { transform: translate(0, 0); opacity: 1; }
+  100% { transform: translate(8px, 6px); opacity: 0; }
+}
+@keyframes chip3 {
+  0%   { transform: translate(0, 0); opacity: 1; }
+  100% { transform: translate(0, 9px); opacity: 0; }
+}
+
+.animate-chip1 { animation: chip1 0.6s ease-out infinite; }
+.animate-chip2 { animation: chip2 0.7s ease-out infinite 0.1s; }
+.animate-chip3 { animation: chip3 0.5s ease-out infinite 0.2s; }
+
+
+/* ───────────────────────────────────────────────────────────────────
+   2. LOGO MARQUEE (carusel infinit "Trusted by")
+   Durata este inclusă direct aici (48s) ca animația să pornească sigur.
+   Se mută cu 50% pentru că lista de logo-uri este duplicată în JSX,
+   creând o buclă perfect continuă (seamless loop).
+   ─────────────────────────────────────────────────────────────────── */
+@keyframes marquee-left {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@keyframes marquee-right {
+  from { transform: translateX(-50%); }
+  to   { transform: translateX(0); }
+}
+
+.animate-marquee-left  { animation: marquee-left  48s linear infinite; }
+.animate-marquee-right { animation: marquee-right 48s linear infinite; }
+
+/* Pauză la hover peste carusel */
+.animate-marquee-left:hover,
+.animate-marquee-right:hover {
+  animation-play-state: paused;
+}
+
+
+/* ───────────────────────────────────────────────────────────────────
+   3. Accesibilitate — oprește toate animațiile pentru utilizatorii
+      care preferă mișcare redusă (Windows: Setări -> Accesibilitate ->
+      Efecte vizuale -> Efecte de animație)
+   ─────────────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .animate-cnc-mill,
+  .animate-chip1,
+  .animate-chip2,
+  .animate-chip3,
+  .animate-marquee-left,
+  .animate-marquee-right {
+    animation: none;
+  }
+}
