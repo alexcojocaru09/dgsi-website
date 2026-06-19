@@ -238,10 +238,15 @@ export default function App() {
                 <FileText size={12} className="text-[#1de9b6]/60 group-hover:text-[#1de9b6] transition-colors" />
                 <span>Request Quote</span>
               </button>
-              <a href="#" className="group relative flex items-center gap-3 px-7 py-3.5 bg-gradient-to-r from-[#1de9b6] to-[#0bc192] text-[#050505] text-xs font-black uppercase tracking-[0.2em] transition-all duration-300 hover:from-white hover:to-white hover:text-black shadow-[0_0_20px_rgba(29,233,182,0.15)] rounded-sm">
-                <ShoppingBag size={15} className="transition-transform duration-300 group-hover:-translate-y-0.5" />
-                <span>Shop Online</span>
-              </a>
+              <a 
+  href="https://www.industrytools.ro" 
+  target="_blank" 
+  rel="noopener noreferrer" 
+  className="group relative flex items-center gap-3 px-7 py-3.5 bg-gradient-to-r from-[#1de9b6] to-[#0bc192] text-[#050505] text-xs font-black uppercase tracking-[0.2em] transition-all duration-300 hover:from-white hover:to-white hover:text-black shadow-[0_0_20px_rgba(29,233,182,0.15)] rounded-sm"
+>
+  <ShoppingBag size={15} className="transition-transform duration-300 group-hover:-translate-y-0.5" />
+  <span>Shop Online</span>
+</a>
             </div>
           </div>
           <button className="lg:hidden text-white ml-auto" onClick={() => setMenuOpen(!menuOpen)}>
