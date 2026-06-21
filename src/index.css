@@ -6,22 +6,18 @@
 
 
 /* ───────────────────────────────────────────────────────────────────
-   1. CNC MILLING LOGO (capul de frezare pe axele X/Y)
+   1. CNC MILLING LOGO
    ─────────────────────────────────────────────────────────────────── */
 @keyframes cnc-mill {
   0%   { transform: translate(0, 0); }
-  20%  { transform: translate(-14px, 0); }   /* stânga pe X */
-  40%  { transform: translate(14px, 0); }    /* dreapta pe X */
-  60%  { transform: translate(14px, 8px); }  /* coboară pe Y */
-  80%  { transform: translate(-14px, 8px); } /* stânga jos */
-  100% { transform: translate(0, 0); }       /* revine la centru */
+  20%  { transform: translate(-14px, 0); }
+  40%  { transform: translate(14px, 0); }
+  60%  { transform: translate(14px, 8px); }
+  80%  { transform: translate(-14px, 8px); }
+  100% { transform: translate(0, 0); }
 }
+.animate-cnc-mill { animation: cnc-mill 2.5s ease-in-out infinite; }
 
-.animate-cnc-mill {
-  animation: cnc-mill 2.5s ease-in-out infinite;
-}
-
-/* Așchii (chips) care sar din zona de tăiere */
 @keyframes chip1 {
   0%   { transform: translate(0, 0); opacity: 1; }
   100% { transform: translate(-8px, 6px); opacity: 0; }
@@ -34,17 +30,13 @@
   0%   { transform: translate(0, 0); opacity: 1; }
   100% { transform: translate(0, 9px); opacity: 0; }
 }
-
 .animate-chip1 { animation: chip1 0.6s ease-out infinite; }
 .animate-chip2 { animation: chip2 0.7s ease-out infinite 0.1s; }
 .animate-chip3 { animation: chip3 0.5s ease-out infinite 0.2s; }
 
 
 /* ───────────────────────────────────────────────────────────────────
-   2. LOGO MARQUEE (carusel infinit "Trusted by")
-   Durata este inclusă direct aici (48s) ca animația să pornească sigur.
-   Se mută cu 50% pentru că lista de logo-uri este duplicată în JSX,
-   creând o buclă perfect continuă (seamless loop).
+   2. LOGO MARQUEE
    ─────────────────────────────────────────────────────────────────── */
 @keyframes marquee-left {
   from { transform: translateX(0); }
@@ -54,11 +46,8 @@
   from { transform: translateX(-50%); }
   to   { transform: translateX(0); }
 }
-
 .animate-marquee-left  { animation: marquee-left  48s linear infinite; }
 .animate-marquee-right { animation: marquee-right 48s linear infinite; }
-
-/* Pauză la hover peste carusel */
 .animate-marquee-left:hover,
 .animate-marquee-right:hover {
   animation-play-state: paused;
@@ -66,17 +55,112 @@
 
 
 /* ───────────────────────────────────────────────────────────────────
-   3. Accesibilitate — oprește toate animațiile pentru utilizatorii
-      care preferă mișcare redusă (Windows: Setări -> Accesibilitate ->
-      Efecte vizuale -> Efecte de animație)
+   3. SUBCATEGORY ICONS — technical motion (drills, mills, saws, etc.)
+   Activate only when parent has .group-hover (set in App.jsx via group)
+   ─────────────────────────────────────────────────────────────────── */
+@keyframes spin-cw {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes spin-ccw {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(-360deg); }
+}
+@keyframes drill-down {
+  0%, 100% { transform: translateY(-2px); }
+  50%      { transform: translateY(2px); }
+}
+@keyframes saw-cut {
+  0%, 100% { transform: translateX(-2px); }
+  50%      { transform: translateX(2px); }
+}
+@keyframes spark {
+  0%   { opacity: 0; transform: translate(0, 0) scale(0.5); }
+  50%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(8px, 8px) scale(0.2); }
+}
+@keyframes pulse-grip {
+  0%, 100% { transform: scaleX(1); }
+  50%      { transform: scaleX(0.85); }
+}
+@keyframes shake-tap {
+  0%, 100% { transform: translateY(0); }
+  25%      { transform: translateY(1px); }
+  75%      { transform: translateY(-1px); }
+}
+@keyframes measure-slide {
+  0%, 100% { transform: translateX(0); }
+  50%      { transform: translateX(4px); }
+}
+
+.animate-spin-cw      { animation: spin-cw 1.8s linear infinite; }
+.animate-spin-cw-fast { animation: spin-cw 0.7s linear infinite; }
+.animate-spin-ccw     { animation: spin-ccw 2.5s linear infinite; }
+.animate-drill-down   { animation: drill-down 1.4s ease-in-out infinite; }
+.animate-saw-cut      { animation: saw-cut 0.6s ease-in-out infinite; }
+.animate-spark        { animation: spark 1.2s ease-out infinite; }
+.animate-pulse-grip   { animation: pulse-grip 2s ease-in-out infinite; }
+.animate-shake-tap    { animation: shake-tap 0.4s ease-in-out infinite; }
+.animate-measure-slide { animation: measure-slide 2.2s ease-in-out infinite; }
+
+
+/* ───────────────────────────────────────────────────────────────────
+   4. Accessibility — pause everything when user prefers reduced motion
    ─────────────────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .animate-cnc-mill,
-  .animate-chip1,
-  .animate-chip2,
-  .animate-chip3,
-  .animate-marquee-left,
-  .animate-marquee-right {
+  .animate-chip1, .animate-chip2, .animate-chip3,
+  .animate-marquee-left, .animate-marquee-right,
+  .animate-spin-cw, .animate-spin-cw-fast, .animate-spin-ccw,
+  .animate-drill-down, .animate-saw-cut, .animate-spark,
+  .animate-pulse-grip, .animate-shake-tap, .animate-measure-slide {
+    animation: none;
+  }
+}
+
+
+/* ───────────────────────────────────────────────────────────────────
+   5. WELDING ANIMATION (flagship modal — electrodes + spark)
+   ─────────────────────────────────────────────────────────────────── */
+@keyframes weld-press-down {
+  0%, 100% { transform: translateY(-8px); }
+  45%, 55% { transform: translateY(0); }
+}
+@keyframes weld-press-up {
+  0%, 100% { transform: translateY(8px); }
+  45%, 55% { transform: translateY(0); }
+}
+@keyframes weld-spark-flash {
+  0%, 40% { opacity: 0; }
+  45%     { opacity: 1; }
+  50%     { opacity: 0.6; }
+  55%     { opacity: 1; }
+  60%, 100% { opacity: 0; }
+}
+@keyframes weld-heat-glow {
+  0%, 40% { opacity: 0; }
+  50%     { opacity: 1; }
+  60%, 100% { opacity: 0; }
+}
+@keyframes weld-particle {
+  0%, 42% { opacity: 0; transform: translate(0, 0) scale(0); }
+  48%     { opacity: 1; transform: translate(var(--dx), var(--dy)) scale(1); }
+  70%     { opacity: 0; transform: translate(calc(var(--dx) * 1.8), calc(var(--dy) * 1.8)) scale(0.2); }
+  100%    { opacity: 0; }
+}
+@keyframes weld-current-flow {
+  to { stroke-dashoffset: -20; }
+}
+
+.weld-upper   { animation: weld-press-down 3s ease-in-out infinite; }
+.weld-lower   { animation: weld-press-up 3s ease-in-out infinite; }
+.weld-spark   { animation: weld-spark-flash 3s ease-in-out infinite; transform-origin: center; }
+.weld-heat    { animation: weld-heat-glow 3s ease-in-out infinite; }
+.weld-particle { animation: weld-particle 3s ease-out infinite; }
+.weld-current { stroke-dasharray: 4 4; animation: weld-current-flow 0.5s linear infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .weld-upper, .weld-lower, .weld-spark, .weld-heat, .weld-particle, .weld-current {
     animation: none;
   }
 }
