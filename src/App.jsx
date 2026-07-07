@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ShoppingBag, FileText, Zap, Wrench, Phone, Monitor, Settings, Truck, X, Target, CheckCircle, Droplets, Ruler, ShieldCheck, Download, ChevronRight, Mail, MapPin, MessageCircle, ArrowUp, Package } from 'lucide-react';
 import SubcategoryIcon from './components/SubcategoryIcons';
 import WeldingModal, { WeldingAnimation } from './components/WeldingModal';
+import { RFQProvider, AddToRFQButton, RFQFloatingBadge, RFQWizard, useRFQ } from './components/RFQSystem';
 
 // ─── Custom Icons ─────────────────────────────────────────────────────────────
 function LinkedInIcon({ size = 24, className = '' }) {
@@ -25,9 +26,8 @@ const supplierLogos = [
   { name: 'Beta', src: '/logos/beta.png', color: '#F25322', scale: 3 },
   { name: 'Bosch', src: '/logos/bosch.svg', color: '#EA0016' },
   { name: 'Facom', src: '/logos/facom.svg', color: '#E3000F' },
-  { name: 'Honeywell', src: '/logos/honeywell.svg', color: '#FF1B2D' },
-  { name: 'Milwaukee', src: '/logos/milwaukee.svg', color: '#D01B22', scale: 1.3 },
-  { name: 'Tyrolit', src: '/logos/tyrolit.svg', color: '#004A99' },
+  { name: 'Honeywell', src: '/logos/Honeywell.svg', color: '#FF1B2D' },
+  { name: 'Milwaukee', src: '/logos/Milwaukee.svg', color: '#D01B22', scale: 1.3 },
   { name: 'Unior', src: '/logos/unior.png', color: '#005EAA', scale: 1.8 },
   { name: 'Siemens', src: '/logos/siemens.svg', color: '#009999' },
   { name: 'Schneider Electric', src: '/logos/Schneider.png', color: '#3DCD58', scale: 1 },
@@ -35,7 +35,20 @@ const supplierLogos = [
   { name: 'Sick', src: '/logos/sick.png', color: '#00509E', scale: 1 },
   { name: 'Legrand', src: '/logos/legrand.png', color: '#E2001A', scale: 1 },
   { name: 'SMC', src: '/logos/smc.png', color: '#005EAA', scale: 1 },
-  { name: 'Balluff', src: '/logos/balluff.png', color: '#000000', scale: 1 }
+  { name: 'Balluff', src: '/logos/balluff.png', color: '#000000', scale: 1 },
+  { name: 'Bahco', src: '/logos/bahco.png', color: '#E2001A', scale: 1 },
+  { name: 'Gedore', src: '/logos/gedore.jpg', color: '#E2001A', scale: 1 },
+  { name: 'Stahlwille', src: '/logos/stahlwille.jpg', color: '#003D7C', scale: 1 },
+  { name: 'Mitutoyo', src: '/logos/mitutoyo.png', color: '#003D7C', scale: 1 },
+  { name: 'Mahr', src: '/logos/mahr.png', color: '#E2001A', scale: 1 },
+  { name: 'Fluke', src: '/logos/fluke.png', color: '#FFC400', scale: 1 },
+  { name: 'Zeiss', src: '/logos/zeiss.png', color: '#0072C6', scale: 1 },
+  { name: 'Schunk', src: '/logos/schunk.png', color: '#003D7C', scale: 1 },
+  { name: 'Röhm', src: '/logos/rohm.png', color: '#E2001A', scale: 1 },
+  { name: 'Hainbuch', src: '/logos/hainbuch.png', color: '#005EAA', scale: 1 },
+  { name: 'Kärcher', src: '/logos/Kaercher.svg', color: '#FFD800', scale: 1 },
+  { name: 'Kyocera', src: '/logos/kyocera.png', color: '#E2001A', scale: 1 },
+  { name: 'Komet', src: '/logos/komet.jpg', color: '#003D7C', scale: 1 }
 ];
 
 // ─── Constants: Client Logos (Local Files) ──────────────────────
@@ -44,7 +57,7 @@ const clientLogos = [
   { name: 'Kirchhoff', src: '/logos/kirchhoff.png', scale: 1 },
   { name: 'Martur Fompak', src: '/logos/martur.png', scale: 1 },
   { name: 'Farplas', src: '/logos/farplas.png', scale: 1 },
-  { name: 'Kärcher', src: '/logos/kaercher.svg', scale: 1 },
+  { name: 'Kärcher', src: '/logos/Kaercher.svg', scale: 1 },
   { name: 'Timken', src: '/logos/timken.png', scale: 1 },
   { name: 'Horse Powertrain', src: '/logos/horse.png', scale: 1 },
   { name: 'Beyçelik Gestamp', src: '/logos/gestamp.png', scale: 1 },
@@ -64,17 +77,14 @@ const productCategories = [
     items: ['Holemaking & Boring', 'Threading & Tapping', 'Parting & Cutting-off', 'Turning', 'Milling'],
     catalogFile: '/machining-catalog.pdf',
     brands: [
-      { name: 'Kyocera' },
-      { name: 'Komet' },
-      { name: 'Re-Bo' },
-      { name: 'WTE' },
-      { name: 'Fahrion' },
-      { name: 'EWS' },
-      { name: 'Tyrolit', src: '/logos/tyrolit.svg' },
-      { name: 'Pferd' },
-      { name: 'Lukas' },
-      { name: 'Zeus' },
-      { name: 'Ecoroll' }
+      { name: 'Kyocera', src: '/logos/kyocera.png' },
+      { name: 'Komet', src: '/logos/komet.jpg' },
+      { name: 'Re-Bo', src: '/logos/rebo.png' },
+      { name: 'WTE', src: '/logos/WTE.jpg' },
+      { name: 'Fahrion', src: '/logos/fahrion.png' },
+      { name: 'EWS', src: '/logos/ews.png' },
+      { name: 'Pferd', src: '/logos/pferdtools.png' },
+      { name: 'Lukas', src: '/logos/lukas.png' }
     ]
   },
   {
@@ -83,13 +93,12 @@ const productCategories = [
     items: ['Toolholders', 'Collet Chucks', 'Lathe Chucks', 'Machine Vises', 'Rigid Clamping'],
     catalogFile: '/clamping-catalog.pdf',
     brands: [
-      { name: 'Schunk' },
-      { name: 'Röhm' },
-      { name: 'Allmatic' },
-      { name: 'AMF' },
-      { name: 'Hainbuch' },
-      { name: 'Bessey' },
-      { name: 'Brockhaus Heuer' }
+      { name: 'Schunk', src: '/logos/schunk.png' },
+      { name: 'Röhm', src: '/logos/rohm.png' },
+      { name: 'Allmatic', src: '/logos/allmatic.jpg' },
+      { name: 'AMF', src: '/logos/amf.png' },
+      { name: 'Hainbuch', src: '/logos/hainbuch.png' },
+      { name: 'Bessey', src: '/logos/bessey.png' }
     ]
   },
   {
@@ -98,14 +107,13 @@ const productCategories = [
     items: ['Micrometers', 'Dial Indicators', 'Feeler Gauges', 'Calipers', 'Smart Sensors'],
     catalogFile: '/measuring-catalog.pdf',
     brands: [
-      { name: 'Mitutoyo' },
-      { name: 'Mahr' },
-      { name: 'Zeiss' },
-      { name: 'Tesa' },
-      { name: 'Leica' },
-      { name: 'Fluke' },
-      { name: 'Stahlwille' },
-      { name: 'Honeywell', src: '/logos/honeywell.svg' },
+      { name: 'Mitutoyo', src: '/logos/mitutoyo.png' },
+      { name: 'Mahr', src: '/logos/mahr.png' },
+      { name: 'Zeiss', src: '/logos/zeiss.png' },
+      { name: 'Tesa', src: '/logos/tesa.png' },
+      { name: 'Fluke', src: '/logos/fluke.png' },
+      { name: 'Stahlwille', src: '/logos/stahlwille.jpg' },
+      { name: 'Honeywell', src: '/logos/Honeywell.svg' },
       { name: 'Siemens', src: '/logos/siemens.svg' },
       { name: 'Festo', src: '/logos/festo.png' },
       { name: 'SICK', src: '/logos/sick.png' },
@@ -121,11 +129,8 @@ const productCategories = [
     items: ['Abrasive Discs', 'Wire Brushes', 'Saw Blades', 'Precision Files', 'Spare Parts'],
     catalogFile: '/tools-catalog.pdf',
     brands: [
-      { name: 'Tyrolit', src: '/logos/tyrolit.svg' },
-      { name: 'Pferd' },
-      { name: 'Lessmann' },
-      { name: 'VSM' },
-      { name: 'Lukas' }
+      { name: 'Pferd', src: '/logos/pferdtools.png' },
+      { name: 'Lukas', src: '/logos/lukas.png' }
     ]
   },
   {
@@ -135,21 +140,16 @@ const productCategories = [
     catalogFile: '/tools-catalog.pdf',
     brands: [
       { name: 'Bosch', src: '/logos/bosch.svg' },
-      { name: 'Milwaukee', src: '/logos/milwaukee.svg', scale: 1.3 },
+      { name: 'Milwaukee', src: '/logos/Milwaukee.svg', scale: 1.3 },
       { name: 'Facom', src: '/logos/facom.svg' },
       { name: 'Beta', src: '/logos/beta.png', scale: 3 },
       { name: 'Unior', src: '/logos/unior.png', scale: 1.8 },
-      { name: 'Knipex' },
-      { name: 'Wera' },
-      { name: 'Wiha' },
-      { name: 'Gedore' },
-      { name: 'Hazet' },
-      { name: 'Stahlwille' },
-      { name: 'Bahco' },
-      { name: 'Atlas Copco' },
-      { name: '3M' },
-      { name: 'Loctite' },
-      { name: 'Kärcher', src: '/logos/kaercher.svg' }
+      { name: 'Gedore', src: '/logos/gedore.jpg' },
+      { name: 'Hazet', src: '/logos/hazet.png' },
+      { name: 'Stahlwille', src: '/logos/stahlwille.jpg' },
+      { name: 'Bahco', src: '/logos/bahco.png' },
+      { name: '3M', src: '/logos/3m.svg' },
+      { name: 'Kärcher', src: '/logos/Kaercher.svg' }
     ]
   },
   {
@@ -158,18 +158,7 @@ const productCategories = [
     items: ['Hand Protection', 'Head Protection', 'Workwear & Footwear', 'Fall Protection', 'First Aid'],
     catalogFile: '/tools-catalog.pdf',
     brands: [
-      { name: 'Uvex' },
-      { name: 'Ansell' },
-      { name: 'Honeywell', src: '/logos/honeywell.svg' },
-      { name: 'Dräger' },
-      { name: 'DuPont' },
-      { name: 'Helly Hansen' },
-      { name: 'Mascot' },
-      { name: 'Blåkläder' },
-      { name: 'Haix' },
-      { name: 'Schuberth' },
-      { name: 'Skylotec' },
-      { name: 'Elten' }
+      { name: 'Honeywell', src: '/logos/Honeywell.svg' }
     ]
   }
 ];
@@ -371,7 +360,8 @@ const EmergencyTimeline = ({ expanded = false }) => {
 };
 
 // ═══════════════════════════════════════════════════════════════════════════
-export default function App() {
+function AppInner() {
+  const { setWizardOpen } = useRFQ();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [expandedCard, setExpandedCard] = useState(null);
@@ -472,7 +462,7 @@ export default function App() {
               ))}
             </nav>
             <div className="flex flex-col items-end gap-2 shrink-0">
-              <button onClick={() => scrollTo('contact')} className="group flex items-center gap-2 px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.25em] text-[#1de9b6] hover:text-white border border-[#1de9b6]/30 hover:border-[#1de9b6] hover:bg-[#1de9b6]/10 transition-all duration-300 rounded-sm">
+              <button onClick={() => setWizardOpen(true)} className="group flex items-center gap-2 px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.25em] text-[#1de9b6] hover:text-white border border-[#1de9b6]/30 hover:border-[#1de9b6] hover:bg-[#1de9b6]/10 transition-all duration-300 rounded-sm">
                 <FileText size={13} className="transition-transform group-hover:rotate-12" />
                 <span>Request Quote</span>
               </button>
@@ -505,7 +495,7 @@ export default function App() {
                   <ShoppingBag size={16} />
                   <span>Shop Online</span>
                </a>
-               <button onClick={() => scrollTo('contact')} className="flex items-center justify-center gap-3 px-6 py-3 text-[#B8B8B8] text-[11px] font-bold uppercase tracking-[0.2em] hover:text-white transition-colors">
+               <button onClick={() => { setWizardOpen(true); setMenuOpen(false); }} className="flex items-center justify-center gap-3 px-6 py-3 text-[#B8B8B8] text-[11px] font-bold uppercase tracking-[0.2em] hover:text-white transition-colors">
                   <FileText size={15} className="text-[#1de9b6]/60" />
                   <span>Request Quote</span>
                </button>
@@ -983,12 +973,45 @@ export default function App() {
       </Section>
 
       {/* FOOTER */}
-      <footer className="bg-[#050505] border-t border-white/5 py-12 px-6">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8 text-center md:text-left">
-          <div className="text-[10px] font-mono text-[#6A6A6A] tracking-[0.3em] uppercase">© 2026 Development General System Industry · Precision Engineering Romania</div>
-          <nav className="flex flex-wrap justify-center gap-8">
-            {navItems.map(item => (<button key={item} onClick={() => scrollTo(item)} className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#7A7A7A] hover:text-[#1de9b6] transition-colors">{item}</button>))}
-          </nav>
+      <footer className="bg-[#050505] border-t border-white/5">
+        {/* ── Certifications strip ── */}
+        <div className="border-b border-white/5 py-10 px-6">
+          <div className="max-w-5xl mx-auto flex flex-col items-center gap-8">
+            <div className="flex items-center gap-4 w-full">
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent to-[#1de9b6]/30" />
+              <span className="text-[10px] font-mono text-[#1de9b6] tracking-[0.3em] uppercase shrink-0">Certifications & Ratings</span>
+              <div className="h-px flex-1 bg-gradient-to-l from-transparent to-[#1de9b6]/30" />
+            </div>
+            <div className="flex items-center justify-center gap-8 md:gap-16 flex-wrap">
+              {[
+                { name: 'ISO 45001', file: 'iso-45001', title: 'Occupational Health & Safety' },
+                { name: 'EcoVadis',  file: 'ecovadis',  title: 'Sustainability Rating' },
+                { name: 'ISO 9001',  file: 'iso-9001',  title: 'Quality Management' },
+                { name: 'ISO 14001', file: 'iso-14001', title: 'Environmental Management' },
+                { name: 'ISO 27001', file: 'iso-27001', title: 'Information Security' },
+              ].map((cert) => (
+                <div key={cert.file} className="group/cert flex flex-col items-center gap-3">
+                  <img
+                    src={`/logos/${cert.file}.png`}
+                    alt={cert.name}
+                    loading="lazy"
+                    className="h-20 md:h-24 w-auto object-contain opacity-80 group-hover/cert:opacity-100 transition-all duration-300 group-hover/cert:scale-110 group-hover/cert:drop-shadow-[0_0_14px_rgba(29,233,182,0.4)]"
+                  />
+                  <span className="text-[9px] font-mono text-[#666] tracking-[0.15em] uppercase group-hover/cert:text-[#1de9b6] transition-colors">{cert.name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* ── Footer bottom bar ── */}
+        <div className="py-8 px-6">
+          <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
+            <div className="text-[10px] font-mono text-[#6A6A6A] tracking-[0.3em] uppercase">© 2026 Development General System Industry · Precision Engineering Romania</div>
+            <nav className="flex flex-wrap justify-center gap-8">
+              {navItems.map(item => (<button key={item} onClick={() => scrollTo(item)} className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#7A7A7A] hover:text-[#1de9b6] transition-colors">{item}</button>))}
+            </nav>
+          </div>
         </div>
       </footer>
 
@@ -1121,12 +1144,13 @@ export default function App() {
                         {prod.items.map((item) => (
                           <div
                             key={item}
-                            className="group/sub flex items-center gap-5 p-5 bg-white/[0.02] border border-white/5 rounded-xl hover:border-[#1de9b6]/30 hover:bg-[#1de9b6]/[0.04] transition-all duration-300"
+                            className="group/sub flex items-center gap-4 p-5 bg-white/[0.02] border border-white/5 rounded-xl hover:border-[#1de9b6]/30 hover:bg-[#1de9b6]/[0.04] transition-all duration-300"
                           >
                             <span className="w-14 h-14 flex items-center justify-center bg-[#1de9b6]/10 border border-[#1de9b6]/25 rounded-xl text-[#1de9b6] shrink-0 group-hover/sub:bg-[#1de9b6]/20 transition-all">
                               <SubcategoryIcon name={item} size={28} />
                             </span>
-                            <span className="text-xl md:text-2xl font-bold tracking-wide text-[#D8D8D8] group-hover/sub:text-white transition-colors">{item}</span>
+                            <span className="flex-1 text-lg md:text-xl font-bold tracking-wide text-[#D8D8D8] group-hover/sub:text-white transition-colors">{item}</span>
+                            <AddToRFQButton item={{ id: `${prod.cat}-${item}`, name: item, category: prod.cat }} size="sm" />
                           </div>
                         ))}
                       </div>
@@ -1182,6 +1206,30 @@ export default function App() {
       {/* ── WELDING MODAL (flagship) ── */}
       {weldingOpen && <WeldingModal onClose={() => setWeldingOpen(false)} />}
 
+      {/* ── RFQ SYSTEM — floating badge + wizard ── */}
+      <RFQFloatingBadge />
+      <RFQWizard />
+
     </div>
+  );
+}
+
+// ─── Certifications Banner — fixed bottom strip ────────────────────────────
+const CERTIFICATIONS = [
+  { name: 'ISO 45001', file: 'iso-45001', title: 'Occupational Health & Safety' },
+  { name: 'EcoVadis',  file: 'ecovadis',  title: 'Sustainability Rating' },
+  { name: 'ISO 9001',  file: 'iso-9001',  title: 'Quality Management' },
+  { name: 'ISO 14001', file: 'iso-14001', title: 'Environmental Management' },
+  { name: 'ISO 27001', file: 'iso-27001', title: 'Information Security' },
+];
+
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Wrap the whole app in the RFQ provider so cart state is available everywhere
+export default function App() {
+  return (
+    <RFQProvider>
+      <AppInner />
+    </RFQProvider>
   );
 }
