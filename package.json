@@ -3,12 +3,14 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
-  },
+ "scripts": {
+  "dev": "vite",
+  "build": "vite build",
+  "preview": "vite preview",
+  "catalog": "python scripts/excel_to_json.py Welding_database.xlsx",
+  "rename:pdfs:dry": "python scripts/rename_pdfs.py",
+  "rename:pdfs": "python scripts/rename_pdfs.py --apply --copy"
+},
   "dependencies": {
     "@gsap/react": "^2.1.2",
     "gsap": "^3.15.0",

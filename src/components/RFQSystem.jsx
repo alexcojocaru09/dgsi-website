@@ -151,19 +151,59 @@ export function RFQWizard() {
     return true;
   };
 
+  const RFQ_EMAIL = 'office@industrytools.ro';
+
   const handleSubmit = () => {
-    // ── LIVE SITE: wire this to Netlify Forms / Formspree / email service ──
-    // The structured payload is ready below; POST it to your endpoint.
+    const ref = `DGSI-RFQ-${Date.now().toString().slice(-6)}`;
     const payload = {
       category,
       details,
       attachment: fileName || null,
       items: items.map((i) => ({ name: i.name, category: i.category })),
       contact: { company, name, email },
-      ref: `DGSI-RFQ-${Date.now().toString().slice(-6)}`,
+      ref,
       timestamp: new Date().toISOString(),
     };
-    console.log('RFQ submitted:', payload); // replace with real submit on live site
+
+    // ── METHOD 1: Netlify Forms (works when form is detected by Netlify bot) ──
+    // A hidden <form> in index.html with name="dgsi-rfq" enables this.
+    // Submissions appear in Netlify dashboard → Forms, and can trigger email notifications.
+    try {
+      const formData = new URLSearchParams();
+      formData.append('form-name', 'dgsi-rfq');
+      formData.append('ref', ref);
+      formData.append('company', company);
+      formData.append('name', name);
+      formData.append('email', email);
+      formData.append('category', category);
+      formData.append('details', details);
+      formData.append('items', items.map(i => `${i.category} → ${i.name}`).join('\n'));
+      fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: formData.toString() })
+        .catch(() => {}); // silent fail — mailto below is the safety net
+    } catch (e) { /* ignore if fetch unavailable */ }
+
+    // ── METHOD 2: mailto safety net (always works, opens user's mail client) ──
+    const subject = `[RFQ ${ref}] ${category || 'General Inquiry'} — ${company}`;
+    const lines = [
+      `RFQ Reference: ${ref}`,
+      `Date: ${new Date().toLocaleString()}`,
+      '',
+      '── CONTACT ──',
+      `Company: ${company}`,
+      `Name: ${name}`,
+      `Email: ${email}`,
+      '',
+      '── REQUEST ──',
+      `Category: ${category || '—'}`,
+      `Details: ${details || '—'}`,
+      ...(fileName ? [`Attachment noted: ${fileName} (please attach manually)`] : []),
+      '',
+      '── ITEMS IN CART ──',
+      ...(items.length > 0 ? items.map((i, idx) => `${idx + 1}. ${i.category} → ${i.name}`) : ['(no items selected)']),
+    ];
+    const body = encodeURIComponent(lines.join('\n'));
+    window.location.href = `mailto:${RFQ_EMAIL}?subject=${encodeURIComponent(subject)}&body=${body}`;
+
     setSubmitted(true);
     clearItems();
   };

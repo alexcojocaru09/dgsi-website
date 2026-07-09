@@ -35,6 +35,29 @@
   </head>
   <body>
     <div id="root"></div>
+
+    <!-- ═══ NETLIFY FORMS — hidden declarations for build-time bot detection ═══ -->
+    <!-- These are never shown to users. Netlify scans them at deploy to register the forms. -->
+    <!-- Submissions appear in: Netlify Dashboard → Site → Forms -->
+    <!-- To get email notifications: Dashboard → Site → Forms → Form notifications → Add → Email -->
+    <form name="dgsi-contact" netlify netlify-honeypot="bot-field" hidden>
+      <input name="bot-field" />
+      <input name="company" />
+      <input name="name" />
+      <input name="email" />
+      <textarea name="message"></textarea>
+    </form>
+    <form name="dgsi-rfq" netlify netlify-honeypot="bot-field" hidden>
+      <input name="bot-field" />
+      <input name="ref" />
+      <input name="company" />
+      <input name="name" />
+      <input name="email" />
+      <input name="category" />
+      <textarea name="details"></textarea>
+      <textarea name="items"></textarea>
+    </form>
+
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

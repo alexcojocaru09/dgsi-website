@@ -3,6 +3,7 @@ import { ShoppingBag, FileText, Zap, Wrench, Phone, Monitor, Settings, Truck, X,
 import SubcategoryIcon from './components/SubcategoryIcons';
 import WeldingModal, { WeldingAnimation } from './components/WeldingModal';
 import { RFQProvider, AddToRFQButton, RFQFloatingBadge, RFQWizard, useRFQ } from './components/RFQSystem';
+import { translations, LANGS } from './i18n';
 
 // ─── Custom Icons ─────────────────────────────────────────────────────────────
 function LinkedInIcon({ size = 24, className = '' }) {
@@ -17,6 +18,25 @@ function TeamsIcon({ size = 24, className = '' }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
       <path d="M16 4a3 3 0 1 0 0 6 3 3 0 0 0 0-6ZM8 5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7ZM20 11.5h-8c-1.38 0-2.5 1.12-2.5 2.5v7h13v-7c0-1.38-1.12-2.5-2.5-2.5ZM16.5 15h-1.5v4.5h-1V15H12.5v-1h4v1ZM2 13.5v7h6v-8H4.5c-1.38 0-2.5 1.12-2.5 2.5Z" />
+    </svg>
+  );
+}
+
+// ─── Certification Badge — uniform inline SVG (DGSI dark/teal system) ─────
+// v1 · 08.07.26 · consistent self-contained badges (replaces mismatched raster PNGs)
+function CertBadge({ primary, secondary, size = 92 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <circle cx="60" cy="60" r="56" fill="#0C1512" stroke="#1de9b6" strokeOpacity="0.35" strokeWidth="1.5" />
+      <circle cx="60" cy="60" r="49" fill="none" stroke="#1de9b6" strokeOpacity="0.5" strokeWidth="1" strokeDasharray="2 4" />
+      <circle cx="60" cy="60" r="43" fill="none" stroke="#1de9b6" strokeOpacity="0.16" strokeWidth="1" />
+      <text x="60" y="31" textAnchor="middle" fontFamily="'Space Mono', monospace" fontSize="7" letterSpacing="2.5" fill="#1de9b6" fillOpacity="0.85">CERTIFIED</text>
+      <text x="60" y="60" textAnchor="middle" fontFamily="Inter, sans-serif" fontSize="16" fontWeight="800" letterSpacing="1.5" fill="#1de9b6">{primary}</text>
+      <text x="60" y="83" textAnchor="middle" fontFamily="Inter, sans-serif" fontSize="20" fontWeight="900" letterSpacing="1" fill="#FFFFFF">{secondary}</text>
+      <g transform="translate(60,99)">
+        <circle cx="0" cy="0" r="8" fill="#1de9b6" />
+        <path d="M-3.4 0 L-1 2.4 L3.6 -2.6" stroke="#0A0E11" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+      </g>
     </svg>
   );
 }
@@ -45,7 +65,6 @@ const supplierLogos = [
   { name: 'Zeiss', src: '/logos/zeiss.png', color: '#0072C6', scale: 1 },
   { name: 'Schunk', src: '/logos/schunk.png', color: '#003D7C', scale: 1 },
   { name: 'Röhm', src: '/logos/rohm.png', color: '#E2001A', scale: 1 },
-  { name: 'Hainbuch', src: '/logos/hainbuch.png', color: '#005EAA', scale: 1 },
   { name: 'Kärcher', src: '/logos/Kaercher.svg', color: '#FFD800', scale: 1 },
   { name: 'Kyocera', src: '/logos/kyocera.png', color: '#E2001A', scale: 1 },
   { name: 'Komet', src: '/logos/komet.jpg', color: '#003D7C', scale: 1 }
@@ -82,9 +101,7 @@ const productCategories = [
       { name: 'Re-Bo', src: '/logos/rebo.png' },
       { name: 'WTE', src: '/logos/WTE.jpg' },
       { name: 'Fahrion', src: '/logos/fahrion.png' },
-      { name: 'EWS', src: '/logos/ews.png' },
-      { name: 'Pferd', src: '/logos/pferdtools.png' },
-      { name: 'Lukas', src: '/logos/lukas.png' }
+      { name: 'EWS', src: '/logos/ews.png' }
     ]
   },
   {
@@ -112,15 +129,13 @@ const productCategories = [
       { name: 'Zeiss', src: '/logos/zeiss.png' },
       { name: 'Tesa', src: '/logos/tesa.png' },
       { name: 'Fluke', src: '/logos/fluke.png' },
-      { name: 'Stahlwille', src: '/logos/stahlwille.jpg' },
       { name: 'Honeywell', src: '/logos/Honeywell.svg' },
       { name: 'Siemens', src: '/logos/siemens.svg' },
       { name: 'Festo', src: '/logos/festo.png' },
       { name: 'SICK', src: '/logos/sick.png' },
       { name: 'SMC', src: '/logos/smc.png' },
       { name: 'Balluff', src: '/logos/balluff.png' },
-      { name: 'Schneider Electric', src: '/logos/Schneider.png' },
-      { name: 'Legrand', src: '/logos/legrand.png' }
+      { name: 'Schneider Electric', src: '/logos/Schneider.png' }
     ]
   },
   {
@@ -130,7 +145,11 @@ const productCategories = [
     catalogFile: '/tools-catalog.pdf',
     brands: [
       { name: 'Pferd', src: '/logos/pferdtools.png' },
-      { name: 'Lukas', src: '/logos/lukas.png' }
+      { name: 'Lukas', src: '/logos/lukas.png' },
+      { name: '3M', src: '/logos/3m.svg' },
+      { name: 'Bosch', src: '/logos/bosch.svg' },
+      { name: 'Milwaukee', src: '/logos/Milwaukee.svg', scale: 1.25 },
+      { name: 'Bahco', src: '/logos/bahco.png' }
     ]
   },
   {
@@ -140,16 +159,14 @@ const productCategories = [
     catalogFile: '/tools-catalog.pdf',
     brands: [
       { name: 'Bosch', src: '/logos/bosch.svg' },
-      { name: 'Milwaukee', src: '/logos/Milwaukee.svg', scale: 1.3 },
+      { name: 'Milwaukee', src: '/logos/Milwaukee.svg', scale: 1.25 },
       { name: 'Facom', src: '/logos/facom.svg' },
-      { name: 'Beta', src: '/logos/beta.png', scale: 3 },
-      { name: 'Unior', src: '/logos/unior.png', scale: 1.8 },
+      { name: 'Beta', src: '/logos/beta.png', scale: 1.35 },
+      { name: 'Unior', src: '/logos/unior.png', scale: 1.3 },
       { name: 'Gedore', src: '/logos/gedore.jpg' },
       { name: 'Hazet', src: '/logos/hazet.png' },
       { name: 'Stahlwille', src: '/logos/stahlwille.jpg' },
-      { name: 'Bahco', src: '/logos/bahco.png' },
-      { name: '3M', src: '/logos/3m.svg' },
-      { name: 'Kärcher', src: '/logos/Kaercher.svg' }
+      { name: 'Bahco', src: '/logos/bahco.png' }
     ]
   },
   {
@@ -158,7 +175,9 @@ const productCategories = [
     items: ['Hand Protection', 'Head Protection', 'Workwear & Footwear', 'Fall Protection', 'First Aid'],
     catalogFile: '/tools-catalog.pdf',
     brands: [
-      { name: 'Honeywell', src: '/logos/Honeywell.svg' }
+      { name: '3M', src: '/logos/3m.svg' },
+      { name: 'Honeywell', src: '/logos/Honeywell.svg' },
+      { name: 'Milwaukee', src: '/logos/Milwaukee.svg', scale: 1.25 }
     ]
   }
 ];
@@ -231,6 +250,9 @@ function ScrambleText({ text, className = '', as: Tag = 'span', children }) {
   const [output, setOutput] = useState(displayText);
   const [hasPlayed, setHasPlayed] = useState(false);
   const [ref, visible] = useInView(0.3);
+
+  // Sync output when the text prop changes (e.g. language switch)
+  useEffect(() => { setOutput(displayText); }, [displayText]);
 
   useEffect(() => {
     if (!visible || hasPlayed || !displayText) return;
@@ -360,6 +382,68 @@ const EmergencyTimeline = ({ expanded = false }) => {
 };
 
 // ═══════════════════════════════════════════════════════════════════════════
+// ─── Contact Form — dual submit: Netlify Forms + mailto fallback ──────────
+function ContactForm({ t }) {
+  const [form, setForm] = useState({ company: '', name: '', email: '', message: '' });
+  const [sent, setSent] = useState(false);
+  const CONTACT_EMAIL = 'office@industrytools.ro';
+
+  const handleSend = () => {
+    if (!form.email.trim() || !/\S+@\S+\.\S+/.test(form.email)) return;
+
+    // Netlify Forms POST (silent, appears in Netlify dashboard)
+    try {
+      const fd = new URLSearchParams();
+      fd.append('form-name', 'dgsi-contact');
+      fd.append('company', form.company);
+      fd.append('name', form.name);
+      fd.append('email', form.email);
+      fd.append('message', form.message);
+      fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: fd.toString() })
+        .catch(() => {});
+    } catch (e) { /* ignore */ }
+
+    // mailto fallback (opens user's mail client)
+    const subject = `[DGSI Contact] ${form.company || 'New inquiry'} — ${form.name || 'Website'}`;
+    const body = [
+      `From: ${form.name} (${form.company})`,
+      `Email: ${form.email}`,
+      '',
+      form.message,
+    ].join('\n');
+    window.location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    setSent(true);
+  };
+
+  if (sent) {
+    return (
+      <div className="flex flex-col items-center justify-center py-16 gap-4">
+        <div className="w-14 h-14 rounded-full bg-[#1de9b6]/20 flex items-center justify-center"><Check size={28} className="text-[#1de9b6]" /></div>
+        <p className="text-white font-black uppercase text-sm tracking-widest">Message sent</p>
+        <p className="text-[#8A8A8A] text-xs font-mono">Your email client should open with the message pre-filled.</p>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <div className="grid grid-cols-2 gap-6 mb-6">
+        <input type="text" value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} placeholder={t.contact.formCompany} className="bg-[#080808] border border-white/10 p-4 text-xs font-bold uppercase focus:border-[#1de9b6] outline-none transition-all text-white placeholder-[#5A5A5A]" />
+        <input type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder={t.contact.formName} className="bg-[#080808] border border-white/10 p-4 text-xs font-bold uppercase focus:border-[#1de9b6] outline-none transition-all text-white placeholder-[#5A5A5A]" />
+      </div>
+      <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder={t.contact.formEmail} className="w-full bg-[#080808] border border-white/10 p-4 text-xs font-bold uppercase focus:border-[#1de9b6] outline-none mb-6 transition-all text-white placeholder-[#5A5A5A]" />
+      <textarea rows="4" value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} placeholder={t.contact.formMessage} className="w-full bg-[#080808] border border-white/10 p-4 text-xs font-bold uppercase focus:border-[#1de9b6] outline-none mb-8 resize-none transition-all text-white placeholder-[#5A5A5A]"></textarea>
+      <button
+        onClick={handleSend}
+        disabled={!form.email.trim() || !/\S+@\S+\.\S+/.test(form.email)}
+        className="w-full py-5 bg-[#1de9b6] text-black font-black uppercase text-xs hover:bg-white transition-all shadow-[0_0_20px_#1de9b633] rounded-sm disabled:opacity-40 disabled:cursor-not-allowed"
+      >
+        {t.contact.send}
+      </button>
+    </>
+  );
+}
+
 function AppInner() {
   const { setWizardOpen } = useRFQ();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -369,6 +453,14 @@ function AppInner() {
   const [showTop, setShowTop] = useState(false);
   const [activeFilter, setActiveFilter] = useState('All');
   const [weldingOpen, setWeldingOpen] = useState(false);
+  const [lang, setLang] = useState('en');
+  const t = translations[lang];
+
+  // Icons attached by id/index — translation data stays pure JSON-like
+  const aboutIcons = { distributor: <Package />, manufacturing: <Zap />, audit: <Target />, tooling: <Wrench /> };
+  const serviceIcons = { distributor: <Package />, manufacturing: <Zap />, tooling: <Settings /> };
+  const stepIcons = [<FileText />, <Target />, <CheckCircle />, <Truck />];
+  const auditIcons = [<Target />, <Droplets />, <Ruler />, <CheckCircle />];
 
   useEffect(() => {
     document.body.style.overflow = (expandedCard || weldingOpen) ? 'hidden' : 'unset';
@@ -396,13 +488,8 @@ function AppInner() {
   const productFilters = ['All', ...productCategories.map(p => p.cat)];
   const visibleProducts = activeFilter === 'All' ? productCategories : productCategories.filter(p => p.cat === activeFilter);
 
-  // About cards data (extracted to render cleanly under paragraph)
-  const aboutCards = [
-    { id: 'distributor', title: 'Authorized Distributor', desc: 'Official partner for 120+ global brands without MOQ constraints.', icon: <Package /> },
-    { id: 'manufacturing', title: 'Emergency Manufacturing', desc: '48–72h custom CNC parts, electrodes, and assemblies.', icon: <Zap /> },
-    { id: 'audit', title: 'Technical Audit', desc: 'Production line analysis and cost optimization consulting.', icon: <Target /> },
-    { id: 'tooling', title: 'Tooling Customization', desc: 'Precision-engineered solutions based on your technical specs.', icon: <Wrench /> },
-  ];
+  // About cards data — text from translations, icons attached by id
+  const aboutCards = t.about.cards.map(c => ({ ...c, icon: aboutIcons[c.id] }));
 
   return (
     <div className="min-h-screen bg-[#080808] text-[#F0EDE8] font-sans selection:bg-[#1de9b6] selection:text-black overflow-x-hidden">
@@ -416,11 +503,39 @@ function AppInner() {
       </div>
 
       {/* ── HEADER ─────────────────────────────────────────────────────── */}
-      <header className={`fixed top-0 w-full z-50 transition-all duration-500 ${scrolled ? 'bg-[#080808]/98 backdrop-blur-md shadow-[0_1px_0_rgba(29,233,182,0.15)] py-3' : 'bg-gradient-to-b from-[#080808]/95 via-[#080808]/50 to-transparent py-6'}`}>
-        <div className="max-w-[98%] 2xl:max-w-7xl mx-auto px-6 flex justify-between items-center gap-6">
-          <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex flex-col items-center gap-3 group cursor-pointer text-center shrink-0">
-            <div className="relative w-11 h-11 flex items-center justify-center shrink-0">
-               {/* ── CNC MILLING LOGO ── Static: drill bit | Hover: CNC milling on X/Y axes */}
+      <header className={`fixed top-0 w-full z-50 transition-all duration-500 ${scrolled ? 'bg-[#080808]/98 backdrop-blur-md shadow-[0_1px_0_rgba(29,233,182,0.15)]' : 'bg-gradient-to-b from-[#080808]/95 via-[#080808]/60 to-transparent'}`}>
+
+        {/* ═══ TIER 1 — utility strip: language + request quote ═══ */}
+        <div className="hidden xl:block border-b border-white/[0.06]">
+          <div className="max-w-[98%] 2xl:max-w-7xl mx-auto px-6 h-9 flex items-center justify-between">
+            <span className="text-[9px] font-mono text-[#5A5A5A] tracking-[0.3em] uppercase">Pitești · Romania — Tier-1 Industrial Supply</span>
+            <div className="flex items-center gap-5">
+              <button onClick={() => setWizardOpen(true)} className="group flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.25em] text-[#1de9b6] hover:text-white transition-colors">
+                <FileText size={11} className="transition-transform group-hover:rotate-12" />
+                <span>{t.header.requestQuote}</span>
+              </button>
+              <div className="w-px h-4 bg-white/10" />
+              <div className="flex items-center gap-0.5">
+                {LANGS.map(l => (
+                  <button
+                    key={l}
+                    onClick={() => setLang(l)}
+                    aria-label={`Switch language to ${l.toUpperCase()}`}
+                    className={`px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.15em] rounded-[2px] transition-all duration-300 ${lang === l ? 'bg-[#1de9b6] text-black shadow-[0_0_10px_rgba(29,233,182,0.3)]' : 'text-[#8A8A8A] hover:text-white'}`}
+                  >
+                    {l}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ═══ TIER 2 — main bar: logo · nav (single row) · shop CTA ═══ */}
+        <div className={`max-w-[98%] 2xl:max-w-7xl mx-auto px-6 flex justify-between items-center gap-6 transition-all duration-500 ${scrolled ? 'py-3' : 'py-4'}`}>
+          <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center gap-3 group cursor-pointer shrink-0">
+            {/* ── CNC MILLING ICON (compact, left of text) ── */}
+            <div className="relative w-9 h-9 flex items-center justify-center shrink-0">
                <svg viewBox="0 0 100 100" className="w-full h-full overflow-visible">
                   <rect x="14" y="74" width="72" height="12" rx="1.5" fill="#2A2A2A" stroke="#6A6A6A" strokeWidth="0.5" />
                   <rect x="14" y="74" width="72" height="3" rx="1.5" fill="#1de9b6" opacity="0.25" />
@@ -447,57 +562,64 @@ function AppInner() {
                   </g>
                </svg>
             </div>
-            <div className="flex flex-col items-center">
-              <span className="text-[14px] md:text-[16px] font-black uppercase tracking-[0.25em] leading-none text-white group-hover:text-[#1de9b6] transition-colors">Development General</span>
-              <span className="text-[12px] md:text-[14px] font-light uppercase tracking-[0.52em] leading-tight text-[#1de9b6] group-hover:text-white transition-colors mt-1">System Industry</span>
+            {/* ── Brand text (full name, 2 stacked lines, right of icon) ── */}
+            <div className="flex flex-col items-start leading-none">
+              <span className="text-[13px] md:text-[15px] font-black uppercase tracking-[0.22em] text-white group-hover:text-[#1de9b6] transition-colors whitespace-nowrap">Development General</span>
+              <span className="text-[11px] md:text-[13px] font-light uppercase tracking-[0.48em] text-[#1de9b6] group-hover:text-white transition-colors mt-1 whitespace-nowrap">System Industry</span>
             </div>
           </button>
-          <div className="hidden lg:flex flex-1 items-center justify-end gap-10">
-            <nav className="flex items-center gap-7">
+          <div className="hidden xl:flex flex-1 items-center justify-end gap-8">
+            <nav className="flex items-center gap-6">
               {navItems.map(item => (
-                <button key={item} onClick={() => scrollTo(item)} className="relative text-[13px] font-bold uppercase tracking-[0.2em] text-[#E0E0E0] hover:text-white transition-colors cursor-pointer group py-2">
-                  {item}
+                <button key={item} onClick={() => scrollTo(item)} className="relative text-[12px] font-bold uppercase tracking-[0.15em] text-[#E0E0E0] hover:text-white transition-colors cursor-pointer group py-2 whitespace-nowrap">
+                  {t.nav[item]}
                   <span className="absolute bottom-0 left-1/2 w-0 h-[2px] bg-[#1de9b6] transition-all duration-300 group-hover:w-full group-hover:left-0 shadow-[0_0_8px_rgba(29,233,182,0.5)]" />
                 </button>
               ))}
             </nav>
-            <div className="flex flex-col items-end gap-2 shrink-0">
-              <button onClick={() => setWizardOpen(true)} className="group flex items-center gap-2 px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.25em] text-[#1de9b6] hover:text-white border border-[#1de9b6]/30 hover:border-[#1de9b6] hover:bg-[#1de9b6]/10 transition-all duration-300 rounded-sm">
-                <FileText size={13} className="transition-transform group-hover:rotate-12" />
-                <span>Request Quote</span>
-              </button>
-              <a
-                href="https://www.industrytools.ro"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group relative flex items-center gap-3 px-7 py-3.5 bg-gradient-to-r from-[#1de9b6] to-[#0bc192] text-[#050505] text-xs font-black uppercase tracking-[0.2em] transition-all duration-300 hover:from-white hover:to-white hover:text-black shadow-[0_0_20px_rgba(29,233,182,0.15)] rounded-sm"
-              >
-                <ShoppingBag size={15} className="transition-transform duration-300 group-hover:-translate-y-0.5" />
-                <span>Shop Online</span>
-              </a>
-            </div>
+            <a
+              href="https://www.industrytools.ro"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group relative flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-[#1de9b6] to-[#0bc192] text-[#050505] text-xs font-black uppercase tracking-[0.2em] transition-all duration-300 hover:from-white hover:to-white hover:text-black shadow-[0_0_20px_rgba(29,233,182,0.15)] rounded-sm shrink-0 whitespace-nowrap"
+            >
+              <ShoppingBag size={15} className="transition-transform duration-300 group-hover:-translate-y-0.5" />
+              <span>{t.header.shopOnline}</span>
+            </a>
           </div>
-          <button className="lg:hidden text-white ml-auto" onClick={() => setMenuOpen(!menuOpen)}>
+          <button className="xl:hidden text-white ml-auto" onClick={() => setMenuOpen(!menuOpen)}>
             <div className={`w-6 h-[2px] bg-current mb-1.5 transition-all ${menuOpen ? 'rotate-45 translate-y-2' : ''}`} />
             <div className={`w-6 h-[2px] bg-current mb-1.5 transition-all ${menuOpen ? 'opacity-0' : ''}`} />
             <div className={`w-6 h-[2px] bg-current transition-all ${menuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
           </button>
         </div>
         {menuOpen && (
-          <div className="lg:hidden bg-[#080808] border-t border-[#1de9b6]/20 px-6 py-8 flex flex-col gap-6">
+          <div className="xl:hidden bg-[#080808] border-t border-[#1de9b6]/20 px-6 py-8 flex flex-col gap-6">
             {navItems.map(item => (
               <button key={item} onClick={() => scrollTo(item)} className="text-left text-sm font-bold uppercase tracking-[0.2em] text-[#F0EDE8] hover:text-[#1de9b6] transition-colors">
-                {item}
+                {t.nav[item]}
               </button>
             ))}
+            {/* ── LANGUAGE SWITCHER (mobile) ── */}
+            <div className="flex items-center gap-1 pt-2">
+              {LANGS.map(l => (
+                <button
+                  key={l}
+                  onClick={() => setLang(l)}
+                  className={`px-3 py-2 text-[11px] font-black uppercase tracking-[0.15em] rounded-sm border transition-all ${lang === l ? 'bg-[#1de9b6] text-black border-[#1de9b6]' : 'text-[#8A8A8A] border-white/10 hover:text-white hover:border-white/30'}`}
+                >
+                  {l}
+                </button>
+              ))}
+            </div>
             <div className="flex flex-col gap-3 mt-6 pt-6 border-t border-[#1A1A1A]">
                <a href="https://www.industrytools.ro" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-[#1de9b6] to-[#0bc192] text-black text-xs font-black uppercase tracking-[0.2em] rounded-sm shadow-[0_0_15px_rgba(29,233,182,0.15)]">
                   <ShoppingBag size={16} />
-                  <span>Shop Online</span>
+                  <span>{t.header.shopOnline}</span>
                </a>
                <button onClick={() => { setWizardOpen(true); setMenuOpen(false); }} className="flex items-center justify-center gap-3 px-6 py-3 text-[#B8B8B8] text-[11px] font-bold uppercase tracking-[0.2em] hover:text-white transition-colors">
                   <FileText size={15} className="text-[#1de9b6]/60" />
-                  <span>Request Quote</span>
+                  <span>{t.header.requestQuote}</span>
                </button>
             </div>
           </div>
@@ -513,19 +635,19 @@ function AppInner() {
         <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'linear-gradient(#1de9b6 1px, transparent 1px), linear-gradient(90deg, #1de9b6 1px, transparent 1px)', backgroundSize: '80px 80px' }} />
         <div className="absolute top-32 right-6 text-right hidden md:block">
           <p className="text-[9px] font-mono text-[#1de9b6]/50 tracking-widest">PITEȘTI · ROMANIA</p>
-          <p className="text-[9px] font-mono text-[#7A7A7A] tracking-widest uppercase">Precision Engineering &amp; Global Sourcing</p>
+          <p className="text-[9px] font-mono text-[#7A7A7A] tracking-widest uppercase">{t.hero.tag2}</p>
         </div>
         <div className="relative z-10 max-w-7xl mx-auto px-6 w-full pt-32 pb-16">
           <div className="flex items-center gap-4 mb-8 animate-fade-in">
             <div className="h-px w-12 bg-[#1de9b6]" />
-            <span className="text-[10px] font-mono text-[#1de9b6] tracking-[0.4em] uppercase">Industrial Partner · Since 2023</span>
+            <span className="text-[10px] font-mono text-[#1de9b6] tracking-[0.4em] uppercase">{t.hero.badge}</span>
           </div>
           <h1 className="text-[clamp(2.6rem,7.5vw,6.5rem)] font-black uppercase leading-[0.95] tracking-tight text-white mb-8 max-w-5xl">
-            <ScrambleText text="Precision in Every Part." /><br />
-            <span className="text-[#1de9b6]"><ScrambleText text="Speed in Every Order." /></span>
+            <ScrambleText text={t.hero.h1a} /><br />
+            <span className="text-[#1de9b6]"><ScrambleText text={t.hero.h1b} /></span>
           </h1>
           <p className="max-w-2xl text-lg md:text-xl text-[#BCBCBC] font-light leading-relaxed border-l-2 border-[#1de9b6]/40 pl-6 mb-12">
-            Your strategic partner for premium multi-brand integration, emergency custom manufacturing, and guaranteed price stability — engineered for Tier-1 automotive and manufacturing leaders.
+            {t.hero.lead}
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <a
@@ -535,15 +657,15 @@ function AppInner() {
               className="group flex items-center justify-center gap-3 px-8 py-4 bg-[#1de9b6] text-black font-black uppercase tracking-[0.15em] text-xs hover:bg-[#5fffd9] transition-all shadow-[0_0_30px_rgba(29,233,182,0.25)] rounded-sm"
             >
               <ShoppingBag size={16} className="group-hover:-translate-y-0.5 transition-transform" />
-              Shop Online
+              {t.header.shopOnline}
             </a>
             <button onClick={() => scrollTo('products')} className="flex items-center justify-center gap-3 px-8 py-4 border border-white/30 text-white font-bold uppercase tracking-[0.15em] text-xs hover:bg-white hover:text-black transition-all rounded-sm">
-              Explore Portfolio
+              {t.hero.explore}
             </button>
           </div>
         </div>
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
-          <span className="text-[8px] font-mono text-[#7A7A7A] tracking-widest uppercase">Scroll</span>
+          <span className="text-[8px] font-mono text-[#7A7A7A] tracking-widest uppercase">{t.hero.scroll}</span>
           <div className="w-px h-12 bg-gradient-to-b from-[#1de9b6]/40 to-transparent" />
         </div>
       </section>
@@ -553,13 +675,13 @@ function AppInner() {
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-0 md:divide-x md:divide-white/5">
           {/* Slot 1: static "Since 2023" — no counter */}
           <div className="text-center md:px-8">
-            <div className="text-3xl md:text-4xl font-black text-[#1de9b6] mb-1">Since 2023</div>
-            <div className="text-[10px] text-[#8A8A8A] font-mono uppercase tracking-widest">Romania-Based</div>
+            <div className="text-3xl md:text-4xl font-black text-[#1de9b6] mb-1">{t.stats.since}</div>
+            <div className="text-[10px] text-[#8A8A8A] font-mono uppercase tracking-widest">{t.stats.romaniaBased}</div>
           </div>
           {[
-            { value: 2000, suffix: '+', label: 'Products Available' },
-            { value: 48, suffix: 'h', label: 'Emergency Delivery' },
-            { value: 30, suffix: '+', label: 'Tier-1 Partners' },
+            { value: 2000, suffix: '+', label: t.stats.products },
+            { value: 48, suffix: 'h', label: t.stats.delivery },
+            { value: 30, suffix: '+', label: t.stats.partners },
           ].map((s, i) => (
             <div key={i} className="text-center md:px-8">
               <div className="text-3xl md:text-4xl font-black text-[#1de9b6] mb-1"><Counter end={s.value} suffix={s.suffix} /></div>
@@ -572,15 +694,15 @@ function AppInner() {
       {/* ── ABOUT ──────────────────────────────────────────────────────── */}
       <Section id="about" bgImage="/about-bg.png">
         <div className="max-w-7xl mx-auto">
-          <Eyebrow code="01 /" label="About DGSI" />
+          <Eyebrow code="01 /" label={t.about.eyebrow} />
 
           {/* Header block: heading + paragraph + CTA, stacked centered/aligned */}
           <div className="max-w-4xl mb-16">
             <h2 className="text-4xl md:text-5xl font-black uppercase leading-tight tracking-tight text-white mb-8">
-              <ScrambleText text="Industrial Precision" /><br /><span className="text-[#1de9b6]"><ScrambleText text="Meets Speed." /></span>
+              <ScrambleText text={t.about.h2a} /><br /><span className="text-[#1de9b6]"><ScrambleText text={t.about.h2b} /></span>
             </h2>
             <p className="text-[#C0C0C0] text-lg leading-relaxed mb-10">
-              DGSI is an authorized distributor and custom manufacturing partner for companies that need precision, reliability, and response speed. We consolidate multi-brand sourcing, engineer rapid solutions, and deliver on impossible deadlines.
+              {t.about.lead}
             </p>
             <a
               href="/DGSI-pres-EN.pdf"
@@ -589,7 +711,7 @@ function AppInner() {
               className="inline-flex items-center gap-3 px-8 py-4 border border-[#1de9b6]/50 text-[#1de9b6] text-[11px] font-bold uppercase tracking-[0.2em] hover:bg-[#1de9b6] hover:text-black hover:border-[#1de9b6] transition-all duration-300 rounded-sm group shadow-[0_0_15px_rgba(29,233,182,0.1)]"
             >
               <FileText size={14} className="group-hover:rotate-12 transition-transform" />
-              <span>View Company Profile</span>
+              <span>{t.about.viewProfile}</span>
             </a>
           </div>
 
@@ -607,7 +729,7 @@ function AppInner() {
                   <h4 className="text-base md:text-lg font-black uppercase tracking-wider text-white mb-4 leading-tight">{f.title}</h4>
                   <p className="text-sm text-[#BCBCBC] leading-relaxed flex-1">{f.desc}</p>
                   <span className="mt-6 text-[10px] font-bold text-[#1de9b6] uppercase tracking-widest flex items-center gap-2 opacity-60 group-hover:opacity-100 transition-opacity">
-                    Learn More <ChevronRight size={11} />
+                    {t.about.learnMore} <ChevronRight size={11} />
                   </span>
                 </div>
               </div>
@@ -619,9 +741,9 @@ function AppInner() {
       {/* ── PRODUCTS ───────────────────────────────────────────────────── */}
       <Section id="products" bgImage="/products-bg.png">
         <div className="max-w-7xl mx-auto">
-          <Eyebrow code="02 /" label="Product Portfolio" />
-          <h2 className="text-4xl md:text-5xl font-black uppercase leading-tight tracking-tight text-white mb-6"><ScrambleText text="Complete Industrial" /><br /><span className="text-[#1de9b6]"><ScrambleText text="Ecosystem." /></span></h2>
-          <p className="max-w-2xl text-[#B8B8B8] text-lg font-light leading-relaxed mb-10">End-to-end coverage from machining to protective equipment — a single source for your entire production floor. Filter by category to explore our range.</p>
+          <Eyebrow code="02 /" label={t.products.eyebrow} />
+          <h2 className="text-4xl md:text-5xl font-black uppercase leading-tight tracking-tight text-white mb-6"><ScrambleText text={t.products.h2a} /><br /><span className="text-[#1de9b6]"><ScrambleText text={t.products.h2b} /></span></h2>
+          <p className="max-w-2xl text-[#B8B8B8] text-lg font-light leading-relaxed mb-10">{t.products.lead}</p>
 
           {/* ── Filter bar — BIGGER (user requested these to be larger) ── */}
           <div className="flex flex-wrap gap-3 mb-12">
@@ -631,7 +753,7 @@ function AppInner() {
                 onClick={() => { setActiveFilter(f); setExpandedCard(null); }}
                 className={`px-7 py-4 text-[14px] md:text-[15px] font-black uppercase tracking-[0.15em] rounded-sm border transition-all duration-300 ${activeFilter === f ? 'bg-[#1de9b6] text-black border-[#1de9b6] shadow-[0_0_20px_rgba(29,233,182,0.3)]' : 'bg-transparent text-[#B8B8B8] border-white/15 hover:border-[#1de9b6]/60 hover:text-white hover:bg-white/[0.03]'}`}
               >
-                {f}
+                {f === 'All' ? t.products.all : (t.cats[f] || f)}
               </button>
             ))}
           </div>
@@ -648,14 +770,14 @@ function AppInner() {
                 <div className="relative z-10 flex-1 flex flex-col">
                   <div className="flex items-center gap-3 mb-5 pb-4 border-b border-white/10 group-hover:border-[#1de9b6]/30 transition-all">
                     <div className="w-6 h-6 text-[#1de9b6]">{prod.icon}</div>
-                    <h3 className="text-lg md:text-xl font-black uppercase tracking-wider text-white flex-1">{prod.cat}</h3>
+                    <h3 className="text-lg md:text-xl font-black uppercase tracking-wider text-white flex-1">{t.cats[prod.cat] || prod.cat}</h3>
                     <ChevronRight size={16} className="text-[#1de9b6] opacity-0 group-hover:opacity-100 transition-all" />
                   </div>
                   <div className="space-y-3 flex-1 mb-7">
                     {prod.items.map((item) => (
                       <div key={item} className="flex items-center gap-3 text-[#D8D8D8] transition-colors cursor-default">
                         <span className="w-1.5 h-1.5 rounded-full bg-[#1de9b6] shrink-0 shadow-[0_0_6px_rgba(29,233,182,0.4)]" />
-                        <span className="text-sm md:text-base font-bold tracking-wide">{item}</span>
+                        <span className="text-sm md:text-base font-bold tracking-wide">{t.subs[item] || item}</span>
                       </div>
                     ))}
                   </div>
@@ -666,7 +788,7 @@ function AppInner() {
                          className="group/btn relative flex items-center justify-center gap-3 w-full py-3.5 bg-white/5 border border-[#1de9b6]/30 text-[#1de9b6] text-[11px] font-black uppercase tracking-[0.25em] rounded-sm transition-all duration-500 hover:bg-[#1de9b6] hover:text-black hover:border-[#1de9b6]"
                       >
                         <Download size={14} className="relative z-10" />
-                        <span className="relative z-10">Catalog</span>
+                        <span className="relative z-10">{t.products.catalog}</span>
                       </a>
                     </div>
                   )}
@@ -687,16 +809,16 @@ function AppInner() {
             <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-10">
               <div className="max-w-3xl">
                 <div className="flex items-center gap-3 mb-5">
-                  <span className="inline-block px-3 py-1 bg-[#1de9b6]/20 text-[#1de9b6] text-[10px] font-black uppercase tracking-widest rounded">Flagship Expertise</span>
+                  <span className="inline-block px-3 py-1 bg-[#1de9b6]/20 text-[#1de9b6] text-[10px] font-black uppercase tracking-widest rounded">{t.welding.flagship}</span>
                   <Zap className="text-[#1de9b6] w-5 h-5" />
                 </div>
-                <h3 className="text-2xl md:text-4xl font-black uppercase text-white mb-5">Projection Welding Electrodes</h3>
-                <p className="text-[#B8B8B8] text-lg leading-relaxed">Specialized engineering for resistance and projection welding lines. Precision-manufactured electrodes for automotive Tier-1 production.</p>
+                <h3 className="text-2xl md:text-4xl font-black uppercase text-white mb-5">{t.welding.title}</h3>
+                <p className="text-[#B8B8B8] text-lg leading-relaxed">{t.welding.desc}</p>
               </div>
               <div className="shrink-0">
                 <div className="flex items-center justify-center gap-4 px-10 py-5 bg-transparent border-2 border-[#1de9b6] text-[#1de9b6] text-[11px] font-black uppercase tracking-[0.3em] group-hover:bg-[#1de9b6] group-hover:text-black transition-all duration-500 rounded-sm shadow-[0_0_20px_rgba(29,233,182,0.15)]">
                   <Zap size={18} />
-                  <span>Explore System</span>
+                  <span>{t.welding.explore}</span>
                   <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
                 </div>
               </div>
@@ -708,19 +830,13 @@ function AppInner() {
       {/* ── SERVICES SECTION ── */}
       <Section id="services" className="bg-[#0B0B0B]" bgImage="/services-bg.png">
         <div className="max-w-7xl mx-auto">
-          <Eyebrow code="03 /" label="Expert Services" />
-          <h2 className="text-4xl md:text-5xl font-black uppercase text-white mb-6"><ScrambleText text="What We Deliver." /></h2>
-          <p className="max-w-2xl text-[#B8B8B8] text-lg font-light leading-relaxed mb-16">Beyond supply — we engineer outcomes. Measurable savings, reduced downtime, and operational predictability for your production lines.</p>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {[
-              { id: 'distributor', title: 'Industrial Supply', desc: 'Authorized distributor for 120+ global brands. Consolidation, no MOQ, price locks.', icon: <Package />, metric: '120+', metricLabel: 'Brands' },
-              { id: 'manufacturing', title: 'Emergency Manufacturing', desc: '48–72h CNC machining for critical production line components.', icon: <Zap />, metric: '48h', metricLabel: 'Lead Time' },
-              { id: 'audit', title: 'Process Audit', desc: 'Analysis of speeds, feeds, and tool wear to reduce cycle time and cost-per-part.', icon: <Target />, metric: '↓ Costs', metricLabel: 'Optimization' },
-              // CHANGE #5: metric -50% → "Cost-Saving" (no exaggerated number)
-              { id: 'tooling', title: 'Tool Regrinding', desc: 'Professional reconditioning brings expensive tools back to original performance.', icon: <Settings />, metric: 'Cost-Saving', metricLabel: 'vs New Tools' },
-            ].map((s, i) => (
+          <Eyebrow code="03 /" label={t.services.eyebrow} />
+          <h2 className="text-4xl md:text-5xl font-black uppercase text-white mb-6"><ScrambleText text={t.services.h2} /></h2>
+          <p className="max-w-2xl text-[#B8B8B8] text-lg font-light leading-relaxed mb-16">{t.services.lead}</p>
+          <div className="grid md:grid-cols-3 gap-4">
+            {t.services.cards.map((s, i) => (
               <div key={i} onClick={() => setExpandedCard(s.id)} className="bg-[#0D0D0D] p-8 border border-white/5 hover:border-[#1de9b6]/40 transition-all group cursor-pointer flex flex-col relative overflow-hidden">
-                <div className="text-[#1de9b6] mb-5 w-9 h-9">{s.icon}</div>
+                <div className="text-[#1de9b6] mb-5 w-9 h-9">{serviceIcons[s.id]}</div>
                 <h3 className="text-base md:text-lg font-black uppercase text-white mb-4">{s.title}</h3>
                 <p className="text-[14px] md:text-[15px] text-[#B8B8B8] leading-relaxed mb-6 flex-1">{s.desc}</p>
                 <div className="flex items-end justify-between pt-4 border-t border-white/5">
@@ -728,7 +844,7 @@ function AppInner() {
                     <div className="text-xl md:text-2xl font-black text-[#1de9b6] leading-none">{s.metric}</div>
                     <div className="text-[10px] font-mono uppercase tracking-widest text-[#B0B0B0] mt-1.5">{s.metricLabel}</div>
                   </div>
-                  <span className="text-[10px] font-bold text-[#1de9b6] uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">More <ChevronRight size={12} /></span>
+                  <span className="text-[10px] font-bold text-[#1de9b6] uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">{t.services.more} <ChevronRight size={12} /></span>
                 </div>
               </div>
             ))}
@@ -739,9 +855,9 @@ function AppInner() {
       {/* ── CLIENTS ── */}
       <Section id="clients" bgImage="/clients-bg.png">
         <div className="max-w-7xl mx-auto">
-          <Eyebrow code="04 /" label="Trusted By" />
-          <h2 className="text-5xl font-black uppercase text-white mb-6"><ScrambleText text="Tier-1 Partners." /></h2>
-          <p className="max-w-2xl text-[#B8B8B8] text-lg font-light leading-relaxed mb-4">Trusted by leading automotive groups and Tier-1 manufacturers across Europe. Our precision and reliability power some of the most demanding production lines on the continent.</p>
+          <Eyebrow code="04 /" label={t.clients.eyebrow} />
+          <h2 className="text-5xl font-black uppercase text-white mb-6"><ScrambleText text={t.clients.h2} /></h2>
+          <p className="max-w-2xl text-[#B8B8B8] text-lg font-light leading-relaxed mb-4">{t.clients.lead}</p>
         </div>
         <div className="-mx-6 mt-14 space-y-5">
           <LogoMarquee logos={clientLogos.slice(0, 6)} direction="left" speed={48} cardClass="w-44 h-28 md:w-52 md:h-32" />
@@ -752,53 +868,15 @@ function AppInner() {
       {/* ── PROCESS — interactive hover with detail reveal ── */}
       <Section id="process" className="bg-[#0B0B0B]" bgImage="/process-bg.png">
         <div className="max-w-7xl mx-auto text-center">
-           <Eyebrow code="05 /" label="Workflow" />
-           <h2 className="text-5xl font-black uppercase text-white mb-6"><ScrambleText text="From Request To Dock." /></h2>
-           <p className="max-w-2xl mx-auto text-[#C0C0C0] text-lg font-light leading-relaxed mb-20">A clear four-step process — from your first inquiry to delivery at your loading bay. Hover over any step to see what happens behind the scenes.</p>
+           <Eyebrow code="05 /" label={t.process.eyebrow} />
+           <h2 className="text-5xl font-black uppercase text-white mb-6"><ScrambleText text={t.process.h2} /></h2>
+           <p className="max-w-2xl mx-auto text-[#C0C0C0] text-lg font-light leading-relaxed mb-20">{t.process.lead}</p>
 
            <div className="grid md:grid-cols-4 gap-5">
-              {[
-                {
-                  n: '01', t: 'Technical Inquiry', d: 'Specs, drawings or part numbers.',
-                  icon: <FileText />,
-                  details: [
-                    'Send drawings, P/N or specs',
-                    'No formality, just the need',
-                    'Engineer-to-engineer dialogue'
-                  ],
-                  time: 'Same day'
-                },
-                {
-                  n: '02', t: 'Optimal Sourcing', d: 'Identifying the best global source.',
-                  icon: <Target />,
-                  details: [
-                    'Cross-check 14+ brand partners',
-                    'Compare lead times and prices',
-                    'Validate technical compatibility'
-                  ],
-                  time: '1–2 business days'
-                },
-                {
-                  n: '03', t: 'Order Locked', d: 'Price and lead time confirmed.',
-                  icon: <CheckCircle />,
-                  details: [
-                    'Firm price quote issued',
-                    'Lead time guaranteed in writing',
-                    'PO acceptance and scheduling'
-                  ],
-                  time: '24h response'
-                },
-                {
-                  n: '04', t: 'Door-to-Dock', d: 'Tracked express delivery.',
-                  icon: <Truck />,
-                  details: [
-                    'Express courier or dedicated truck',
-                    'Real-time tracking shared',
-                    'Delivery receipt confirmation'
-                  ],
-                  time: 'EU-wide 48–96h'
-                }
-              ].map((step, i) => (
+              {t.process.steps.map((step, i) => {
+                const n = String(i + 1).padStart(2, '0');
+                const icon = stepIcons[i];
+                return (
                 <div key={i} className="group relative bg-[#0D0D0D] border border-white/5 hover:border-[#1de9b6]/50 rounded-xl p-8 transition-all duration-500 overflow-hidden cursor-default min-h-[280px] flex flex-col">
 
                   {/* Glow + corner accent (appear on hover) */}
@@ -807,7 +885,7 @@ function AppInner() {
 
                   {/* DEFAULT state */}
                   <div className="relative z-10 flex flex-col items-center text-center transition-all duration-500 group-hover:opacity-0 group-hover:-translate-y-3">
-                    <div className="text-[5rem] font-black text-white/[0.06] leading-none mb-3 group-hover:text-[#1de9b6]/20 transition-colors">{step.n}</div>
+                    <div className="text-[5rem] font-black text-white/[0.06] leading-none mb-3 group-hover:text-[#1de9b6]/20 transition-colors">{n}</div>
                     <h4 className="text-lg font-black text-[#1de9b6] uppercase tracking-wider mb-4">{step.t}</h4>
                     <p className="text-[#B0B0B0] text-sm">{step.d}</p>
                   </div>
@@ -817,9 +895,9 @@ function AppInner() {
                     <div className="flex items-center justify-between mb-5">
                       <div className="flex items-center gap-2.5">
                         <div className="w-9 h-9 rounded-md bg-[#1de9b6]/15 border border-[#1de9b6]/30 flex items-center justify-center text-[#1de9b6]">
-                          {React.cloneElement(step.icon, { size: 18 })}
+                          {React.cloneElement(icon, { size: 18 })}
                         </div>
-                        <span className="text-[10px] font-mono text-[#1de9b6] tracking-[0.3em]">STEP {step.n}</span>
+                        <span className="text-[10px] font-mono text-[#1de9b6] tracking-[0.3em]">{t.process.step} {n}</span>
                       </div>
                       <span className="text-[10px] font-black text-[#1de9b6] uppercase tracking-widest">{step.time}</span>
                     </div>
@@ -848,21 +926,22 @@ function AppInner() {
                     </div>
                   </div>
                 </div>
-              ))}
+                );
+              })}
            </div>
 
-           <p className="text-[#B0B0B0] text-[11px] font-mono uppercase tracking-[0.3em] mt-10">↑ Hover any step to see how it works ↑</p>
+           <p className="text-[#B0B0B0] text-[11px] font-mono uppercase tracking-[0.3em] mt-10">{t.process.hint}</p>
         </div>
       </Section>
 
       {/* ── CONTACT (CHANGE #4: unified business card + active channels + live indicators) ── */}
       <Section id="contact">
         <div className="max-w-7xl mx-auto">
-           <Eyebrow code="06 /" label="Get In Touch" />
+           <Eyebrow code="06 /" label={t.contact.eyebrow} />
            <div className="grid md:grid-cols-2 gap-20">
               <div>
-                 <h2 className="text-5xl md:text-6xl font-black uppercase text-white leading-[0.9] mb-10"><ScrambleText text="Start The" /><br/><span className="text-[#1de9b6]"><ScrambleText text="Conversation." /></span></h2>
-                 <p className="text-[#B8B8B8] text-lg leading-relaxed mb-10">Send us your technical drawings, part numbers, or a list of requirements. Our engineers respond within one business day with sourcing options and a locked quote.</p>
+                 <h2 className="text-5xl md:text-6xl font-black uppercase text-white leading-[0.9] mb-10"><ScrambleText text={t.contact.h2a} /><br/><span className="text-[#1de9b6]"><ScrambleText text={t.contact.h2b} /></span></h2>
+                 <p className="text-[#B8B8B8] text-lg leading-relaxed mb-10">{t.contact.lead}</p>
 
                  {/* ── UNIFIED BUSINESS CARD ── */}
                  <div className="relative bg-gradient-to-br from-[#0D0D0D] to-[#080808] border border-[#1de9b6]/15 rounded-2xl p-8 md:p-10 shadow-[0_0_40px_rgba(29,233,182,0.05)] overflow-hidden">
@@ -874,30 +953,30 @@ function AppInner() {
 
                     {/* Header: REACH OUT */}
                     <div className="flex items-center gap-4 mb-8">
-                       <span className="text-[10px] font-mono text-[#1de9b6] tracking-[0.4em] uppercase">Reach Out</span>
+                       <span className="text-[10px] font-mono text-[#1de9b6] tracking-[0.4em] uppercase">{t.contact.reachOut}</span>
                        <div className="h-px flex-1 bg-[#1de9b6]/20" />
                     </div>
 
                     {/* Passive info rows */}
                     <div className="space-y-7 mb-10">
-                       <a href="mailto:contact@industrytools.ro" className="flex items-start gap-5 group">
+                       <a href="mailto:office@industrytools.ro" className="flex items-start gap-5 group">
                           <Mail className="text-[#1de9b6] mt-1 shrink-0" size={22} />
                           <div className="min-w-0 flex-1">
-                             <p className="text-[10px] font-mono text-[#8A8A8A] uppercase tracking-widest mb-1">Email</p>
-                             <p className="text-base md:text-lg font-bold text-white group-hover:text-[#1de9b6] transition-colors truncate">contact@industrytools.ro</p>
+                             <p className="text-[10px] font-mono text-[#8A8A8A] uppercase tracking-widest mb-1">{t.contact.email}</p>
+                             <p className="text-base md:text-lg font-bold text-white group-hover:text-[#1de9b6] transition-colors truncate">office@industrytools.ro</p>
                           </div>
                        </a>
                        <a href="tel:+40770852576" className="flex items-start gap-5 group">
                           <Phone className="text-[#1de9b6] mt-1 shrink-0" size={22} />
                           <div className="min-w-0 flex-1">
-                             <p className="text-[10px] font-mono text-[#8A8A8A] uppercase tracking-widest mb-1">Phone</p>
+                             <p className="text-[10px] font-mono text-[#8A8A8A] uppercase tracking-widest mb-1">{t.contact.phone}</p>
                              <p className="text-base md:text-lg font-bold text-white group-hover:text-[#1de9b6] transition-colors">+40 770 852 576</p>
                           </div>
                        </a>
                        <div className="flex items-start gap-5">
                           <MapPin className="text-[#1de9b6] mt-1 shrink-0" size={22} />
                           <div className="min-w-0 flex-1">
-                             <p className="text-[10px] font-mono text-[#8A8A8A] uppercase tracking-widest mb-1">Office</p>
+                             <p className="text-[10px] font-mono text-[#8A8A8A] uppercase tracking-widest mb-1">{t.contact.office}</p>
                              <p className="text-base md:text-lg font-bold text-white">Pitești, Romania</p>
                           </div>
                        </div>
@@ -906,7 +985,7 @@ function AppInner() {
                     {/* Divider with label */}
                     <div className="flex items-center gap-4 mb-7">
                        <div className="h-px flex-1 bg-white/5" />
-                       <span className="text-[9px] font-mono text-[#8A8A8A] tracking-[0.4em] uppercase">Active Channels</span>
+                       <span className="text-[9px] font-mono text-[#8A8A8A] tracking-[0.4em] uppercase">{t.contact.activeChannels}</span>
                        <div className="h-px flex-1 bg-white/5" />
                     </div>
 
@@ -925,7 +1004,7 @@ function AppInner() {
                           </span>
                           <MessageCircle size={26} className="text-[#25D366]" />
                           <span className="text-[10px] font-black uppercase tracking-widest text-[#D0D0D0] group-hover:text-white transition-colors">WhatsApp</span>
-                          <span className="text-[8px] font-mono text-[#8A8A8A] group-hover:text-[#25D366] transition-colors">Replies ~1h</span>
+                          <span className="text-[8px] font-mono text-[#8A8A8A] group-hover:text-[#25D366] transition-colors">{t.contact.replies}</span>
                        </a>
 
                        {/* Teams - live */}
@@ -941,7 +1020,7 @@ function AppInner() {
                           </span>
                           <TeamsIcon size={26} className="text-[#5B5FC7]" />
                           <span className="text-[10px] font-black uppercase tracking-widest text-[#D0D0D0] group-hover:text-white transition-colors">Teams</span>
-                          <span className="text-[8px] font-mono text-[#8A8A8A] group-hover:text-[#5B5FC7] transition-colors">Replies ~1h</span>
+                          <span className="text-[8px] font-mono text-[#8A8A8A] group-hover:text-[#5B5FC7] transition-colors">{t.contact.replies}</span>
                        </a>
 
                        {/* LinkedIn - presence */}
@@ -953,20 +1032,14 @@ function AppInner() {
                        >
                           <LinkedInIcon size={24} className="text-[#0A66C2]" />
                           <span className="text-[10px] font-black uppercase tracking-widest text-[#D0D0D0] group-hover:text-white transition-colors mt-0.5">LinkedIn</span>
-                          <span className="text-[8px] font-mono text-[#8A8A8A] group-hover:text-[#0A66C2] transition-colors">Follow DGSI</span>
+                          <span className="text-[8px] font-mono text-[#8A8A8A] group-hover:text-[#0A66C2] transition-colors">{t.contact.follow}</span>
                        </a>
                     </div>
                  </div>
               </div>
 
               <div className="bg-[#0D0D0D] p-10 border border-white/5 rounded-sm">
-                 <div className="grid grid-cols-2 gap-6 mb-6">
-                    <input type="text" placeholder="COMPANY" className="bg-[#080808] border border-white/10 p-4 text-xs font-bold uppercase focus:border-[#1de9b6] outline-none transition-all" />
-                    <input type="text" placeholder="NAME" className="bg-[#080808] border border-white/10 p-4 text-xs font-bold uppercase focus:border-[#1de9b6] outline-none transition-all" />
-                 </div>
-                 <input type="email" placeholder="BUSINESS EMAIL" className="w-full bg-[#080808] border border-white/10 p-4 text-xs font-bold uppercase focus:border-[#1de9b6] outline-none mb-6 transition-all" />
-                 <textarea rows="4" placeholder="HOW CAN WE HELP YOUR PRODUCTION?" className="w-full bg-[#080808] border border-white/10 p-4 text-xs font-bold uppercase focus:border-[#1de9b6] outline-none mb-8 resize-none transition-all"></textarea>
-                 <button className="w-full py-5 bg-[#1de9b6] text-black font-black uppercase text-xs hover:bg-white transition-all shadow-[0_0_20px_#1de9b633] rounded-sm">Send Inquiry</button>
+                 <ContactForm t={t} />
               </div>
            </div>
         </div>
@@ -979,25 +1052,22 @@ function AppInner() {
           <div className="max-w-5xl mx-auto flex flex-col items-center gap-8">
             <div className="flex items-center gap-4 w-full">
               <div className="h-px flex-1 bg-gradient-to-r from-transparent to-[#1de9b6]/30" />
-              <span className="text-[10px] font-mono text-[#1de9b6] tracking-[0.3em] uppercase shrink-0">Certifications & Ratings</span>
+              <span className="text-[10px] font-mono text-[#1de9b6] tracking-[0.3em] uppercase shrink-0">{t.footer.certifications}</span>
               <div className="h-px flex-1 bg-gradient-to-l from-transparent to-[#1de9b6]/30" />
             </div>
-            <div className="flex items-center justify-center gap-8 md:gap-16 flex-wrap">
+            <div className="flex items-center justify-center gap-8 md:gap-14 flex-wrap">
               {[
-                { name: 'ISO 45001', file: 'iso-45001', title: 'Occupational Health & Safety' },
-                { name: 'EcoVadis',  file: 'ecovadis',  title: 'Sustainability Rating' },
-                { name: 'ISO 9001',  file: 'iso-9001',  title: 'Quality Management' },
-                { name: 'ISO 14001', file: 'iso-14001', title: 'Environmental Management' },
-                { name: 'ISO 27001', file: 'iso-27001', title: 'Information Security' },
+                { primary: 'ISO', secondary: '45001', name: 'ISO 45001', title: 'Occupational Health & Safety' },
+                { primary: 'ECO', secondary: 'VADIS', name: 'EcoVadis',  title: 'Sustainability Rating' },
+                { primary: 'ISO', secondary: '9001',  name: 'ISO 9001',  title: 'Quality Management' },
+                { primary: 'ISO', secondary: '14001', name: 'ISO 14001', title: 'Environmental Management' },
+                { primary: 'ISO', secondary: '27001', name: 'ISO 27001', title: 'Information Security' },
               ].map((cert) => (
-                <div key={cert.file} className="group/cert flex flex-col items-center gap-3">
-                  <img
-                    src={`/logos/${cert.file}.png`}
-                    alt={cert.name}
-                    loading="lazy"
-                    className="h-20 md:h-24 w-auto object-contain opacity-80 group-hover/cert:opacity-100 transition-all duration-300 group-hover/cert:scale-110 group-hover/cert:drop-shadow-[0_0_14px_rgba(29,233,182,0.4)]"
-                  />
-                  <span className="text-[9px] font-mono text-[#666] tracking-[0.15em] uppercase group-hover/cert:text-[#1de9b6] transition-colors">{cert.name}</span>
+                <div key={cert.name} className="group/cert flex flex-col items-center gap-3" title={cert.title}>
+                  <div className="opacity-85 group-hover/cert:opacity-100 transition-all duration-300 group-hover/cert:scale-110 group-hover/cert:drop-shadow-[0_0_18px_rgba(29,233,182,0.45)]">
+                    <CertBadge primary={cert.primary} secondary={cert.secondary} />
+                  </div>
+                  <span className="text-[9px] font-mono text-[#777] tracking-[0.15em] uppercase group-hover/cert:text-[#1de9b6] transition-colors">{cert.name}</span>
                 </div>
               ))}
             </div>
@@ -1007,9 +1077,9 @@ function AppInner() {
         {/* ── Footer bottom bar ── */}
         <div className="py-8 px-6">
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
-            <div className="text-[10px] font-mono text-[#6A6A6A] tracking-[0.3em] uppercase">© 2026 Development General System Industry · Precision Engineering Romania</div>
+            <div className="text-[10px] font-mono text-[#6A6A6A] tracking-[0.3em] uppercase">{t.footer.copyright}</div>
             <nav className="flex flex-wrap justify-center gap-8">
-              {navItems.map(item => (<button key={item} onClick={() => scrollTo(item)} className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#7A7A7A] hover:text-[#1de9b6] transition-colors">{item}</button>))}
+              {navItems.map(item => (<button key={item} onClick={() => scrollTo(item)} className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#7A7A7A] hover:text-[#1de9b6] transition-colors">{t.nav[item]}</button>))}
             </nav>
           </div>
         </div>
@@ -1049,14 +1119,14 @@ function AppInner() {
           <div className="relative z-10 w-full max-w-[85vw] md:max-w-[75vw] h-[85vh] md:h-[75vh] bg-[#0A0A0A] border border-[#1de9b6]/50 shadow-[0_0_60px_rgba(29,233,182,0.2)] rounded-md overflow-y-auto p-12 animate-modal-slide" onClick={(e) => e.stopPropagation()}>
             <button onClick={() => setExpandedCard(null)} className="absolute top-6 right-6 text-[#8A8A8A] hover:text-white transition-colors bg-[#111] p-3 rounded-full z-50"><X size={28} /></button>
             <div className="flex items-center gap-4 mb-12 border-b border-white/5 pb-8">
-               <span className="text-xs text-[#1de9b6] font-mono tracking-[0.4em] uppercase">DGSI ENGINEERING SCOPE</span>
+               <span className="text-xs text-[#1de9b6] font-mono tracking-[0.4em] uppercase">{t.modal.scope}</span>
                <div className="h-px flex-1 bg-white/5" />
             </div>
 
             {expandedCard === 'distributor' && (
               <div className="animate-fade-in">
-                <h3 className="text-4xl md:text-6xl font-black uppercase text-white mb-8 tracking-tight text-center md:text-left">Authorized Global<br/>Partner Network</h3>
-                <p className="text-[#D0D0D0] text-xl md:text-2xl max-w-4xl mb-16 leading-relaxed">Direct access to inventory and technical support from global leaders. We consolidate 120+ official brands into a single procurement point, streamlining your logistics and reducing downtime.</p>
+                <h3 className="text-4xl md:text-6xl font-black uppercase text-white mb-8 tracking-tight text-center md:text-left">{t.modal.distributor.h3[0]}<br/>{t.modal.distributor.h3[1]}</h3>
+                <p className="text-[#D0D0D0] text-xl md:text-2xl max-w-4xl mb-16 leading-relaxed">{t.modal.distributor.p}</p>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                     {supplierLogos.map((logo, idx) => (
                         <LogoCard key={idx} logo={logo} className="h-24 md:h-28" />
@@ -1067,25 +1137,20 @@ function AppInner() {
 
             {expandedCard === 'manufacturing' && (
               <div className="animate-fade-in text-center">
-                <h3 className="text-4xl md:text-6xl font-black uppercase text-white mb-8 tracking-tight">Emergency Protocol:<br/>CAD TO PART IN 48H</h3>
-                <p className="text-[#D0D0D0] text-xl md:text-2xl max-w-4xl mb-16 leading-relaxed mx-auto">When production stops, every second costs. Our protocol activates dedicated CNC capacity instantly. We guarantee critical parts and electrodes within 48-72 hours.</p>
+                <h3 className="text-4xl md:text-6xl font-black uppercase text-white mb-8 tracking-tight">{t.modal.manufacturing.h3[0]}<br/>{t.modal.manufacturing.h3[1]}</h3>
+                <p className="text-[#D0D0D0] text-xl md:text-2xl max-w-4xl mb-16 leading-relaxed mx-auto">{t.modal.manufacturing.p}</p>
                 <div className="bg-[#080808] border border-white/5 rounded-xl p-16 flex items-center justify-center shadow-inner mt-8"><EmergencyTimeline expanded /></div>
               </div>
             )}
 
             {expandedCard === 'audit' && (
               <div className="animate-fade-in">
-                <h3 className="text-4xl md:text-6xl font-black uppercase text-white mb-8 tracking-tight">Technical Audit &amp;<br/>Process Optimization</h3>
-                <p className="text-[#D0D0D0] text-xl md:text-2xl max-w-4xl mb-16 leading-relaxed">Our engineers analyze cutting data, tool wear, and material flow to identify bottlenecks and reduce cost-per-part through data-driven solutions.</p>
+                <h3 className="text-4xl md:text-6xl font-black uppercase text-white mb-8 tracking-tight">{t.modal.audit.h3[0]}<br/>{t.modal.audit.h3[1]}</h3>
+                <p className="text-[#D0D0D0] text-xl md:text-2xl max-w-4xl mb-16 leading-relaxed">{t.modal.audit.p}</p>
                 <div className="grid md:grid-cols-2 gap-8">
-                    {[
-                        {icon: <Target/>, title: "Cutting Data Analysis", desc: "Optimizing speeds and feeds for maximum productivity."},
-                        {icon: <Droplets/>, title: "Coolant Management", desc: "Checking concentration and pressure to maximize tool life."},
-                        {icon: <Ruler/>, title: "Precision Audit", desc: "Identifying geometric deviations in the production process."},
-                        {icon: <CheckCircle/>, title: "Cost-per-Part Optimization", desc: "Accurate calculation of achievable yearly savings."}
-                    ].map((item, i) => (
+                    {t.modal.audit.items.map((item, i) => (
                         <div key={i} className="bg-[#080808] border border-white/5 p-8 rounded-lg flex items-start gap-8">
-                            <div className="w-16 h-16 text-[#1de9b6] flex-shrink-0">{item.icon}</div>
+                            <div className="w-16 h-16 text-[#1de9b6] flex-shrink-0">{auditIcons[i]}</div>
                             <div><h5 className="text-2xl font-bold text-white mb-4">{item.title}</h5><p className="text-xl text-[#B0B0B0] leading-relaxed">{item.desc}</p></div>
                         </div>
                     ))}
@@ -1096,25 +1161,19 @@ function AppInner() {
             {/* CHANGE #2: Tooling modal — V2 text, no 50% */}
             {expandedCard === 'tooling' && (
               <div className="animate-fade-in">
-                <h3 className="text-4xl md:text-6xl font-black uppercase text-white mb-8 tracking-tight">Custom Tooling &amp;<br/>Regrinding Solutions</h3>
-                <p className="text-[#D0D0D0] text-xl md:text-2xl max-w-4xl mb-16 leading-relaxed">Custom tools built to your specifications. Plus, our regrinding service brings expensive tools back to original performance — a smart alternative to buying new.</p>
+                <h3 className="text-4xl md:text-6xl font-black uppercase text-white mb-8 tracking-tight">{t.modal.tooling.h3[0]}<br/>{t.modal.tooling.h3[1]}</h3>
+                <p className="text-[#D0D0D0] text-xl md:text-2xl max-w-4xl mb-16 leading-relaxed">{t.modal.tooling.p}</p>
                 <div className="flex flex-col md:flex-row gap-10">
                     <div className="bg-[#080808] border border-white/5 p-10 rounded-lg flex-1">
-                        <div className="flex items-center gap-6 mb-8 pb-6 border-b border-white/5"><Wrench className="text-[#1de9b6] w-8 h-8" /><h5 className="text-3xl font-bold text-white">Custom Tool Design</h5></div>
+                        <div className="flex items-center gap-6 mb-8 pb-6 border-b border-white/5"><Wrench className="text-[#1de9b6] w-8 h-8" /><h5 className="text-3xl font-bold text-white">{t.modal.tooling.box1Title}</h5></div>
                         <ul className="text-xl text-[#B0B0B0] space-y-6 list-disc list-inside">
-                            <li>Dedicated geometries for heavy alloys (Inconel, Titanium).</li>
-                            <li>Special high-performance coatings (DLC, Diamond).</li>
-                           <li>Ultra-tight tolerances up to ±0.005mm.</li>
-                            <li>Profile milling cutters and step drill systems.</li>
+                            {t.modal.tooling.box1.map((li, i) => <li key={i}>{li}</li>)}
                         </ul>
                     </div>
                     <div className="bg-[#080808] border border-white/5 p-10 rounded-lg flex-1">
-                        <div className="flex items-center gap-6 mb-8 pb-6 border-b border-white/5"><ShieldCheck className="text-[#1de9b6] w-8 h-8" /><h5 className="text-3xl font-bold text-white">Regrinding Services</h5></div>
+                        <div className="flex items-center gap-6 mb-8 pb-6 border-b border-white/5"><ShieldCheck className="text-[#1de9b6] w-8 h-8" /><h5 className="text-3xl font-bold text-white">{t.modal.tooling.box2Title}</h5></div>
                         <ul className="text-xl text-[#B0B0B0] space-y-6 list-disc list-inside">
-                           <li>Sharpening on state-of-the-art 5-axis CNC machines.</li>
-                            <li>Full restoration of original manufacturer geometry.</li>
-                            <li>Logistics protocol for fast pick-up &amp; delivery.</li>
-                            <li>Detailed quality measurement reports included.</li>
+                            {t.modal.tooling.box2.map((li, i) => <li key={i}>{li}</li>)}
                         </ul>
                     </div>
                 </div>
@@ -1130,14 +1189,14 @@ function AppInner() {
                 <div className="animate-fade-in">
                   <div className="flex items-center gap-5 mb-10">
                     <div className="w-12 h-12 text-[#1de9b6]">{prod.icon}</div>
-                    <h3 className="text-4xl md:text-6xl font-black uppercase text-white tracking-tight">{prod.cat}</h3>
+                    <h3 className="text-4xl md:text-6xl font-black uppercase text-white tracking-tight">{t.cats[prod.cat] || prod.cat}</h3>
                   </div>
 
                   <div className="flex flex-col lg:flex-row gap-10">
                     {/* LEFT — subcategories with animated icons */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-3 mb-6">
-                        <span className="text-[11px] font-mono text-[#1de9b6] tracking-[0.3em] uppercase">Subcategories</span>
+                        <span className="text-[11px] font-mono text-[#1de9b6] tracking-[0.3em] uppercase">{t.modal.subcategories}</span>
                         <div className="h-px flex-1 bg-[#1de9b6]/20" />
                       </div>
                       <div className="grid sm:grid-cols-2 gap-4">
@@ -1149,7 +1208,7 @@ function AppInner() {
                             <span className="w-14 h-14 flex items-center justify-center bg-[#1de9b6]/10 border border-[#1de9b6]/25 rounded-xl text-[#1de9b6] shrink-0 group-hover/sub:bg-[#1de9b6]/20 transition-all">
                               <SubcategoryIcon name={item} size={28} />
                             </span>
-                            <span className="flex-1 text-lg md:text-xl font-bold tracking-wide text-[#D8D8D8] group-hover/sub:text-white transition-colors">{item}</span>
+                            <span className="flex-1 text-lg md:text-xl font-bold tracking-wide text-[#D8D8D8] group-hover/sub:text-white transition-colors">{t.subs[item] || item}</span>
                             <AddToRFQButton item={{ id: `${prod.cat}-${item}`, name: item, category: prod.cat }} size="sm" />
                           </div>
                         ))}
@@ -1160,7 +1219,7 @@ function AppInner() {
                            className="mt-8 flex items-center justify-center gap-3 w-full max-w-md py-5 bg-[#1de9b6]/10 border border-[#1de9b6]/30 text-[#1de9b6] text-[12px] font-black uppercase tracking-[0.25em] rounded-sm transition-all duration-500 hover:bg-[#1de9b6] hover:text-black"
                         >
                           <Download size={16} />
-                          <span>Download Full Catalog</span>
+                          <span>{t.modal.downloadCatalog}</span>
                         </a>
                       )}
                     </div>
@@ -1169,23 +1228,26 @@ function AppInner() {
                     {prod.brands && prod.brands.length > 0 && (
                       <div className="lg:w-80 shrink-0 lg:border-l lg:border-white/10 lg:pl-10">
                         <div className="flex items-center gap-3 mb-6">
-                          <span className="text-[11px] font-mono text-[#1de9b6] tracking-[0.3em] uppercase">Partner Brands</span>
+                          <span className="text-[11px] font-mono text-[#1de9b6] tracking-[0.3em] uppercase">{t.modal.partnerBrands}</span>
                           <div className="h-px flex-1 bg-[#1de9b6]/20" />
                         </div>
                         <div className="grid grid-cols-3 gap-3">
                           {prod.brands.map((brand) => (
                             <div
                               key={brand.name}
-                              className={`flex items-center justify-center rounded-xl p-3 h-16 transition-all hover:scale-105 ${brand.src ? 'bg-white shadow-sm' : 'bg-white/[0.04] border border-[#1de9b6]/15'}`}
+                              className={`flex items-center justify-center rounded-xl p-2 h-16 overflow-hidden transition-all hover:scale-105 ${brand.src ? 'bg-white shadow-sm' : 'bg-white/[0.04] border border-[#1de9b6]/15'}`}
                               title={brand.name}
                             >
                               {brand.src ? (
+                                // Tile is h-16 (64px) with p-2 (8px each side) → 48px inner height.
+                                // max-h-full + object-contain lets the logo occupy the full 48px = 75% of the tile,
+                                // hitting Alex's 70–80% brief. overflow-hidden clips any scale bleed.
                                 <img
                                   src={brand.src}
                                   alt={brand.name}
                                   loading="lazy"
                                   className="max-w-full max-h-full object-contain mix-blend-multiply opacity-90"
-                                  style={{ transform: `scale(${brand.scale || 1})` }}
+                                  style={{ transform: `scale(${Math.min(brand.scale || 1, 1.4)})` }}
                                 />
                               ) : (
                                 <span className="text-[10px] font-bold uppercase tracking-wide text-[#C0C0C0] text-center leading-tight">{brand.name}</span>

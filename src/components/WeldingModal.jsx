@@ -1,558 +1,617 @@
 import React, { useState, useMemo } from 'react';
-import { X, Zap, Droplets, Ruler, ShieldCheck, ChevronRight, ChevronLeft, Download, FileText, Check, Snowflake } from 'lucide-react';
+import { X, Zap, Search, Wrench, ChevronRight, ChevronLeft, Download, FileText, Check, Mail, ShoppingCart, Trash2, ArrowRight } from 'lucide-react';
+import PRODUCTS from '../data/weldingProducts.json';
 
 // ═══════════════════════════════════════════════════════════════════════════
-// WELDING CONFIGURATOR — DGSI flagship (hierarchical: category → subtype)
-// Step 1 Upper:  interface category → wear-tip subtype
-// Step 2 Lower:  cooling type (single level)
-// Step 3 Pin:    weld-nut size → geometry subtype
-// Each step supports Back navigation. Animation assembles in sync.
-// Component types extracted from the official DOCERAM catalog.
+// _configurator_welding_7.7.26 · v6 — JSON-DRIVEN CATALOG
+//   Data source: src/data/weldingProducts.json (generated from Catalog_v3)
+//   Regenerate:  npm run catalog   (scripts/excel_to_json.py)
+//   PATH 1: New System Wizard · PATH 2: Spare Parts Finder · RFQ mailto
 // ═══════════════════════════════════════════════════════════════════════════
 
-// ─── UPPER ELECTRODE: category → subtype ───────────────────────────────────
-const UPPER_CATEGORIES = [
-  {
-    id: 'screw-in', name: 'Screw-in', meta: 'M18x1.5 thread',
-    detail: 'Threaded M18x1.5 interface for high-volume series. Maximum rigidity.',
-    subtypes: [
-      { id: 'screw-flat', name: 'Flat Face', meta: 'CuCrZr · Ø10mm', tip: 'flat' },
-      { id: 'screw-radius', name: 'Radius', meta: 'CuCrZr · R12', tip: 'radius' },
-      { id: 'screw-pointed', name: 'Pointed', meta: 'CuCrZr · 30°', tip: 'pointed' },
-    ],
-  },
-  {
-    id: 'cap-cone', name: 'Cap / Cone', meta: 'Cone 1:10',
-    detail: 'Conical cap interface (1:10) for fast change-over on variable lines.',
-    subtypes: [
-      { id: 'cap-flat', name: 'Flat Face', meta: 'CuCrZr · Ø10mm', tip: 'flat' },
-      { id: 'cap-radius', name: 'Radius', meta: 'CuCrZr · R12', tip: 'radius' },
-      { id: 'cap-pointed', name: 'Pointed', meta: 'CuCrZr · 30°', tip: 'pointed' },
-    ],
-  },
-];
+const RFQ_EMAIL = 'office@industrytools.ro';
+const SCALE = 3.5;
 
-// ─── LOWER ELECTRODE: cooling category → size subtype ──────────────────────
-const LOWER_CATEGORIES = [
-  {
-    id: 'cooled', name: 'Cooled', meta: 'Active · G1/8 Ø6mm', body: 'cooled',
-    detail: 'Water-cooled base with G1/8 fittings & NBR 70 O-rings. Maximum thermal stability.',
-  },
-  {
-    id: 'uncooled', name: 'Uncooled', meta: 'Solid body · CuCrZr', body: 'uncooled',
-    detail: 'Solid-body base for tight installation spaces and lower duty cycles.',
-  },
-];
-const LOWER_SIZES = [
-  { id: 'lm4', name: 'M4' }, { id: 'lm5', name: 'M5' }, { id: 'lm8', name: 'M8' },
-  { id: 'lm10', name: 'M10' }, { id: 'lm12', name: 'M12' },
-];
+// ─── CATALOG SLICES (by category) ────────────────────────────────────────────
+const uppers = PRODUCTS.filter(p => p.category === 'Electrozi superiori');
+const lowers = PRODUCTS.filter(p => p.category === 'Electrozi inferiori');
+const pins   = PRODUCTS.filter(p => p.category && p.category.startsWith('Pini'));
+const bushes = PRODUCTS.filter(p => p.category === 'Bucse');
 
-// ─── CERAMIC PIN: weld-nut size → geometry subtype ─────────────────────────
-const PIN_SIZES = [
-  { id: 'm4', name: 'M4' }, { id: 'm5', name: 'M5' }, { id: 'm8', name: 'M8' },
-  { id: 'm10', name: 'M10' }, { id: 'm12', name: 'M12' },
-];
-const PIN_GEOMETRIES = [
-  { id: 'short', name: 'Short', meta: 'Standard length', geo: 'short' },
-  { id: 'long', name: 'Long', meta: 'Extended reach', geo: 'long' },
-  { id: 'collar', name: 'With Collar', meta: 'Shoulder seat', geo: 'collar' },
-];
-const PIN_MATERIAL = 'White Ceramic (Volcera)';
+// ─── DOMAIN LOGIC ────────────────────────────────────────────────────────────
+// Nut → hole diameter (approx). Pin tip must be immediately smaller than hole.
+const NUT_HOLE = { M6: 5.0, M8: 6.8, M10: 8.5, M12: 10.2, M14: 11.8, M16: 13.5, M18: 15.3 };
+const NUT_SIZES = Object.keys(NUT_HOLE);
 
-// ─── Dynamic Welding Assembly SVG ──────────────────────────────────────────
-// Fixed module (base plates + holder) always present; shank/wear-electrode/pin
-// build in as the user selects. Spark only when upper + lower both installed.
-function WeldingAssembly({ upper, lower, ceramic }) {
-  const hasBoth = upper && lower;
+// Pins for a nut:
+//   1) PRIMARY: explicit compat field from catalog (source of truth)
+//   2) FALLBACK: tip diameter (dVarf) — or body (dCorp) if no tip — just under hole
+function pinsForNut(nut) {
+  const explicit = pins.filter(p => p.compat === nut);
+  if (explicit.length > 0) {
+    return [...explicit].sort((a, b) => (b.dVarf ?? b.dCorp) - (a.dVarf ?? a.dCorp));
+  }
+  const hole = NUT_HOLE[nut];
+  if (!hole) return [];
+  return pins
+    .filter(p => {
+      const d = p.dVarf ?? p.dCorp;
+      return d != null && d < hole - 0.05;
+    })
+    .sort((a, b) => (b.dVarf ?? b.dCorp) - (a.dVarf ?? a.dCorp));
+}
+
+// Lowers compatible with a pin: body must exceed pin body + clearance
+// (bore estimated — real bore data to be added in catalog later)
+function lowersForPin(pin) {
+  if (!pin) return lowers;
+  return lowers
+    .filter(l => l.dCorp >= (pin.dCorp ?? 0) + 4)
+    .sort((a, b) => a.dCorp - b.dCorp);
+}
+
+// Life expectancy proxy for ranking (D² × L → material volume)
+const lifeScore = p => (p.dCorp ?? 0) ** 2 * (p.L ?? 0);
+
+// 3 system options: Economy / Recommended / Extended Life
+function buildOptions(nut) {
+  const pinList = pinsForNut(nut);
+  if (pinList.length === 0) return null;
+  const pin = pinList[0];
+  const lowerList = lowersForPin(pin);
+  const upperList = [...uppers].sort((a, b) => lifeScore(a) - lifeScore(b));
+  if (lowerList.length === 0 || upperList.length === 0) return null;
+
+  const pick = (arr, frac) => arr[Math.min(arr.length - 1, Math.round(frac * (arr.length - 1)))];
+  const lowerSorted = [...lowerList].sort((a, b) => lifeScore(a) - lifeScore(b));
+
+  return [
+    { label: 'Economy',       tag: 'Lowest cost · shorter service life', upper: pick(upperList, 0.1), lower: pick(lowerSorted, 0.1), pin },
+    { label: 'Recommended',   tag: 'Best life / cost balance',           upper: pick(upperList, 0.5), lower: pick(lowerSorted, 0.5), pin },
+    { label: 'Extended Life', tag: 'Max service life · high volume',     upper: pick(upperList, 0.9), lower: pick(lowerSorted, 0.9), pin },
+  ];
+}
+
+// Short display label per product (fallback if name missing)
+function displayName(p) {
+  return p.name || `${p.category || ''} · Ø${p.dCorp} × ${p.L} mm`;
+}
+
+// PDF drawing URL — SKU-based (URL-safe by design)
+const drawingUrl = p => `/welding-docs/${p.sku}.pdf`;
+
+// mailto RFQ builder
+function sendRFQ(subject, lines) {
+  const body = encodeURIComponent(lines.join('\n'));
+  window.location.href = `mailto:${RFQ_EMAIL}?subject=${encodeURIComponent(subject)}&body=${body}`;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// PARAMETRIC SVG (real mm scale, driven by dCorp / L)
+// ═══════════════════════════════════════════════════════════════════════════
+function SvgDefs() {
   return (
-    <svg viewBox="0 0 280 360" className="w-full h-full" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <defs>
-        <linearGradient id="wa-cu" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="#a85f28"/><stop offset="50%" stopColor="#d68a4a"/><stop offset="100%" stopColor="#a85f28"/>
-        </linearGradient>
-        <linearGradient id="wa-cuV" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#b86f32"/><stop offset="50%" stopColor="#d68a4a"/><stop offset="100%" stopColor="#8a4f22"/>
-        </linearGradient>
-        <linearGradient id="wa-brass" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#c9a14a"/><stop offset="50%" stopColor="#b8923a"/><stop offset="100%" stopColor="#9a7a2e"/>
-        </linearGradient>
-        <linearGradient id="wa-pin" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="#6a9fc4"/><stop offset="25%" stopColor="#a8d0e8"/><stop offset="50%" stopColor="#c8e2f0"/><stop offset="75%" stopColor="#a8d0e8"/><stop offset="100%" stopColor="#5a8fb4"/>
-        </linearGradient>
-        <linearGradient id="wa-pinTip" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="#5a8fb4"/><stop offset="50%" stopColor="#b8d8ec"/><stop offset="100%" stopColor="#4a7fa4"/>
-        </linearGradient>
-        <radialGradient id="wa-spark">
-          <stop offset="0%" stopColor="#ffffff"/><stop offset="30%" stopColor="#5fffd9"/><stop offset="60%" stopColor="#1de9b6"/><stop offset="100%" stopColor="transparent"/>
-        </radialGradient>
-        <radialGradient id="wa-heat">
-          <stop offset="0%" stopColor="#1de9b6" stopOpacity="0.5"/><stop offset="100%" stopColor="transparent"/>
-        </radialGradient>
-      </defs>
+    <defs>
+      <linearGradient id="w4-cu" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stopColor="#a85f28"/><stop offset="50%" stopColor="#d68a4a"/><stop offset="100%" stopColor="#a85f28"/>
+      </linearGradient>
+      <linearGradient id="w4-brass" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stopColor="#c9a14a"/><stop offset="100%" stopColor="#9a7a2e"/>
+      </linearGradient>
+      <linearGradient id="w4-pin" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stopColor="#e8e4dc"/><stop offset="50%" stopColor="#ffffff"/><stop offset="100%" stopColor="#d8d4cc"/>
+      </linearGradient>
+      <linearGradient id="w4-steel" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stopColor="#4a5258"/><stop offset="100%" stopColor="#2a3236"/>
+      </linearGradient>
+      <radialGradient id="w4-spark">
+        <stop offset="0%" stopColor="#ffffff"/><stop offset="40%" stopColor="#5fffd9"/><stop offset="100%" stopColor="transparent"/>
+      </radialGradient>
+    </defs>
+  );
+}
 
-      {/* ════ FIXED MODULE — always present (base plates + holders) ════ */}
-      {/* Upper base plate (brass with holes) */}
-      <g>
-        <rect x="92" y="18" width="96" height="16" rx="2" fill="url(#wa-brass)" stroke="#7a6020" strokeWidth="1"/>
-        {[100,112,124,148,160,172].map((cx) => <circle key={cx} cx={cx} cy="26" r="2" fill="#6a5418"/>)}
-        {/* holder block under base plate */}
-        <path d="M120 34 L160 34 L152 54 L128 54 Z" fill="url(#wa-brass)" stroke="#7a6020" strokeWidth="1"/>
-      </g>
-      <text x="140" y="12" fill="#1de9b6" fontSize="7" fontFamily="monospace" textAnchor="middle" opacity="0.55">UPPER BASE PLATE · FIXED</text>
+function Assembly({ upper, lower, pin }) {
+  const VW = 240, VH = 400, cx = VW / 2;
+  const sheetH = 6, sheetY = VH / 2 + 20;
+  const hasBoth = upper && lower;
 
-      {/* Lower base plate (brass with holes) */}
-      <g>
-        <rect x="92" y="326" width="96" height="16" rx="2" fill="url(#wa-brass)" stroke="#7a6020" strokeWidth="1"/>
-        {[100,112,124,148,160,172].map((cx) => <circle key={cx} cx={cx} cy="334" r="2" fill="#6a5418"/>)}
-        <path d="M120 326 L160 326 L152 306 L128 306 Z" fill="url(#wa-brass)" stroke="#7a6020" strokeWidth="1"/>
-      </g>
-      <text x="140" y="354" fill="#1de9b6" fontSize="7" fontFamily="monospace" textAnchor="middle" opacity="0.55">LOWER BASE PLATE · FIXED</text>
+  return (
+    <svg viewBox={`0 0 ${VW} ${VH}`} className="w-full h-full">
+      <SvgDefs />
+      <rect x={40} y={8} width={VW-80} height={12} rx="2" fill="url(#w4-brass)"/>
+      <text x={cx} y={30} fill="#1de9b6" fontSize="8" fontFamily="monospace" textAnchor="middle" opacity="0.6">UPPER HEAD · FIXED</text>
+      <rect x={40} y={VH-20} width={VW-80} height={12} rx="2" fill="url(#w4-brass)"/>
+      <text x={cx} y={VH-26} fill="#1de9b6" fontSize="8" fontFamily="monospace" textAnchor="middle" opacity="0.6">LOWER HEAD · FIXED</text>
 
-      {/* ════ UPPER ELECTRODE (shank + wear tip) — built when selected ════ */}
-      {upper ? (
-        <g className="weld-upper">
-          {/* shank */}
-          <rect x="128" y="54" width="24" height="40" rx="2" fill="url(#wa-cu)" stroke="#6a3f1a" strokeWidth="1"/>
-          {/* wear electrode by tip type */}
-          {upper.tip === 'flat' && <rect x="130" y="94" width="20" height="16" rx="1" fill="url(#wa-cuV)" stroke="#6a3f1a" strokeWidth="1"/>}
-          {upper.tip === 'radius' && <path d="M130 94 L150 94 L150 104 Q140 116 130 104 Z" fill="url(#wa-cuV)" stroke="#6a3f1a" strokeWidth="1"/>}
-          {upper.tip === 'pointed' && <path d="M130 94 L150 94 L142 112 L138 112 Z" fill="url(#wa-cuV)" stroke="#6a3f1a" strokeWidth="1"/>}
-          <line x1="140" y1="56" x2="140" y2="108" className="weld-current" stroke="#5fffd9" strokeWidth="1.2" opacity="0.6"/>
-          <g transform="translate(168,60)">
-            <rect x="0" y="0" width="46" height="13" rx="2" fill="rgba(29,233,182,0.15)" stroke="#1de9b6" strokeWidth="0.5"/>
-            <text x="23" y="9" fill="#1de9b6" fontSize="6.5" fontFamily="monospace" textAnchor="middle" fontWeight="bold">UPPER ✓</text>
+      <rect x={16} y={sheetY} width={VW-32} height={sheetH} fill="url(#w4-steel)"/>
+      <text x={20} y={sheetY-4} fill="#778" fontSize="7" fontFamily="monospace">SHEET</text>
+
+      {upper ? (() => {
+        const d = upper.dCorp * SCALE, l = upper.L * SCALE, x = cx - d/2, y0 = 40;
+        const shW = d*0.6, tip = d*0.3;
+        return (
+          <g>
+            <rect x={cx-shW/2} y={y0} width={shW} height={10} fill="url(#w4-cu)" stroke="#6a3f1a" strokeWidth="0.6"/>
+            <line x1={cx-shW/2} y1={y0+3} x2={cx+shW/2} y2={y0+3} stroke="#6a3f1a" strokeWidth="0.5"/>
+            <line x1={cx-shW/2} y1={y0+6} x2={cx+shW/2} y2={y0+6} stroke="#6a3f1a" strokeWidth="0.5"/>
+            <rect x={x} y={y0+10} width={d} height={l-tip-10} fill="url(#w4-cu)" stroke="#6a3f1a" strokeWidth="0.6"/>
+            <path d={`M ${x} ${y0+l-tip} L ${x+d} ${y0+l-tip} L ${cx+d*0.25} ${y0+l} L ${cx-d*0.25} ${y0+l} Z`} fill="url(#w4-cu)" stroke="#6a3f1a" strokeWidth="0.6"/>
+            <text x={x+d+6} y={y0+l/2} fill="#1de9b6" fontSize="9" fontFamily="monospace" fontWeight="bold">Ø{upper.dCorp}</text>
+            <text x={x+d+6} y={y0+l/2+11} fill="#1de9b6" fontSize="9" fontFamily="monospace" fontWeight="bold">L{upper.L}</text>
           </g>
-        </g>
-      ) : (
-        <g className="weld-empty">
-          <rect x="128" y="54" width="24" height="56" rx="2" fill="none" stroke="#1de9b6" strokeWidth="0.8" strokeDasharray="3 3"/>
-          <text x="140" y="86" fill="#1de9b6" fontSize="7" fontFamily="monospace" textAnchor="middle" opacity="0.7">UPPER</text>
-        </g>
+        );
+      })() : (
+        <g><rect x={cx-18} y={40} width={36} height={70} fill="none" stroke="#1de9b6" strokeWidth="0.8" strokeDasharray="4 4"/>
+        <text x={cx} y={80} fill="#1de9b6" fontSize="8" fontFamily="monospace" textAnchor="middle" opacity="0.7">UPPER</text></g>
       )}
 
-      {/* ════ WORKPIECE (sheet metal with projection) ════ */}
-      <rect x="44" y="176" width="192" height="7" fill="#3a4248" stroke="#4a5258" strokeWidth="0.5"/>
-      <rect x="44" y="183" width="192" height="7" fill="#2a3236" stroke="#4a5258" strokeWidth="0.5"/>
-      <path d="M134 176 L146 176 L142 183 L138 183 Z" fill="#4a5258"/>
-
-      {/* ════ CERAMIC PIN (central, realistic stepped blue ceramic) ════ */}
-      {ceramic ? (
-        <g className="weld-ceramic">
-          {/* Realistic stepped pin: conical tip · threaded neck · shoulder · body · base */}
-          {(() => {
-            // vertical offset for long vs short; collar adds a wider seat at sheet level
-            const topY = ceramic.geo === 'long' ? 150 : 158;
-            return (
-              <g>
-                {/* conical tip */}
-                <path d={`M134 ${topY+8} L146 ${topY+8} L144 ${topY} Q140 ${topY-4} 136 ${topY} Z`} fill="url(#wa-pinTip)" stroke="#4a7fa4" strokeWidth="0.5"/>
-                {/* threaded neck */}
-                <rect x="135" y={topY+8} width="10" height="9" fill="url(#wa-pin)" stroke="#4a7fa4" strokeWidth="0.5"/>
-                <line x1="135" y1={topY+10} x2="145" y2={topY+10} stroke="#5a8fb4" strokeWidth="0.4"/>
-                <line x1="135" y1={topY+13} x2="145" y2={topY+13} stroke="#5a8fb4" strokeWidth="0.4"/>
-                {/* upper shoulder */}
-                <path d={`M133 ${topY+17} L147 ${topY+17} L145 ${topY+25} L135 ${topY+25} Z`} fill="url(#wa-pin)" stroke="#4a7fa4" strokeWidth="0.5"/>
-                {/* main body down through sheet to base */}
-                <rect x="135" y={topY+25} width="10" height={ceramic.geo === 'long' ? 48 : 40} rx="1" fill="url(#wa-pin)" stroke="#4a7fa4" strokeWidth="0.5"/>
-                {/* highlight stripe */}
-                <rect x="137.5" y={topY+25} width="2" height={ceramic.geo === 'long' ? 48 : 40} fill="#e0f0fa" opacity="0.55"/>
-                {/* collar (only "with collar") — wider seat at sheet */}
-                {ceramic.geo === 'collar' && <path d="M131 180 L149 180 L147 188 L133 188 Z" fill="url(#wa-pin)" stroke="#4a7fa4" strokeWidth="0.5"/>}
-                {/* cyan rim light to tie into site palette */}
-                <rect x="135" y={topY+25} width="10" height={ceramic.geo === 'long' ? 48 : 40} rx="1" fill="none" stroke="#1de9b6" strokeWidth="0.4" opacity="0.35"/>
-              </g>
-            );
-          })()}
-          <g transform="translate(52,176)">
-            <rect x="0" y="0" width="56" height="13" rx="2" fill="rgba(29,233,182,0.15)" stroke="#1de9b6" strokeWidth="0.5"/>
-            <text x="28" y="9" fill="#1de9b6" fontSize="6.5" fontFamily="monospace" textAnchor="middle" fontWeight="bold">{ceramic.sizeName} PIN ✓</text>
+      {pin ? (() => {
+        const d = pin.dCorp * SCALE, l = pin.L * SCALE, x = cx - d/2;
+        const yTop = sheetY - l * 0.45;
+        const dTip = (pin.dVarf ?? pin.dCorp * 0.7) * SCALE;
+        return (
+          <g>
+            {/* stepped tip if dVarf exists */}
+            <rect x={cx-dTip/2} y={yTop} width={dTip} height={l*0.3} fill="url(#w4-pin)" stroke="#99a" strokeWidth="0.5"/>
+            <path d={`M ${cx-dTip/2} ${yTop} L ${cx+dTip/2} ${yTop} L ${cx} ${yTop-dTip*0.35} Z`} fill="url(#w4-pin)" stroke="#99a" strokeWidth="0.5"/>
+            <rect x={x} y={yTop+l*0.3} width={d} height={l*0.7} fill="url(#w4-pin)" stroke="#99a" strokeWidth="0.5"/>
+            <text x={x-6} y={yTop+l*0.4} fill="#1de9b6" fontSize="9" fontFamily="monospace" fontWeight="bold" textAnchor="end">Ø{pin.dVarf ?? pin.dCorp}</text>
+            <text x={x-6} y={yTop+l*0.4+11} fill="#1de9b6" fontSize="9" fontFamily="monospace" fontWeight="bold" textAnchor="end">L{pin.L}</text>
           </g>
-        </g>
-      ) : (
-        <g className="weld-empty">
-          <rect x="135" y="158" width="10" height="28" rx="1" fill="none" stroke="#1de9b6" strokeWidth="0.8" strokeDasharray="2 2"/>
-        </g>
+        );
+      })() : (
+        <rect x={cx-7} y={sheetY-30} width={14} height={60} fill="none" stroke="#1de9b6" strokeWidth="0.8" strokeDasharray="3 3"/>
       )}
 
-      {/* ════ LOWER ELECTRODE (body) — built when selected ════ */}
-      {lower ? (
-        <g className="weld-lower">
-          {lower.body === 'cooled' && (
-            <g>
-              <path d="M128 206 L152 206 L146 194 L134 194 Z" fill="url(#wa-cu)" stroke="#6a3f1a" strokeWidth="1"/>
-              <rect x="126" y="206" width="28" height="40" rx="2" fill="url(#wa-cu)" stroke="#6a3f1a" strokeWidth="1"/>
-              <rect x="120" y="246" width="40" height="50" rx="3" fill="url(#wa-cuV)" stroke="#6a3f1a" strokeWidth="1"/>
-              {/* cooling fittings */}
-              <circle cx="116" cy="262" r="3.5" fill="none" stroke="#5fffd9" strokeWidth="1"/>
-              <circle cx="164" cy="262" r="3.5" fill="none" stroke="#5fffd9" strokeWidth="1"/>
-              <line x1="112" y1="262" x2="108" y2="262" stroke="#5fffd9" strokeWidth="1.2"/>
-              <line x1="168" y1="262" x2="172" y2="262" stroke="#5fffd9" strokeWidth="1.2"/>
-            </g>
-          )}
-          {lower.body === 'uncooled' && (
-            <g>
-              <path d="M128 206 L152 206 L146 194 L134 194 Z" fill="url(#wa-cu)" stroke="#6a3f1a" strokeWidth="1"/>
-              <rect x="124" y="206" width="32" height="42" rx="2" fill="url(#wa-cu)" stroke="#6a3f1a" strokeWidth="1"/>
-              <rect x="118" y="248" width="44" height="48" rx="3" fill="url(#wa-cuV)" stroke="#6a3f1a" strokeWidth="1"/>
-            </g>
-          )}
-          <line x1="140" y1="196" x2="140" y2="290" className="weld-current" stroke="#5fffd9" strokeWidth="1.2" opacity="0.6"/>
-          <g transform="translate(168,266)">
-            <rect x="0" y="0" width="46" height="13" rx="2" fill="rgba(29,233,182,0.15)" stroke="#1de9b6" strokeWidth="0.5"/>
-            <text x="23" y="9" fill="#1de9b6" fontSize="6.5" fontFamily="monospace" textAnchor="middle" fontWeight="bold">LOWER ✓</text>
+      {lower ? (() => {
+        const d = lower.dCorp * SCALE, l = lower.L * SCALE, x = cx - d/2;
+        const yEnd = VH - 22, y0 = yEnd - l;
+        return (
+          <g>
+            <rect x={x} y={y0} width={d} height={l} fill="url(#w4-cu)" stroke="#6a3f1a" strokeWidth="0.6"/>
+            <rect x={cx - (pin ? pin.dCorp*SCALE/2+1.5 : 6)} y={y0} width={pin ? pin.dCorp*SCALE+3 : 12} height={l} fill="#1a0f08" opacity="0.55"/>
+            <text x={x+d+6} y={y0+l/2} fill="#1de9b6" fontSize="9" fontFamily="monospace" fontWeight="bold">Ø{lower.dCorp}</text>
+            <text x={x+d+6} y={y0+l/2+11} fill="#1de9b6" fontSize="9" fontFamily="monospace" fontWeight="bold">L{lower.L}</text>
           </g>
-        </g>
-      ) : (
-        <g className="weld-empty">
-          <rect x="120" y="194" width="40" height="102" rx="3" fill="none" stroke="#1de9b6" strokeWidth="0.8" strokeDasharray="3 3"/>
-          <text x="140" y="248" fill="#1de9b6" fontSize="7" fontFamily="monospace" textAnchor="middle" opacity="0.7">LOWER</text>
-        </g>
+        );
+      })() : (
+        <g><rect x={cx-20} y={VH-95} width={40} height={70} fill="none" stroke="#1de9b6" strokeWidth="0.8" strokeDasharray="4 4"/>
+        <text x={cx} y={VH-58} fill="#1de9b6" fontSize="8" fontFamily="monospace" textAnchor="middle" opacity="0.7">LOWER</text></g>
       )}
 
-      {/* ════ HEAT + SPARK — only when both electrodes installed ════ */}
       {hasBoth && (
-        <>
-          <circle cx="140" cy="183" r="22" fill="url(#wa-heat)" className="weld-heat"/>
-          <g className="weld-spark">
-            <circle cx="140" cy="183" r="10" fill="url(#wa-spark)"/>
-            <circle cx="140" cy="183" r="4" fill="#ffffff"/>
-            <g stroke="#5fffd9" strokeWidth="1.2" strokeLinecap="round">
-              <line x1="140" y1="183" x2="140" y2="168"/>
-              <line x1="140" y1="183" x2="152" y2="174"/>
-              <line x1="140" y1="183" x2="128" y2="174"/>
-              <line x1="140" y1="183" x2="154" y2="183"/>
-              <line x1="140" y1="183" x2="126" y2="183"/>
-            </g>
-          </g>
-          <circle className="weld-particle" cx="140" cy="183" r="1.2" fill="#5fffd9" style={{ '--dx': '18px', '--dy': '-12px' }}/>
-          <circle className="weld-particle" cx="140" cy="183" r="1" fill="#1de9b6" style={{ '--dx': '-16px', '--dy': '-8px', animationDelay: '0.05s' }}/>
-          <circle className="weld-particle" cx="140" cy="183" r="0.9" fill="#ffffff" style={{ '--dx': '20px', '--dy': '6px', animationDelay: '0.1s' }}/>
-          <circle className="weld-particle" cx="140" cy="183" r="1" fill="#5fffd9" style={{ '--dx': '-18px', '--dy': '3px', animationDelay: '0.03s' }}/>
-        </>
+        <g>
+          <circle cx={cx} cy={sheetY+sheetH/2} r="24" fill="url(#w4-spark)" opacity="0.35" className="weld-heat"/>
+          <circle cx={cx} cy={sheetY+sheetH/2} r="12" fill="url(#w4-spark)" className="weld-spark"/>
+          <circle cx={cx} cy={sheetY+sheetH/2} r="4" fill="#fff"/>
+          <line x1={cx} y1={44} x2={cx} y2={sheetY} className="weld-current" stroke="#5fffd9" strokeWidth="1.4"/>
+          <line x1={cx} y1={sheetY+sheetH} x2={cx} y2={VH-24} className="weld-current" stroke="#5fffd9" strokeWidth="1.4"/>
+        </g>
       )}
     </svg>
   );
 }
 
-// Lightweight standalone preview used by teaser card in App.jsx
+// Flagship banner preview (kept export for App.jsx — DO NOT REMOVE)
 export function WeldingAnimation({ height = 240 }) {
   return (
     <div style={{ maxHeight: height }} className="w-full h-auto">
-      <WeldingAssembly
-        upper={{ tip: 'radius' }}
-        lower={{ body: 'cooled' }}
-        ceramic={{ geo: 'short', sizeName: 'M8' }}
+      <Assembly
+        upper={{ dCorp: 23, L: 20 }}
+        lower={{ dCorp: 20, L: 22 }}
+        pin={{ dCorp: 9.8, dVarf: 7.5, L: 29 }}
       />
     </div>
   );
 }
 
-// ─── Option button ─────────────────────────────────────────────────────────
-function OptionBtn({ label, meta, selected, onClick, icon }) {
+// ═══════════════════════════════════════════════════════════════════════════
+// SHARED UI
+// ═══════════════════════════════════════════════════════════════════════════
+function OptionButton({ label, sub, active, onClick, disabled }) {
   return (
     <button
       onClick={onClick}
-      className={`group/opt relative flex flex-col items-start gap-1.5 p-3.5 rounded-lg border text-left transition-all ${
-        selected
-          ? 'bg-[#1de9b6]/10 border-[#1de9b6] shadow-[0_0_16px_rgba(29,233,182,0.15)]'
-          : 'bg-white/[0.03] border-white/10 hover:border-[#1de9b6]/40 hover:bg-[#1de9b6]/[0.04] hover:-translate-y-0.5 cursor-pointer'
+      disabled={disabled}
+      className={`text-left px-4 py-3.5 border rounded-lg transition-all duration-200 ${
+        disabled ? 'opacity-30 cursor-not-allowed border-white/10 text-[#666]' :
+        active ? 'bg-[#1de9b6]/15 border-[#1de9b6] text-[#1de9b6]' :
+        'bg-white/[0.03] border-white/15 text-[#C8C8C8] hover:border-[#1de9b6]/60 hover:text-[#1de9b6]'
       }`}
     >
-      {icon && <span className={`w-5 h-5 ${selected ? 'text-[#1de9b6]' : 'text-[#1de9b6]/60'}`}>{icon}</span>}
-      <span className="text-[13px] font-black text-white">{label}</span>
-      {meta && <span className={`text-[9px] font-mono uppercase tracking-wide ${selected ? 'text-[#1de9b6]' : 'text-[#888]'}`}>{meta}</span>}
-      {selected && (
-        <span className="absolute top-2 right-2 w-4 h-4 rounded-full bg-[#1de9b6] flex items-center justify-center">
-          <Check size={10} strokeWidth={3} className="text-black" />
-        </span>
-      )}
+      <div className="text-[14px] font-bold">{label}</div>
+      {sub && <div className="text-[11px] mt-0.5 opacity-70">{sub}</div>}
     </button>
   );
 }
 
-// ─── Hierarchical Step Card ────────────────────────────────────────────────
-function StepCard({ stepNum, meta, title, icon, locked, done, summary, children, onBack, showBack }) {
-  const stateClass = done
-    ? 'border-[#1de9b6]/30'
-    : locked
-      ? 'border-white/5 opacity-40'
-      : 'border-[#1de9b6]/50 shadow-[0_0_24px_rgba(29,233,182,0.08)] bg-gradient-to-br from-[#1de9b6]/[0.04] to-transparent';
-  const numClass = done
-    ? 'bg-[#1de9b6]/15 text-[#1de9b6] border border-[#1de9b6]'
-    : locked
-      ? 'bg-white/5 text-[#555] border border-white/10'
-      : 'bg-[#1de9b6] text-black shadow-[0_0_16px_rgba(29,233,182,0.5)]';
-
+function PartLine({ role, p }) {
   return (
-    <div className={`relative bg-white/[0.02] border rounded-xl p-5 transition-all duration-300 ${stateClass}`}>
-      <div className="flex items-center gap-4 mb-4">
-        <div className={`w-10 h-10 rounded-full flex items-center justify-center font-black text-sm font-mono shrink-0 transition-all duration-300 ${numClass}`}>
-          {done ? <Check size={18} strokeWidth={3} /> : stepNum}
-        </div>
-        <div className="flex-1 min-w-0">
-          <div className={`text-[10px] font-mono uppercase tracking-[0.2em] mb-0.5 ${locked ? 'text-[#555]' : done ? 'text-[#888]' : 'text-[#1de9b6]'}`}>{meta}</div>
-          <div className="text-base font-black uppercase tracking-wider text-white truncate">{title}</div>
-        </div>
-        {showBack && !locked && (
-          <button onClick={onBack} className="flex items-center gap-1 text-[10px] font-mono font-bold uppercase tracking-widest text-[#1de9b6] hover:text-white bg-[#1de9b6]/10 hover:bg-[#1de9b6]/20 px-2.5 py-1.5 rounded transition-all">
-            <ChevronLeft size={12} /> Back
-          </button>
-        )}
-        {done && summary && (
-          <span className="text-[10px] font-mono font-black uppercase tracking-widest text-[#1de9b6] bg-[#1de9b6]/10 px-2.5 py-1 rounded">{summary}</span>
+    <div className="flex items-center justify-between py-2 border-b border-white/5 last:border-0 gap-2">
+      <div className="min-w-0">
+        <div className="text-[10px] font-mono text-[#888] uppercase">{role}</div>
+        <div className="text-[12px] font-mono font-bold text-white truncate">{p.sku}</div>
+        <div className="text-[11px] text-[#999] truncate">{displayName(p)}</div>
+      </div>
+      <a href={drawingUrl(p)} target="_blank" rel="noopener noreferrer"
+        className="flex items-center gap-1 text-[11px] font-mono text-[#1de9b6] hover:text-white px-2 py-1 border border-[#1de9b6]/30 hover:border-[#1de9b6] rounded transition shrink-0">
+        <FileText size={11}/><span>2D</span>
+      </a>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// PATH 1: NEW SYSTEM WIZARD
+// ═══════════════════════════════════════════════════════════════════════════
+const WIZARD_STEPS = [
+  { key:'app',       q:'What are you welding?',        opts:[
+    { v:'Nut', sub:'Weld nut onto sheet' }, { v:'Stud', sub:'Threaded stud' },
+    { v:'Projection', sub:'Embossed boss' }, { v:'Cross Wire', sub:'Wire intersection' }] },
+  { key:'size',      q:'Nut size?',                    opts: NUT_SIZES.map(n => ({ v:n, sub:`hole ~Ø${NUT_HOLE[n]}mm` })) },
+  { key:'material',  q:'Workpiece material?',          opts:[
+    { v:'Steel (mild)' }, { v:'Steel (HSS)' }, { v:'Steel (UHSS/boron)' }, { v:'Stainless' }, { v:'Aluminum' }] },
+  { key:'thickness', q:'Sheet thickness?',             opts:[
+    { v:'0.8–1.0 mm' }, { v:'1.0–1.5 mm' }, { v:'1.5–2.0 mm' }, { v:'2.0–2.5 mm' }, { v:'2.5–3.5 mm' }] },
+  { key:'machine',   q:'Machine type?',                opts:[
+    { v:'Portable pneumatic' }, { v:'Workshop hydraulic' }, { v:'Robot-integrated' }, { v:'Manual press' }] },
+  { key:'access',    q:'Access & orientation?',        opts:[
+    { v:'Standard flat vertical' }, { v:'Angled 15–45°' }, { v:'Confined space' }] },
+  { key:'volume',    q:'Production volume?',           opts:[
+    { v:'Prototype' }, { v:'Low (<100/mo)' }, { v:'Medium (100–1000/mo)' }, { v:'High (>1000/mo)' }] },
+  { key:'timeline',  q:'Timeline?',                    opts:[
+    { v:'ASAP (<1 week)' }, { v:'Standard (1–2 weeks)' }, { v:'Flexible' }] },
+];
+
+function NewSystemWizard({ onBack, addToCart }) {
+  const [stepIdx, setStepIdx] = useState(0);
+  const [answers, setAnswers] = useState({});
+  const [showResults, setShowResults] = useState(false);
+
+  const step = WIZARD_STEPS[stepIdx];
+  const isNut = answers.app === 'Nut';
+  const visibleSteps = WIZARD_STEPS.filter(s => s.key !== 'size' || isNut);
+  const vIdx = visibleSteps.findIndex(s => s.key === step.key);
+
+  const options = useMemo(() => {
+    if (!showResults) return null;
+    if (answers.app !== 'Nut' || answers.size === 'custom') return null;
+    return buildOptions(answers.size);
+  }, [showResults, answers]);
+
+  const pick = (v) => {
+    const na = { ...answers, [step.key]: v };
+    setAnswers(na);
+    const vs = WIZARD_STEPS.filter(s => s.key !== 'size' || na.app === 'Nut');
+    const cur = vs.findIndex(s => s.key === step.key);
+    if (cur < vs.length - 1) {
+      setStepIdx(WIZARD_STEPS.findIndex(s => s.key === vs[cur + 1].key));
+    } else {
+      setShowResults(true);
+    }
+  };
+
+  const goBack = () => {
+    if (showResults) { setShowResults(false); return; }
+    const vs = visibleSteps;
+    const cur = vs.findIndex(s => s.key === step.key);
+    if (cur > 0) setStepIdx(WIZARD_STEPS.findIndex(s => s.key === vs[cur - 1].key));
+    else onBack();
+  };
+
+  const previewOpts = answers.size && answers.size !== 'custom' ? buildOptions(answers.size) : null;
+  const preview = previewOpts ? previewOpts[1] : null;
+
+  if (showResults) {
+    return (
+      <div className="flex-1 overflow-y-auto p-5 md:p-7">
+        <button onClick={goBack} className="flex items-center gap-1 text-[12px] font-mono text-[#888] hover:text-[#1de9b6] mb-5"><ChevronLeft size={14}/>Back</button>
+        <h3 className="text-[20px] font-black uppercase tracking-wider text-white mb-1">Recommended Systems</h3>
+        <p className="text-[13px] text-[#999] mb-6">Based on: {answers.app} {answers.size || ''} · {answers.material} · {answers.thickness} · {answers.volume}</p>
+
+        {!options ? (
+          <div className="p-6 bg-white/[0.03] border border-[#1de9b6]/30 rounded-xl">
+            <p className="text-[15px] text-white mb-2">This application requires a custom technical review.</p>
+            <p className="text-[13px] text-[#999] mb-4">Send us your requirements and an engineer will reply within 24h.</p>
+            <button onClick={() => sendRFQ(`Custom welding solution request`, [
+              `Application: ${answers.app}`, `Size: ${answers.size || '-'}`, `Material: ${answers.material}`, `Thickness: ${answers.thickness}`,
+              `Machine: ${answers.machine}`, `Access: ${answers.access}`, `Volume: ${answers.volume}`, `Timeline: ${answers.timeline}`,
+            ])} className="flex items-center gap-2 px-5 py-3 bg-[#1de9b6] text-black text-[12px] font-black uppercase tracking-widest rounded hover:bg-white transition">
+              <Mail size={14}/>Contact engineering
+            </button>
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-3 gap-4">
+            {options.map((opt, i) => (
+              <div key={opt.label} className={`shimmer-hover p-5 rounded-xl border flex flex-col transition-all duration-300 hover:-translate-y-0.5 ${i===1 ? 'border-[#1de9b6]/60 bg-[#1de9b6]/[0.06] shadow-[0_0_24px_rgba(29,233,182,0.1)]' : 'border-white/10 bg-white/[0.02] hover:border-[#1de9b6]/40'}`}>
+                {i===1 && <div className="text-[10px] font-black text-black bg-[#1de9b6] self-start px-2 py-0.5 rounded uppercase tracking-widest mb-3">Best match</div>}
+                <div className="text-[17px] font-black uppercase tracking-wide text-white">{opt.label}</div>
+                <div className="text-[11px] text-[#999] mb-4">{opt.tag}</div>
+                <div className="flex-1">
+                  <PartLine role="Upper electrode" p={opt.upper}/>
+                  <PartLine role="Lower electrode" p={opt.lower}/>
+                  <PartLine role="Centering pin" p={opt.pin}/>
+                </div>
+                <div className="text-[10px] text-[#777] font-mono mt-3 mb-3">Lower bore compatibility estimated — verify with 2D drawing.</div>
+                <button onClick={() => { addToCart(opt.upper); addToCart(opt.lower); addToCart(opt.pin); }}
+                  className="flex items-center justify-center gap-2 py-2.5 bg-[#1de9b6]/10 hover:bg-[#1de9b6] text-[#1de9b6] hover:text-black border border-[#1de9b6]/40 text-[11px] font-black uppercase tracking-widest rounded transition">
+                  <ShoppingCart size={13}/>Add system to RFQ
+                </button>
+              </div>
+            ))}
+          </div>
         )}
       </div>
-      {!locked && children}
-      {locked && (
-        <div className="text-[11px] text-[#666] font-mono uppercase tracking-wider pl-14">Complete previous step first</div>
-      )}
-    </div>
-  );
-}
+    );
+  }
 
-// Breadcrumb showing navigation depth within a step
-function Breadcrumb({ trail }) {
   return (
-    <div className="flex items-center gap-1.5 mb-3 pl-1 flex-wrap">
-      {trail.map((t, i) => (
-        <React.Fragment key={i}>
-          {i > 0 && <ChevronRight size={11} className="text-[#1de9b6]/40" />}
-          <span className={`text-[9px] font-mono uppercase tracking-widest ${i === trail.length - 1 ? 'text-[#1de9b6]' : 'text-[#888]'}`}>{t}</span>
-        </React.Fragment>
-      ))}
+    <div className="flex-1 grid lg:grid-cols-[1fr_1.6fr] gap-5 p-5 md:p-7 overflow-hidden min-h-0">
+      <div className="hidden lg:flex bg-gradient-to-b from-[#0a1714] to-[#060d0c] border border-[#1de9b6]/20 rounded-xl p-4 flex-col min-h-0">
+        <span className="text-[11px] font-mono text-[#1de9b6] tracking-[0.3em] uppercase mb-2">Live preview · Real scale</span>
+        <div className="flex-1 flex items-center justify-center">
+          <div className="w-full max-w-[260px]"><Assembly upper={preview?.upper} lower={preview?.lower} pin={preview?.pin}/></div>
+        </div>
+      </div>
+      <div className="flex flex-col overflow-y-auto min-h-0">
+        <div className="flex items-center justify-between mb-5">
+          <button onClick={goBack} className="flex items-center gap-1 text-[12px] font-mono text-[#888] hover:text-[#1de9b6]"><ChevronLeft size={14}/>Back</button>
+          <div className="text-[11px] font-mono text-[#888]">Step {vIdx + 1} / {visibleSteps.length}</div>
+        </div>
+        <div className="w-full h-1 bg-white/10 rounded-full mb-7 overflow-hidden">
+          <div className="h-full bg-[#1de9b6] transition-all duration-300" style={{ width: `${((vIdx) / visibleSteps.length) * 100}%` }}/>
+        </div>
+        <h3 className="text-[22px] font-black text-white mb-6">{step.q}</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {step.opts.map(o => (
+            <OptionButton key={o.v} label={o.v} sub={o.sub} active={answers[step.key] === o.v} onClick={() => pick(o.v)}/>
+          ))}
+        </div>
+        {step.key === 'size' && (
+          <p className="text-[12px] text-[#888] mt-5 font-mono">Other size or special geometry? <button onClick={() => pick('custom')} className="text-[#1de9b6] underline">Request custom solution</button></p>
+        )}
+      </div>
     </div>
   );
 }
 
-// ─── Main Modal ────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════
+// PATH 2: SPARE PARTS FINDER (search: sku, ref, aliases, name, dims)
+// ═══════════════════════════════════════════════════════════════════════════
+const TYPE_FILTERS = [
+  ['all',   'All'],
+  ['ELS',   'Upper'],
+  ['ELI',   'Lower'],
+  ['PIN',   'Pins'],
+  ['BCS',   'Bushings'],
+];
+
+function familyOf(p) {
+  // derive family from SKU prefix: RPW-{FAM}-...
+  const m = /^RPW-([A-Z]+)-/.exec(p.sku || '');
+  return m ? m[1] : '';
+}
+
+function SparePartsFinder({ onBack, addToCart }) {
+  const [query, setQuery] = useState('');
+  const [typeFilter, setTypeFilter] = useState('all');
+
+  const results = useMemo(() => {
+    let list = PRODUCTS;
+    if (typeFilter !== 'all') {
+      list = list.filter(p => {
+        const fam = familyOf(p);
+        if (typeFilter === 'PIN') return fam.startsWith('PIN'); // PIN, PINF, PINB
+        return fam === typeFilter;
+      });
+    }
+    const q = query.trim().toLowerCase();
+    if (q) {
+      list = list.filter(p =>
+        (p.sku || '').toLowerCase().includes(q) ||
+        (p.ref || '').toLowerCase().includes(q) ||
+        (p.aliases || []).some(a => a.toLowerCase().includes(q)) ||
+        (p.name || '').toLowerCase().includes(q) ||
+        (p.category || '').toLowerCase().includes(q) ||
+        (p.mx || '').toLowerCase().includes(q) ||
+        (p.compat || '').toLowerCase().includes(q) ||
+        (p.mat || '').toLowerCase().includes(q) ||
+        String(p.dCorp ?? '').includes(q) ||
+        String(p.dVarf ?? '').includes(q) ||
+        String(p.L ?? '').includes(q)
+      );
+    }
+    return list;
+  }, [query, typeFilter]);
+
+  return (
+    <div className="flex-1 flex flex-col p-5 md:p-7 overflow-hidden min-h-0">
+      <button onClick={onBack} className="flex items-center gap-1 text-[12px] font-mono text-[#888] hover:text-[#1de9b6] mb-4 self-start"><ChevronLeft size={14}/>Back</button>
+
+      <div className="flex flex-col md:flex-row gap-3 mb-5">
+        <div className="flex-1 flex items-center gap-3 bg-white/[0.04] border border-white/15 focus-within:border-[#1de9b6]/60 rounded-lg px-4 py-3">
+          <Search size={16} className="text-[#888] shrink-0"/>
+          <input
+            value={query}
+            onChange={e => setQuery(e.target.value)}
+            placeholder="DGSI SKU, your part number, client code, M20, diameter…"
+            className="flex-1 bg-transparent outline-none text-[14px] text-white placeholder:text-[#666] font-mono"
+            autoFocus
+          />
+          {query && <button onClick={() => setQuery('')} className="text-[#666] hover:text-white"><X size={14}/></button>}
+        </div>
+        <div className="flex gap-2 flex-wrap">
+          {TYPE_FILTERS.map(([v,l]) => (
+            <button key={v} onClick={() => setTypeFilter(v)}
+              className={`px-4 py-2 text-[12px] font-mono font-bold uppercase tracking-wider border rounded-lg transition ${typeFilter===v ? 'bg-[#1de9b6]/15 border-[#1de9b6] text-[#1de9b6]' : 'border-white/15 text-[#999] hover:border-[#1de9b6]/50 hover:text-[#1de9b6]'}`}>
+              {l}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="text-[12px] font-mono text-[#888] mb-3">{results.length} part{results.length !== 1 ? 's' : ''} found · {PRODUCTS.length} in catalog</div>
+
+      <div className="flex-1 overflow-y-auto min-h-0 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 content-start pr-1">
+        {results.map(p => (
+          <div key={p.sku} className="bg-white/[0.03] border border-white/10 hover:border-[#1de9b6]/50 rounded-lg p-4 transition group flex flex-col">
+            <div className="text-[14px] font-mono font-bold text-white group-hover:text-[#1de9b6] break-all">{p.sku}</div>
+            <div className="text-[12px] text-[#B8B8B8] mt-1 mb-1 leading-snug">{displayName(p)}</div>
+            {(p.ref || (p.aliases && p.aliases.length > 0)) && (
+              <div className="text-[10px] font-mono text-[#777] mb-2 truncate">
+                {p.ref && <>Client ref: {p.ref}</>}
+                {p.aliases?.length > 0 && <> · aka {p.aliases.join(', ')}</>}
+              </div>
+            )}
+            <div className="flex gap-4 mb-3 mt-auto">
+              {p.dCorp != null && <div><span className="text-[10px] font-mono text-[#777] uppercase">Ø </span><span className="text-[14px] font-mono font-bold text-[#1de9b6]">{p.dCorp}</span></div>}
+              {p.dVarf != null && <div><span className="text-[10px] font-mono text-[#777] uppercase">Ø tip </span><span className="text-[14px] font-mono font-bold text-[#1de9b6]">{p.dVarf}</span></div>}
+              {p.L != null && <div><span className="text-[10px] font-mono text-[#777] uppercase">L </span><span className="text-[14px] font-mono font-bold text-[#1de9b6]">{p.L}</span></div>}
+              {p.mx && <div><span className="text-[10px] font-mono text-[#777] uppercase">Thread </span><span className="text-[14px] font-mono font-bold text-[#1de9b6]">{p.mx}</span></div>}
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <a href={drawingUrl(p)} target="_blank" rel="noopener noreferrer"
+                className="flex items-center justify-center gap-1.5 py-2 text-[11px] font-mono font-bold text-[#999] hover:text-[#1de9b6] border border-white/15 hover:border-[#1de9b6]/50 rounded transition">
+                <FileText size={12}/>2D Drawing
+              </a>
+              <button onClick={() => addToCart(p)}
+                className="flex items-center justify-center gap-1.5 py-2 text-[11px] font-black uppercase tracking-wider text-[#1de9b6] hover:text-black bg-[#1de9b6]/10 hover:bg-[#1de9b6] border border-[#1de9b6]/40 rounded transition">
+                <ShoppingCart size={12}/>Add
+              </button>
+            </div>
+          </div>
+        ))}
+        {results.length === 0 && (
+          <div className="col-span-full p-8 text-center">
+            <p className="text-[15px] text-[#999] mb-3">No parts match your search.</p>
+            <button onClick={() => sendRFQ('Part inquiry — not in catalog', [`Searched for: ${query}`, '', 'Please advise availability / equivalent.'])}
+              className="text-[13px] text-[#1de9b6] underline">Ask us about this part →</button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// RFQ CART
+// ═══════════════════════════════════════════════════════════════════════════
+function RFQCart({ cart, setCart }) {
+  const [open, setOpen] = useState(false);
+  if (cart.length === 0) return null;
+
+  const submit = () => {
+    const lines = [
+      'RFQ — DGSI Welding Configurator', '',
+      ...cart.map(i => `• ${i.sku}  —  ${displayName(i)}  × ${i.qty}`),
+      '', 'Company:', 'Contact person:', 'Phone:', 'Notes:',
+    ];
+    sendRFQ('RFQ — Welding components', lines);
+  };
+
+  return (
+    <div className="absolute bottom-5 right-5 z-30">
+      {open && (
+        <div className="mb-3 w-80 bg-[#0c1512] border border-[#1de9b6]/40 rounded-xl shadow-2xl p-4">
+          <div className="text-[11px] font-mono text-[#1de9b6] uppercase tracking-widest mb-3">RFQ · {cart.length} item{cart.length>1?'s':''}</div>
+          <div className="max-h-56 overflow-y-auto space-y-2 mb-4">
+            {cart.map((i, idx) => (
+              <div key={idx} className="flex items-center justify-between gap-2 text-[12px] font-mono">
+                <span className="text-white truncate">{i.sku}</span>
+                <div className="flex items-center gap-2 shrink-0">
+                  <input type="number" min="1" value={i.qty}
+                    onChange={e => setCart(c => c.map((x,xi) => xi===idx ? {...x, qty: Math.max(1, parseInt(e.target.value)||1)} : x))}
+                    className="w-14 bg-white/5 border border-white/15 rounded px-2 py-1 text-center text-white outline-none focus:border-[#1de9b6]/60"/>
+                  <button onClick={() => setCart(c => c.filter((_,xi) => xi!==idx))} className="text-[#666] hover:text-red-400"><Trash2 size={13}/></button>
+                </div>
+              </div>
+            ))}
+          </div>
+          <button onClick={submit}
+            className="w-full flex items-center justify-center gap-2 py-3 bg-[#1de9b6] text-black text-[11px] font-black uppercase tracking-widest rounded hover:bg-white transition">
+            <Mail size={13}/>Send RFQ by email
+          </button>
+          <div className="text-[10px] text-[#777] font-mono text-center mt-2">Opens your email client → {RFQ_EMAIL}</div>
+        </div>
+      )}
+      <button onClick={() => setOpen(!open)}
+        className="flex items-center gap-2 px-5 py-3.5 bg-[#1de9b6] text-black text-[12px] font-black uppercase tracking-widest rounded-full shadow-[0_0_24px_rgba(29,233,182,0.4)] hover:bg-white transition">
+        <ShoppingCart size={15}/><span>RFQ ({cart.reduce((s,i)=>s+i.qty,0)})</span>
+      </button>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// MAIN MODAL (default export — DO NOT REMOVE dual export contract)
+// ═══════════════════════════════════════════════════════════════════════════
 export default function WeldingModal({ onClose }) {
-  // Upper: 2-level (category → subtype)
-  const [upperCat, setUpperCat] = useState(null);
-  const [upper, setUpper] = useState(null);
-  // Lower: 2-level (cooling → size)
-  const [lowerCat, setLowerCat] = useState(null);
-  const [lower, setLower] = useState(null);
-  // Pin: 2-level (size → geometry)
-  const [pinSize, setPinSize] = useState(null);
-  const [ceramic, setCeramic] = useState(null);
+  const [path, setPath] = useState(null);
+  const [cart, setCart] = useState([]);
 
-  const completed = [upper, lower, ceramic].filter(Boolean).length;
-  const progress = (completed / 3) * 100;
-
-  const summary = useMemo(() => {
-    const parts = [];
-    if (upper) parts.push(`${upper.name} Upper`);
-    if (lower) parts.push(`${lower.name} Lower`);
-    if (ceramic) parts.push(`${ceramic.sizeName} ${ceramic.name} Pin`);
-    return parts.length > 0 ? parts.join(' · ') : 'No components selected yet';
-  }, [upper, lower, ceramic]);
+  const addToCart = (p) => {
+    setCart(c => {
+      const idx = c.findIndex(x => x.sku === p.sku);
+      if (idx >= 0) return c.map((x,i) => i===idx ? {...x, qty:x.qty+1} : x);
+      return [...c, { ...p, qty: 1 }];
+    });
+  };
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 md:p-6 animate-fade-in" onClick={onClose}>
       <div className="absolute inset-0 bg-black/92 backdrop-blur-md" />
       <div
         className="relative z-10 w-full max-w-[95vw] h-[92vh] bg-gradient-to-br from-[#0A0A0A] to-[#0a1714] border border-[#1de9b6]/40 shadow-[0_0_80px_rgba(29,233,182,0.2)] rounded-lg overflow-hidden flex flex-col"
-        onClick={(e) => e.stopPropagation()}
+        onClick={e => e.stopPropagation()}
       >
-        <div className="absolute inset-0 opacity-[0.025] pointer-events-none" style={{ backgroundImage: 'linear-gradient(#1de9b6 1px, transparent 1px), linear-gradient(90deg, #1de9b6 1px, transparent 1px)', backgroundSize: '50px 50px' }} />
-        <span className="absolute top-3 left-3 w-5 h-5 border-t-2 border-l-2 border-[#1de9b6] z-20" />
-        <span className="absolute top-3 right-3 w-5 h-5 border-t-2 border-r-2 border-[#1de9b6] z-20" />
-        <span className="absolute bottom-3 left-3 w-5 h-5 border-b-2 border-l-2 border-[#1de9b6] z-20" />
-        <span className="absolute bottom-3 right-3 w-5 h-5 border-b-2 border-r-2 border-[#1de9b6] z-20" />
+        <div className="weld-scanline z-[5]"/>
+        <span className="absolute top-3 left-3 w-5 h-5 border-t-2 border-l-2 border-[#1de9b6] z-20"/>
+        <span className="absolute top-3 right-3 w-5 h-5 border-t-2 border-r-2 border-[#1de9b6] z-20"/>
+        <span className="absolute bottom-3 left-3 w-5 h-5 border-b-2 border-l-2 border-[#1de9b6] z-20"/>
+        <span className="absolute bottom-3 right-3 w-5 h-5 border-b-2 border-r-2 border-[#1de9b6] z-20"/>
 
-        {/* HEADER */}
         <div className="relative z-10 flex items-center justify-between px-5 md:px-8 py-4 border-b border-white/10 shrink-0">
-          <div className="flex items-center gap-3 md:gap-4 min-w-0">
-            <span className="px-3 py-1.5 bg-[#1de9b6]/20 text-[#1de9b6] text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] rounded shrink-0">Flagship · Configurator</span>
-            <h2 className="text-base md:text-xl font-black uppercase tracking-wider text-white truncate">Projection Welding System</h2>
+          <div className="flex items-center gap-3 min-w-0">
+            <span className="px-3 py-1.5 bg-[#1de9b6]/20 text-[#1de9b6] text-[11px] font-black uppercase tracking-[0.2em] rounded shrink-0">Flagship</span>
+            <h2 className="text-[17px] md:text-[22px] font-black uppercase tracking-wider text-white truncate">Projection Welding <span className="text-[#1de9b6] glow-accent">Solutions</span></h2>
           </div>
-          <div className="flex items-center gap-4 md:gap-6 shrink-0">
-            <div className="hidden md:flex items-center gap-3">
-              <span className="text-[9px] font-mono text-[#1de9b6] tracking-[0.2em] uppercase">Build</span>
-              <div className="w-28 h-[3px] bg-white/10 rounded-full overflow-hidden">
-                <div className="h-full bg-gradient-to-r from-[#1de9b6] to-[#5fffd9] shadow-[0_0_8px_#1de9b6] transition-all duration-500" style={{ width: `${progress}%` }} />
-              </div>
-              <span className="text-xs font-black text-white">{completed}/3</span>
-            </div>
-            <button onClick={onClose} className="text-[#7A7A7A] hover:text-white transition-colors bg-[#111] hover:bg-[#1a1a1a] p-2.5 rounded-full">
-              <X size={22} />
-            </button>
-          </div>
+          <button onClick={onClose} className="text-[#7A7A7A] hover:text-white transition bg-[#111] hover:bg-[#1a1a1a] p-2.5 rounded-full"><X size={22}/></button>
         </div>
 
-        {/* BODY */}
-        <div className="relative z-10 flex-1 grid lg:grid-cols-[1fr_2fr] gap-5 p-5 md:p-7 overflow-hidden">
-
-          {/* LEFT — live assembly */}
-          <div className="bg-gradient-to-b from-[#0a1714] to-[#060d0c] border border-[#1de9b6]/20 rounded-xl p-5 flex flex-col min-h-0">
-            <div className="flex items-center gap-3 mb-3">
-              <span className="text-[9px] font-mono text-[#1de9b6] tracking-[0.3em] uppercase">Live Assembly</span>
-              <div className="h-px flex-1 bg-[#1de9b6]/20" />
+        {path === null && (
+          <div className="flex-1 flex flex-col items-center justify-center p-6">
+            <div className="text-center mb-8">
+              <div className="text-[10px] font-mono text-[#1de9b6] tracking-[0.4em] uppercase mb-2">DGSI · Advanced Ceramics & CuCr1Zr</div>
+              <p className="text-[14px] text-[#999] max-w-md">Configure a complete projection welding system or find exact replacement parts — engineered for automotive Tier-1 production. {PRODUCTS.length} components in catalog.</p>
             </div>
-            <div className="flex-1 relative bg-[radial-gradient(ellipse_at_center,_#0a1f1a_0%,_#050a09_80%)] rounded-lg overflow-hidden flex items-center justify-center min-h-[320px]">
-              <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'linear-gradient(#1de9b6 1px, transparent 1px), linear-gradient(90deg, #1de9b6 1px, transparent 1px)', backgroundSize: '25px 25px' }} />
-              <div className="relative w-full h-full max-w-[280px] flex items-center justify-center p-4">
-                <WeldingAssembly upper={upper} lower={lower} ceramic={ceramic} />
-              </div>
-              <div className="absolute bottom-3 left-0 right-0 text-center font-mono text-[9px] tracking-[0.25em] text-[#1de9b6] uppercase opacity-70">
-                {completed === 0 && 'Fixed module ready · Select parts'}
-                {completed === 1 && 'Configuring 1 of 3'}
-                {completed === 2 && 'Configuring 2 of 3 · Almost there'}
-                {completed === 3 && '✓ System fully configured'}
-              </div>
-            </div>
-            <div className="mt-4 flex gap-1.5">
-              {[upper, lower, ceramic].map((p, i) => (
-                <div key={i} className={`flex-1 h-1 rounded-full transition-all duration-500 ${p ? 'bg-[#1de9b6] shadow-[0_0_6px_#1de9b6]' : 'bg-white/8'}`} />
-              ))}
+            <div className="grid md:grid-cols-2 gap-5 w-full max-w-3xl">
+              <button onClick={() => setPath('new')}
+                className="shimmer-hover group text-left p-7 bg-white/[0.02] border border-white/10 hover:border-[#1de9b6]/60 rounded-2xl transition-all duration-300 hover:shadow-[0_0_40px_rgba(29,233,182,0.15)] hover:-translate-y-0.5">
+                <div className="float-soft w-12 h-12 rounded-xl bg-[#1de9b6]/10 border border-[#1de9b6]/30 flex items-center justify-center mb-5 group-hover:bg-[#1de9b6]/20 group-hover:shadow-[0_0_18px_rgba(29,233,182,0.35)] transition">
+                  <Zap size={22} className="text-[#1de9b6]"/>
+                </div>
+                <h3 className="text-[19px] font-black uppercase tracking-wide text-white mb-2">New System</h3>
+                <p className="text-[13px] text-[#999] leading-relaxed mb-5">I need a complete welding solution. Guide me through application, material and machine to get a recommended configuration.</p>
+                <span className="inline-flex items-center gap-2 text-[12px] font-black uppercase tracking-widest text-[#1de9b6]">Start consultation<ArrowRight size={14} className="group-hover:translate-x-1 transition"/></span>
+              </button>
+              <button onClick={() => setPath('spare')}
+                className="shimmer-hover group text-left p-7 bg-white/[0.02] border border-white/10 hover:border-[#1de9b6]/60 rounded-2xl transition-all duration-300 hover:shadow-[0_0_40px_rgba(29,233,182,0.15)] hover:-translate-y-0.5">
+                <div className="float-soft w-12 h-12 rounded-xl bg-[#1de9b6]/10 border border-[#1de9b6]/30 flex items-center justify-center mb-5 group-hover:bg-[#1de9b6]/20 group-hover:shadow-[0_0_18px_rgba(29,233,182,0.35)] transition" style={{ animationDelay: '0.4s' }}>
+                  <Wrench size={22} className="text-[#1de9b6]"/>
+                </div>
+                <h3 className="text-[19px] font-black uppercase tracking-wide text-white mb-2">Spare Parts</h3>
+                <p className="text-[13px] text-[#999] leading-relaxed mb-5">I already have equipment. Search by DGSI SKU, your internal code or dimensions — download drawings and request a quote.</p>
+                <span className="inline-flex items-center gap-2 text-[12px] font-black uppercase tracking-widest text-[#1de9b6]">Quick lookup<ArrowRight size={14} className="group-hover:translate-x-1 transition"/></span>
+              </button>
             </div>
           </div>
+        )}
 
-          {/* RIGHT — config steps */}
-          <div className="flex flex-col gap-3 overflow-y-auto pr-1 min-h-0">
+        {path === 'new' && <NewSystemWizard onBack={() => setPath(null)} addToCart={addToCart}/>}
+        {path === 'spare' && <SparePartsFinder onBack={() => setPath(null)} addToCart={addToCart}/>}
 
-            {/* ── STEP 1: UPPER (category → subtype) ── */}
-            <StepCard
-              stepNum="1" meta="Step 01 · Top Module" title="Upper Electrode" icon={<Zap />}
-              locked={false} done={!!upper} summary={upper ? upper.name : null}
-              showBack={!!upperCat && !upper}
-              onBack={() => setUpperCat(null)}
-            >
-              {!upperCat ? (
-                <>
-                  <Breadcrumb trail={['Choose interface']} />
-                  <div className="grid grid-cols-2 gap-2.5">
-                    {UPPER_CATEGORIES.map((c) => (
-                      <OptionBtn key={c.id} label={c.name} meta={c.meta} icon={<Zap />} selected={false} onClick={() => setUpperCat(c)} />
-                    ))}
-                  </div>
-                </>
-              ) : !upper ? (
-                <>
-                  <Breadcrumb trail={[upperCat.name, 'Choose wear tip']} />
-                  <div className="grid grid-cols-3 gap-2.5">
-                    {upperCat.subtypes.map((s) => (
-                      <OptionBtn key={s.id} label={s.name} meta={s.meta} icon={<Zap />} selected={false}
-                        onClick={() => setUpper({ ...s, name: `${upperCat.name} ${s.name}` })} />
-                    ))}
-                  </div>
-                </>
-              ) : (
-                <div className="flex items-center justify-between pl-14">
-                  <span className="text-[13px] text-[#C0C0C0]">{upper.name} · <span className="text-[#1de9b6] font-mono text-[11px]">{upper.meta}</span></span>
-                  <button onClick={() => { setUpper(null); }} className="flex items-center gap-1 text-[10px] font-mono font-bold uppercase tracking-widest text-[#1de9b6] hover:text-white bg-[#1de9b6]/10 hover:bg-[#1de9b6]/20 px-2.5 py-1.5 rounded transition-all">
-                    <ChevronLeft size={12} /> Change
-                  </button>
-                </div>
-              )}
-            </StepCard>
-
-            {/* ── STEP 2: LOWER (cooling → size) ── */}
-            <StepCard
-              stepNum="2" meta="Step 02 · Bottom Module" title="Lower Electrode" icon={<ShieldCheck />}
-              locked={!upper} done={!!lower} summary={lower ? lower.name : null}
-              showBack={!!lowerCat && !lower}
-              onBack={() => setLowerCat(null)}
-            >
-              {!lowerCat ? (
-                <>
-                  <Breadcrumb trail={['Choose cooling']} />
-                  <div className="grid grid-cols-2 gap-2.5">
-                    {LOWER_CATEGORIES.map((c) => (
-                      <OptionBtn key={c.id} label={c.name} meta={c.meta} selected={false}
-                        icon={c.id === 'cooled' ? <Snowflake /> : <ShieldCheck />}
-                        onClick={() => setLowerCat(c)} />
-                    ))}
-                  </div>
-                </>
-              ) : !lower ? (
-                <>
-                  <Breadcrumb trail={[lowerCat.name, 'Choose weld-nut size']} />
-                  <div className="grid grid-cols-5 gap-2.5">
-                    {LOWER_SIZES.map((s) => (
-                      <OptionBtn key={s.id} label={s.name} meta="" selected={false}
-                        onClick={() => setLower({ body: lowerCat.body, meta: lowerCat.meta, name: `${lowerCat.name} ${s.name}` })} />
-                    ))}
-                  </div>
-                </>
-              ) : (
-                <div className="flex items-center justify-between pl-14">
-                  <span className="text-[13px] text-[#C0C0C0]">{lower.name} · <span className="text-[#1de9b6] font-mono text-[11px]">{lower.meta}</span></span>
-                  <button onClick={() => setLower(null)} className="flex items-center gap-1 text-[10px] font-mono font-bold uppercase tracking-widest text-[#1de9b6] hover:text-white bg-[#1de9b6]/10 hover:bg-[#1de9b6]/20 px-2.5 py-1.5 rounded transition-all">
-                    <ChevronLeft size={12} /> Change
-                  </button>
-                </div>
-              )}
-            </StepCard>
-
-            {/* ── STEP 3: CERAMIC PIN (size → geometry) ── */}
-            <StepCard
-              stepNum="3" meta="Step 03 · Centering" title="Ceramic Pin" icon={<Ruler />}
-              locked={!(upper && lower)} done={!!ceramic} summary={ceramic ? `${ceramic.sizeName} ${ceramic.name}` : null}
-              showBack={!!pinSize && !ceramic}
-              onBack={() => setPinSize(null)}
-            >
-              {!pinSize ? (
-                <>
-                  <Breadcrumb trail={['Choose weld-nut size']} />
-                  <div className="grid grid-cols-5 gap-2.5">
-                    {PIN_SIZES.map((s) => (
-                      <OptionBtn key={s.id} label={s.name} meta="" selected={false} onClick={() => setPinSize(s)} />
-                    ))}
-                  </div>
-                  <p className="text-[10px] text-[#888] font-mono mt-3 pl-1">Material: {PIN_MATERIAL}</p>
-                </>
-              ) : !ceramic ? (
-                <>
-                  <Breadcrumb trail={[`Nut ${pinSize.name}`, 'Choose geometry']} />
-                  <div className="grid grid-cols-3 gap-2.5">
-                    {PIN_GEOMETRIES.map((g) => (
-                      <OptionBtn key={g.id} label={g.name} meta={g.meta} icon={<Ruler />} selected={false}
-                        onClick={() => setCeramic({ ...g, sizeName: pinSize.name })} />
-                    ))}
-                  </div>
-                </>
-              ) : (
-                <div className="flex items-center justify-between pl-14">
-                  <span className="text-[13px] text-[#C0C0C0]">{ceramic.sizeName} {ceramic.name} · <span className="text-[#1de9b6] font-mono text-[11px]">{ceramic.meta}</span></span>
-                  <button onClick={() => setCeramic(null)} className="flex items-center gap-1 text-[10px] font-mono font-bold uppercase tracking-widest text-[#1de9b6] hover:text-white bg-[#1de9b6]/10 hover:bg-[#1de9b6]/20 px-2.5 py-1.5 rounded transition-all">
-                    <ChevronLeft size={12} /> Change
-                  </button>
-                </div>
-              )}
-            </StepCard>
-
-            {/* QUOTE BAR */}
-            <div className={`mt-2 p-4 md:p-5 rounded-xl border transition-all duration-500 ${completed === 3 ? 'bg-gradient-to-r from-[#1de9b6]/15 to-transparent border-[#1de9b6]/50 shadow-[0_0_24px_rgba(29,233,182,0.12)]' : 'bg-white/[0.02] border-white/8'}`}>
-              <div className="flex flex-col md:flex-row gap-4 md:gap-5 items-start md:items-center justify-between">
-                <div className="flex-1 min-w-0">
-                  <div className="text-[9px] font-mono text-[#1de9b6] tracking-[0.25em] uppercase mb-1">REF · DGSI-PW-2026</div>
-                  <div className="text-sm font-bold text-white truncate">{summary}</div>
-                  {completed < 3 && <div className="text-[11px] text-[#888] mt-1">{3 - completed} more {3 - completed === 1 ? 'component' : 'components'} to complete</div>}
-                </div>
-                <a
-                  href={completed === 3 ? '#contact' : undefined}
-                  onClick={(e) => {
-                    if (completed < 3) { e.preventDefault(); return; }
-                    onClose();
-                    setTimeout(() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }), 100);
-                  }}
-                  className={`flex items-center justify-center gap-3 px-6 md:px-7 py-3.5 text-[11px] font-black uppercase tracking-[0.2em] rounded transition-all duration-300 shrink-0 ${
-                    completed === 3 ? 'bg-[#1de9b6] text-black hover:bg-white shadow-[0_0_20px_rgba(29,233,182,0.3)] cursor-pointer' : 'bg-white/5 text-[#555] border border-white/10 cursor-not-allowed'
-                  }`}
-                >
-                  <FileText size={14} /><span>Request Quote</span>{completed === 3 && <ChevronRight size={14} />}
-                </a>
-              </div>
-            </div>
-
-            <a href="/welding-catalog.pdf" target="_blank" rel="noopener noreferrer"
-              className="flex items-center justify-center gap-3 px-6 py-3 bg-white/[0.03] border border-white/10 text-[#B8B8B8] hover:text-white hover:border-[#1de9b6]/40 text-[10px] font-black uppercase tracking-[0.2em] rounded transition-all">
-              <Download size={14} /><span>Or download full welding catalog</span>
-            </a>
-          </div>
-        </div>
+        <RFQCart cart={cart} setCart={setCart}/>
       </div>
     </div>
   );
