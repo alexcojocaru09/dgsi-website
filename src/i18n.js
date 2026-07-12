@@ -140,7 +140,27 @@ export const translations = {
   en: {
     cats: cats.en,
     subs: subs.en,
-    nav: { about: 'About', products: 'Products', services: 'Services', clients: 'Clients', process: 'Process', contact: 'Contact' },
+    nav: { about: 'About', products: 'Products', services: 'Services', clients: 'Clients', process: 'Process', contact: 'Contact', rpw: 'RPW Database' },
+    rpw: {
+      eyebrow: 'RPW · Resistance Projection Welding',
+      h2: 'RPW Electrode Database.',
+      lead: '1,778 references of ceramic centering pins, electrodes and insulating bushings for projection welding — with 2D technical drawings, cross-reference and DGSI coding. Find the right component in seconds, not in PDF catalogs.',
+      stats: [
+        { v: '1,778', l: 'References' },
+        { v: 'M4–M16', l: 'Weld nut range' },
+        { v: '2D', l: 'Drawing per reference' },
+      ],
+      props: [
+        { title: 'Instant search across 1,778 references', desc: 'Filter by weld nut (M4–M16), dimensions, shape and cooling variant. The component you need surfaces in seconds.' },
+        { title: '2D technical drawing for every reference', desc: 'Full dimensions, tolerances and nut/sheet compatibility, generated directly in your browser. Verify the fit before you order.' },
+        { title: 'Cross-reference & CSV export', desc: 'Identify the DGSI equivalent starting from the reference you already use, and export your selection for ordering or RFQ.' },
+      ],
+      open: 'Open the database',
+      quote: 'Request a quote with your drawings',
+      contact: 'Contact us',
+      note: 'The database grows continuously — new models are added regularly.',
+      mailSubject: 'RFQ RPW Electrodes — technical drawings attached',
+    },
     header: { requestQuote: 'Request Quote', shopOnline: 'Shop Online' },
     hero: {
       tag2: 'Precision Engineering & Global Sourcing',
@@ -260,7 +280,27 @@ export const translations = {
   ro: {
     cats: cats.ro,
     subs: subs.ro,
-    nav: { about: 'Despre', products: 'Produse', services: 'Servicii', clients: 'Clienți', process: 'Proces', contact: 'Contact' },
+    nav: { about: 'Despre', products: 'Produse', services: 'Servicii', clients: 'Clienți', process: 'Proces', contact: 'Contact', rpw: 'RPW Database' },
+    rpw: {
+      eyebrow: 'RPW · Resistance Projection Welding',
+      h2: 'Database electrozi RPW.',
+      lead: '1.778 de referințe de pini ceramici de centrare, electrozi și bucșe izolante pentru sudura prin proiecție — cu desene tehnice 2D, cross-reference și codificare DGSI. Găsești componenta potrivită în secunde, nu în cataloage PDF.',
+      stats: [
+        { v: '1.778', l: 'Referințe' },
+        { v: 'M4–M16', l: 'Gamă piulițe sudură' },
+        { v: '2D', l: 'Desen per referință' },
+      ],
+      props: [
+        { title: 'Căutare instant în 1.778 de referințe', desc: 'Filtrezi după piulița de sudură (M4–M16), dimensiuni, formă și varianta de răcire. Componenta de care ai nevoie apare în secunde.' },
+        { title: 'Desen tehnic 2D pentru fiecare referință', desc: 'Cote complete, toleranțe și compatibilitate piuliță/tablă, generate direct în browser. Verifici potrivirea înainte să comanzi.' },
+        { title: 'Cross-reference & export CSV', desc: 'Identifici echivalentul DGSI pornind de la referința pe care o folosești deja și exporți selecția pentru comandă sau RFQ.' },
+      ],
+      open: 'Deschide baza de date',
+      quote: 'Cere ofertă cu desenele tale',
+      contact: 'Contactează-ne',
+      note: 'Baza de date crește constant — modele noi sunt adăugate periodic.',
+      mailSubject: 'Cerere ofertă electrozi RPW — desene tehnice atașate',
+    },
     header: { requestQuote: 'Cere ofertă', shopOnline: 'Magazin online' },
     hero: {
       tag2: 'Inginerie de precizie & Sourcing global',
@@ -380,7 +420,27 @@ export const translations = {
   fr: {
     cats: cats.fr,
     subs: subs.fr,
-    nav: { about: 'À propos', products: 'Produits', services: 'Services', clients: 'Clients', process: 'Processus', contact: 'Contact' },
+    nav: { about: 'À propos', products: 'Produits', services: 'Services', clients: 'Clients', process: 'Processus', contact: 'Contact', rpw: 'RPW Database' },
+    rpw: {
+      eyebrow: 'RPW · Resistance Projection Welding',
+      h2: 'Base de données électrodes RPW.',
+      lead: "1 778 références de pions de centrage céramiques, d'électrodes et de douilles isolantes pour le soudage par bossages — avec plans techniques 2D, cross-reference et codification DGSI. Trouvez le bon composant en quelques secondes, pas dans des catalogues PDF.",
+      stats: [
+        { v: '1 778', l: 'Références' },
+        { v: 'M4–M16', l: 'Gamme écrous à souder' },
+        { v: '2D', l: 'Plan par référence' },
+      ],
+      props: [
+        { title: 'Recherche instantanée parmi 1 778 références', desc: "Filtrez par écrou à souder (M4–M16), dimensions, forme et variante de refroidissement. Le composant qu'il vous faut apparaît en quelques secondes." },
+        { title: 'Plan technique 2D pour chaque référence', desc: 'Cotes complètes, tolérances et compatibilité écrou/tôle, générés directement dans le navigateur. Vérifiez la compatibilité avant de commander.' },
+        { title: 'Cross-reference & export CSV', desc: "Identifiez l'équivalent DGSI à partir de la référence que vous utilisez déjà, et exportez votre sélection pour commande ou RFQ." },
+      ],
+      open: 'Ouvrir la base de données',
+      quote: 'Demander un devis avec vos plans',
+      contact: 'Contactez-nous',
+      note: 'La base de données s’enrichit en continu — de nouveaux modèles sont ajoutés régulièrement.',
+      mailSubject: 'Demande de devis électrodes RPW — plans techniques joints',
+    },
     header: { requestQuote: 'Demander un devis', shopOnline: 'Boutique en ligne' },
     hero: {
       tag2: 'Ingénierie de précision & sourcing mondial',
@@ -500,7 +560,27 @@ export const translations = {
   de: {
     cats: cats.de,
     subs: subs.de,
-    nav: { about: 'Über uns', products: 'Produkte', services: 'Leistungen', clients: 'Kunden', process: 'Prozess', contact: 'Kontakt' },
+    nav: { about: 'Über uns', products: 'Produkte', services: 'Leistungen', clients: 'Kunden', process: 'Prozess', contact: 'Kontakt', rpw: 'RPW Database' },
+    rpw: {
+      eyebrow: 'RPW · Resistance Projection Welding',
+      h2: 'RPW-Elektroden-Datenbank.',
+      lead: '1.778 Referenzen für keramische Zentrierstifte, Elektroden und Isolierbuchsen für das Buckelschweißen — mit technischen 2D-Zeichnungen, Cross-Reference und DGSI-Codierung. Finden Sie die passende Komponente in Sekunden, nicht in PDF-Katalogen.',
+      stats: [
+        { v: '1.778', l: 'Referenzen' },
+        { v: 'M4–M16', l: 'Schweißmutter-Bereich' },
+        { v: '2D', l: 'Zeichnung pro Referenz' },
+      ],
+      props: [
+        { title: 'Sofortsuche in 1.778 Referenzen', desc: 'Filtern nach Schweißmutter (M4–M16), Abmessungen, Form und Kühlvariante. Die benötigte Komponente erscheint in Sekunden.' },
+        { title: 'Technische 2D-Zeichnung für jede Referenz', desc: 'Vollständige Maße, Toleranzen und Mutter/Blech-Kompatibilität, direkt im Browser generiert. Prüfen Sie die Passung vor der Bestellung.' },
+        { title: 'Cross-Reference & CSV-Export', desc: 'Ermitteln Sie das DGSI-Äquivalent ausgehend von Ihrer aktuellen Referenz und exportieren Sie Ihre Auswahl für Bestellung oder RFQ.' },
+      ],
+      open: 'Datenbank öffnen',
+      quote: 'Angebot mit Ihren Zeichnungen anfordern',
+      contact: 'Kontaktieren Sie uns',
+      note: 'Die Datenbank wächst kontinuierlich — neue Modelle werden regelmäßig ergänzt.',
+      mailSubject: 'RFQ RPW-Elektroden — technische Zeichnungen im Anhang',
+    },
     header: { requestQuote: 'Angebot anfordern', shopOnline: 'Online-Shop' },
     hero: {
       tag2: 'Präzisionstechnik & globale Beschaffung',

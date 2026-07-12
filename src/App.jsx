@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ShoppingBag, FileText, Zap, Wrench, Phone, Monitor, Settings, Truck, X, Target, CheckCircle, Droplets, Ruler, ShieldCheck, Download, ChevronRight, Mail, MapPin, MessageCircle, ArrowUp, Package } from 'lucide-react';
+import { ShoppingBag, FileText, Zap, Wrench, Phone, Monitor, Settings, Truck, X, Target, CheckCircle, Droplets, Ruler, ShieldCheck, Download, ChevronRight, Mail, MapPin, MessageCircle, ArrowUp, Package, Database, ExternalLink } from 'lucide-react';
 import SubcategoryIcon from './components/SubcategoryIcons';
 import WeldingModal, { WeldingAnimation } from './components/WeldingModal';
 import { RFQProvider, AddToRFQButton, RFQFloatingBadge, RFQWizard, useRFQ } from './components/RFQSystem';
@@ -452,7 +452,6 @@ function AppInner() {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [showTop, setShowTop] = useState(false);
   const [activeFilter, setActiveFilter] = useState('All');
-  const [weldingOpen, setWeldingOpen] = useState(false);
   const [lang, setLang] = useState('en');
   const t = translations[lang];
 
@@ -463,9 +462,9 @@ function AppInner() {
   const auditIcons = [<Target />, <Droplets />, <Ruler />, <CheckCircle />];
 
   useEffect(() => {
-    document.body.style.overflow = (expandedCard || weldingOpen) ? 'hidden' : 'unset';
+    document.body.style.overflow = expandedCard ? 'hidden' : 'unset';
     return () => { document.body.style.overflow = 'unset'; };
-  }, [expandedCard, weldingOpen]);
+  }, [expandedCard]);
 
   useEffect(() => {
     const onScroll = () => {
@@ -484,7 +483,7 @@ function AppInner() {
     setMenuOpen(false);
   };
 
-  const navItems = ['about', 'products', 'services', 'clients', 'process', 'contact'];
+  const navItems = ['about', 'products', 'rpw', 'services', 'clients', 'process', 'contact'];
   const productFilters = ['All', ...productCategories.map(p => p.cat)];
   const visibleProducts = activeFilter === 'All' ? productCategories : productCategories.filter(p => p.cat === activeFilter);
 
@@ -797,40 +796,83 @@ function AppInner() {
             ))}
           </div>
 
-          {/* ── Welding teaser — opens flagship welding modal ── */}
-          <div
-            onClick={() => setWeldingOpen(true)}
-            className="group mt-12 relative p-8 md:p-14 bg-gradient-to-r from-[#1de9b6]/10 to-transparent border border-[#1de9b6]/30 hover:border-[#1de9b6]/60 overflow-hidden rounded-sm cursor-pointer transition-all duration-500 hover:shadow-[0_0_40px_rgba(29,233,182,0.1)]"
-          >
-            {/* Animated weld spark glow on hover */}
-            <div className="absolute right-10 top-1/2 -translate-y-1/2 w-64 h-64 opacity-20 group-hover:opacity-40 transition-opacity duration-500 hidden lg:block pointer-events-none">
+        </div>
+      </Section>
+
+      {/* ── RPW DATABASE SECTION ── */}
+      <Section id="rpw" className="bg-[#0A0F0D]">
+        <div className="max-w-7xl mx-auto">
+          <Eyebrow code="03 /" label={t.rpw.eyebrow} />
+          <h2 className="text-4xl md:text-5xl font-black uppercase text-white mb-6"><ScrambleText text={t.rpw.h2} /></h2>
+          <p className="max-w-3xl text-[#B8B8B8] text-lg font-light leading-relaxed mb-14">{t.rpw.lead}</p>
+
+          {/* ── Hero banner: stats + welding animation ── */}
+          <div className="relative p-8 md:p-14 bg-gradient-to-r from-[#1de9b6]/10 to-transparent border border-[#1de9b6]/30 overflow-hidden rounded-sm mb-10">
+            {/* Corner brackets */}
+            <div className="absolute top-3 left-3 w-5 h-5 border-t border-l border-[#1de9b6] pointer-events-none" />
+            <div className="absolute top-3 right-3 w-5 h-5 border-t border-r border-[#1de9b6] pointer-events-none" />
+            <div className="absolute bottom-3 left-3 w-5 h-5 border-b border-l border-[#1de9b6] pointer-events-none" />
+            <div className="absolute bottom-3 right-3 w-5 h-5 border-b border-r border-[#1de9b6] pointer-events-none" />
+            {/* Weld animation ambience */}
+            <div className="absolute right-10 top-1/2 -translate-y-1/2 w-64 h-64 opacity-25 hidden lg:block pointer-events-none">
               <WeldingAnimation height={240} />
             </div>
-            <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-10">
-              <div className="max-w-3xl">
-                <div className="flex items-center gap-3 mb-5">
-                  <span className="inline-block px-3 py-1 bg-[#1de9b6]/20 text-[#1de9b6] text-[10px] font-black uppercase tracking-widest rounded">{t.welding.flagship}</span>
-                  <Zap className="text-[#1de9b6] w-5 h-5" />
+            <div className="relative z-10 grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-2xl">
+              {t.rpw.stats.map((st, i) => (
+                <div key={i}>
+                  <div className="text-3xl md:text-4xl font-black text-[#1de9b6] mb-2">{st.v}</div>
+                  <div className="text-[10px] font-mono uppercase tracking-[0.25em] text-[#9A9A9A]">{st.l}</div>
                 </div>
-                <h3 className="text-2xl md:text-4xl font-black uppercase text-white mb-5">{t.welding.title}</h3>
-                <p className="text-[#B8B8B8] text-lg leading-relaxed">{t.welding.desc}</p>
-              </div>
-              <div className="shrink-0">
-                <div className="flex items-center justify-center gap-4 px-10 py-5 bg-transparent border-2 border-[#1de9b6] text-[#1de9b6] text-[11px] font-black uppercase tracking-[0.3em] group-hover:bg-[#1de9b6] group-hover:text-black transition-all duration-500 rounded-sm shadow-[0_0_20px_rgba(29,233,182,0.15)]">
-                  <Zap size={18} />
-                  <span>{t.welding.explore}</span>
-                  <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
-                </div>
-              </div>
+              ))}
             </div>
           </div>
+
+          {/* ── 3 value props ── */}
+          <div className="grid md:grid-cols-3 gap-6 mb-12">
+            {t.rpw.props.map((p, i) => (
+              <div key={i} className="group p-8 bg-[#0D0D0D] border border-white/5 hover:border-[#1de9b6]/60 hover:shadow-[0_0_40px_rgba(29,233,182,0.15)] hover:-translate-y-0.5 transition-all duration-300 rounded-sm">
+                <div className="text-[11px] font-mono text-[#1de9b6] tracking-[0.3em] mb-4">{String(i + 1).padStart(2, '0')} /</div>
+                <h3 className="text-base font-black uppercase text-white mb-3 tracking-wide">{p.title}</h3>
+                <p className="text-sm text-[#9A9A9A] leading-relaxed">{p.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* ── CTAs ── */}
+          <div className="flex flex-col sm:flex-row flex-wrap gap-4">
+            <a
+              href="/tools/rpw-database.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-3 px-10 py-5 bg-[#1de9b6] text-black text-[11px] font-black uppercase tracking-[0.3em] hover:bg-white transition-all duration-300 rounded-sm shadow-[0_0_20px_rgba(29,233,182,0.25)]"
+            >
+              <Database size={16} />
+              <span>{t.rpw.open}</span>
+              <ExternalLink size={14} />
+            </a>
+            <a
+              href={'mailto:office@industrytools.ro?subject=' + encodeURIComponent(t.rpw.mailSubject)}
+              className="inline-flex items-center justify-center gap-3 px-10 py-5 bg-[#1de9b6]/10 border border-[#1de9b6]/30 text-[#1de9b6] text-[11px] font-black uppercase tracking-[0.3em] hover:bg-[#1de9b6] hover:text-black transition-all duration-300 rounded-sm"
+            >
+              <FileText size={16} />
+              <span>{t.rpw.quote}</span>
+            </a>
+            <button
+              onClick={() => scrollTo('contact')}
+              className="inline-flex items-center justify-center gap-3 px-10 py-5 bg-transparent border border-white/10 text-[#B8B8B8] text-[11px] font-black uppercase tracking-[0.3em] hover:border-[#1de9b6]/60 hover:text-[#1de9b6] transition-all duration-300 rounded-sm"
+            >
+              <span>{t.rpw.contact}</span>
+              <ChevronRight size={14} />
+            </button>
+          </div>
+          <p className="mt-6 text-xs font-mono text-[#7A7A7A] tracking-wide">{t.rpw.note}</p>
         </div>
       </Section>
 
       {/* ── SERVICES SECTION ── */}
       <Section id="services" className="bg-[#0B0B0B]" bgImage="/services-bg.png">
         <div className="max-w-7xl mx-auto">
-          <Eyebrow code="03 /" label={t.services.eyebrow} />
+          <Eyebrow code="04 /" label={t.services.eyebrow} />
           <h2 className="text-4xl md:text-5xl font-black uppercase text-white mb-6"><ScrambleText text={t.services.h2} /></h2>
           <p className="max-w-2xl text-[#B8B8B8] text-lg font-light leading-relaxed mb-16">{t.services.lead}</p>
           <div className="grid md:grid-cols-3 gap-4">
@@ -855,7 +897,7 @@ function AppInner() {
       {/* ── CLIENTS ── */}
       <Section id="clients" bgImage="/clients-bg.png">
         <div className="max-w-7xl mx-auto">
-          <Eyebrow code="04 /" label={t.clients.eyebrow} />
+          <Eyebrow code="05 /" label={t.clients.eyebrow} />
           <h2 className="text-5xl font-black uppercase text-white mb-6"><ScrambleText text={t.clients.h2} /></h2>
           <p className="max-w-2xl text-[#B8B8B8] text-lg font-light leading-relaxed mb-4">{t.clients.lead}</p>
         </div>
@@ -868,7 +910,7 @@ function AppInner() {
       {/* ── PROCESS — interactive hover with detail reveal ── */}
       <Section id="process" className="bg-[#0B0B0B]" bgImage="/process-bg.png">
         <div className="max-w-7xl mx-auto text-center">
-           <Eyebrow code="05 /" label={t.process.eyebrow} />
+           <Eyebrow code="06 /" label={t.process.eyebrow} />
            <h2 className="text-5xl font-black uppercase text-white mb-6"><ScrambleText text={t.process.h2} /></h2>
            <p className="max-w-2xl mx-auto text-[#C0C0C0] text-lg font-light leading-relaxed mb-20">{t.process.lead}</p>
 
@@ -937,7 +979,7 @@ function AppInner() {
       {/* ── CONTACT (CHANGE #4: unified business card + active channels + live indicators) ── */}
       <Section id="contact">
         <div className="max-w-7xl mx-auto">
-           <Eyebrow code="06 /" label={t.contact.eyebrow} />
+           <Eyebrow code="07 /" label={t.contact.eyebrow} />
            <div className="grid md:grid-cols-2 gap-20">
               <div>
                  <h2 className="text-5xl md:text-6xl font-black uppercase text-white leading-[0.9] mb-10"><ScrambleText text={t.contact.h2a} /><br/><span className="text-[#1de9b6]"><ScrambleText text={t.contact.h2b} /></span></h2>
@@ -1264,9 +1306,6 @@ function AppInner() {
           </div>
         </div>
       )}
-
-      {/* ── WELDING MODAL (flagship) ── */}
-      {weldingOpen && <WeldingModal onClose={() => setWeldingOpen(false)} />}
 
       {/* ── RFQ SYSTEM — floating badge + wizard ── */}
       <RFQFloatingBadge />
