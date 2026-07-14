@@ -27,14 +27,14 @@ function TeamsIcon({ size = 24, className = '' }) {
 function CertBadge({ primary, secondary, size = 92 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <circle cx="60" cy="60" r="56" fill="#0C1512" stroke="#1de9b6" strokeOpacity="0.35" strokeWidth="1.5" />
-      <circle cx="60" cy="60" r="49" fill="none" stroke="#1de9b6" strokeOpacity="0.5" strokeWidth="1" strokeDasharray="2 4" />
-      <circle cx="60" cy="60" r="43" fill="none" stroke="#1de9b6" strokeOpacity="0.16" strokeWidth="1" />
-      <text x="60" y="31" textAnchor="middle" fontFamily="'Space Mono', monospace" fontSize="7" letterSpacing="2.5" fill="#1de9b6" fillOpacity="0.85">CERTIFIED</text>
-      <text x="60" y="60" textAnchor="middle" fontFamily="Inter, sans-serif" fontSize="16" fontWeight="800" letterSpacing="1.5" fill="#1de9b6">{primary}</text>
+      <circle cx="60" cy="60" r="56" fill="#0C1512" stroke="#5EEAD4" strokeOpacity="0.35" strokeWidth="1.5" />
+      <circle cx="60" cy="60" r="49" fill="none" stroke="#5EEAD4" strokeOpacity="0.5" strokeWidth="1" strokeDasharray="2 4" />
+      <circle cx="60" cy="60" r="43" fill="none" stroke="#5EEAD4" strokeOpacity="0.16" strokeWidth="1" />
+      <text x="60" y="31" textAnchor="middle" fontFamily="'Space Mono', monospace" fontSize="7" letterSpacing="2.5" fill="#5EEAD4" fillOpacity="0.85">CERTIFIED</text>
+      <text x="60" y="60" textAnchor="middle" fontFamily="Inter, sans-serif" fontSize="16" fontWeight="800" letterSpacing="1.5" fill="#5EEAD4">{primary}</text>
       <text x="60" y="83" textAnchor="middle" fontFamily="Inter, sans-serif" fontSize="20" fontWeight="900" letterSpacing="1" fill="#FFFFFF">{secondary}</text>
       <g transform="translate(60,99)">
-        <circle cx="0" cy="0" r="8" fill="#1de9b6" />
+        <circle cx="0" cy="0" r="8" fill="#5EEAD4" />
         <path d="M-3.4 0 L-1 2.4 L3.6 -2.6" stroke="#0A0E11" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" fill="none" />
       </g>
     </svg>
@@ -204,7 +204,7 @@ function Section({ id, children, className = '', bgImage = null }) {
           <div className="absolute inset-0 bg-gradient-to-b from-[#080808] via-[#080808]/50 to-[#080808]" />
         </>
       )}
-      <div className="absolute top-0 left-0 right-0 h-px bg-[#1de9b6]/20 z-10" />
+      <div className="absolute top-0 left-0 right-0 h-px bg-[#5EEAD4]/20 z-10" />
       <div className="relative z-10 w-full">
         {children}
       </div>
@@ -216,8 +216,8 @@ function Eyebrow({ code, label }) {
   return (
     <div className="flex items-center gap-4 mb-10">
       <span className="text-[10px] text-[#7A7A7A] font-mono tracking-widest">{code}</span>
-      <div className="h-px flex-1 max-w-[40px] bg-[#1de9b6]/40" />
-      <span className="text-[10px] text-[#1de9b6] font-mono tracking-[0.3em] uppercase">{label}</span>
+      <div className="h-px flex-1 max-w-[40px] bg-[#5EEAD4]/40" />
+      <span className="text-[10px] text-[#5EEAD4] font-mono tracking-[0.3em] uppercase">{label}</span>
     </div>
   );
 }
@@ -303,7 +303,7 @@ function CursorSpotlight() {
     <div
       className="pointer-events-none fixed inset-0 z-[1] transition-opacity duration-300"
       style={{
-        background: `radial-gradient(600px circle at ${x}px ${y}px, rgba(29,233,182,0.06), transparent 70%)`,
+        background: `radial-gradient(600px circle at ${x}px ${y}px, rgba(94, 234, 212,0.06), transparent 70%)`,
       }}
     />
   );
@@ -314,7 +314,7 @@ function LogoCard({ logo, className = '' }) {
   const [failed, setFailed] = useState(false);
   return (
     <div
-      className={`group/logo shrink-0 flex items-center justify-center bg-white rounded-xl border border-black/[0.06] p-6 overflow-hidden transition-all duration-300 ease-out hover:-translate-y-1 hover:scale-[1.03] hover:shadow-[0_12px_40px_-12px_rgba(29,233,182,0.4)] hover:border-[#1de9b6]/30 ${className}`}
+      className={`group/logo shrink-0 flex items-center justify-center bg-white rounded-xl border border-black/[0.06] p-6 overflow-hidden transition-all duration-300 ease-out hover:-translate-y-1 hover:scale-[1.03] hover:shadow-[0_12px_40px_-12px_rgba(94, 234, 212,0.4)] hover:border-[#5EEAD4]/30 ${className}`}
     >
       {!failed ? (
         <img
@@ -367,10 +367,10 @@ const EmergencyTimeline = ({ expanded = false }) => {
   return (
     <div className={`w-full flex items-start justify-between relative ${expanded ? 'px-16' : 'px-2'}`}>
       <div className={`absolute left-0 right-0 h-[1px] bg-[#1A1A1A] z-0 ${expanded ? 'top-10 px-28' : 'top-3.5 px-6'}`} />
-      <div className={`absolute left-0 bg-[#1de9b6] z-0 animate-progress-flow ${expanded ? 'top-10 h-px shadow-[0_0_15px_#1de9b6]' : 'top-3.5 h-[1px] shadow-[0_0_8px_#1de9b6]'}`} style={{ animationDelay: '0.5s' }} />
+      <div className={`absolute left-0 bg-[#5EEAD4] z-0 animate-progress-flow ${expanded ? 'top-10 h-px shadow-[0_0_15px_#5EEAD4]' : 'top-3.5 h-[1px] shadow-[0_0_8px_#5EEAD4]'}`} style={{ animationDelay: '0.5s' }} />
       {steps.map((step, idx) => (
         <div key={idx} className="relative z-10 flex flex-col items-center gap-2 animate-fade-in" style={{ animationDelay: `${500 + idx * 300}ms` }}>
-          <div className={`${expanded ? 'w-20 h-20 border-[3px]' : 'w-7 h-7 border'} rounded-full bg-[#080808] border-[#1de9b6] text-[#1de9b6] flex items-center justify-center shadow-[0_0_15px_rgba(29,233,182,0.3)]`}>{step.icon}</div>
+          <div className={`${expanded ? 'w-20 h-20 border-[3px]' : 'w-7 h-7 border'} rounded-full bg-[#080808] border-[#5EEAD4] text-[#5EEAD4] flex items-center justify-center shadow-[0_0_15px_rgba(94, 234, 212,0.3)]`}>{step.icon}</div>
           <div className={`flex flex-col items-center text-center ${expanded ? 'mt-4' : 'mt-2'}`}>
             <span className={`${expanded ? 'text-3xl md:text-4xl' : 'text-[10px]'} font-black text-white leading-none`}>{step.time}</span>
             <span className={`${expanded ? 'text-sm md:text-lg mt-2' : 'text-[7px] mt-1'} font-mono text-[#D0D0D0] uppercase tracking-widest`}>{step.label}</span>
@@ -418,7 +418,7 @@ function ContactForm({ t }) {
   if (sent) {
     return (
       <div className="flex flex-col items-center justify-center py-16 gap-4">
-        <div className="w-14 h-14 rounded-full bg-[#1de9b6]/20 flex items-center justify-center"><Check size={28} className="text-[#1de9b6]" /></div>
+        <div className="w-14 h-14 rounded-full bg-[#5EEAD4]/20 flex items-center justify-center"><Check size={28} className="text-[#5EEAD4]" /></div>
         <p className="text-white font-black uppercase text-sm tracking-widest">Message sent</p>
         <p className="text-[#8A8A8A] text-xs font-mono">Your email client should open with the message pre-filled.</p>
       </div>
@@ -428,15 +428,15 @@ function ContactForm({ t }) {
   return (
     <>
       <div className="grid grid-cols-2 gap-6 mb-6">
-        <input type="text" value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} placeholder={t.contact.formCompany} className="bg-[#080808] border border-white/10 p-4 text-xs font-bold uppercase focus:border-[#1de9b6] outline-none transition-all text-white placeholder-[#5A5A5A]" />
-        <input type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder={t.contact.formName} className="bg-[#080808] border border-white/10 p-4 text-xs font-bold uppercase focus:border-[#1de9b6] outline-none transition-all text-white placeholder-[#5A5A5A]" />
+        <input type="text" value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} placeholder={t.contact.formCompany} className="bg-[#080808] border border-white/10 p-4 text-xs font-bold uppercase focus:border-[#5EEAD4] outline-none transition-all text-white placeholder-[#5A5A5A]" />
+        <input type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder={t.contact.formName} className="bg-[#080808] border border-white/10 p-4 text-xs font-bold uppercase focus:border-[#5EEAD4] outline-none transition-all text-white placeholder-[#5A5A5A]" />
       </div>
-      <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder={t.contact.formEmail} className="w-full bg-[#080808] border border-white/10 p-4 text-xs font-bold uppercase focus:border-[#1de9b6] outline-none mb-6 transition-all text-white placeholder-[#5A5A5A]" />
-      <textarea rows="4" value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} placeholder={t.contact.formMessage} className="w-full bg-[#080808] border border-white/10 p-4 text-xs font-bold uppercase focus:border-[#1de9b6] outline-none mb-8 resize-none transition-all text-white placeholder-[#5A5A5A]"></textarea>
+      <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder={t.contact.formEmail} className="w-full bg-[#080808] border border-white/10 p-4 text-xs font-bold uppercase focus:border-[#5EEAD4] outline-none mb-6 transition-all text-white placeholder-[#5A5A5A]" />
+      <textarea rows="4" value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} placeholder={t.contact.formMessage} className="w-full bg-[#080808] border border-white/10 p-4 text-xs font-bold uppercase focus:border-[#5EEAD4] outline-none mb-8 resize-none transition-all text-white placeholder-[#5A5A5A]"></textarea>
       <button
         onClick={handleSend}
         disabled={!form.email.trim() || !/\S+@\S+\.\S+/.test(form.email)}
-        className="w-full py-5 bg-[#1de9b6] text-black font-black uppercase text-xs hover:bg-white transition-all shadow-[0_0_20px_#1de9b633] rounded-sm disabled:opacity-40 disabled:cursor-not-allowed"
+        className="w-full py-5 bg-[#5EEAD4] text-black font-black uppercase text-xs hover:bg-white transition-all shadow-[0_0_20px_#5EEAD433] rounded-sm disabled:opacity-40 disabled:cursor-not-allowed"
       >
         {t.contact.send}
       </button>
@@ -483,7 +483,7 @@ function AppInner() {
     setMenuOpen(false);
   };
 
-  const navItems = ['about', 'products', 'rpw', 'services', 'clients', 'process', 'contact'];
+  const navItems = ['about', 'products', 'services', 'clients', 'process', 'contact'];
   const productFilters = ['All', ...productCategories.map(p => p.cat)];
   const visibleProducts = activeFilter === 'All' ? productCategories : productCategories.filter(p => p.cat === activeFilter);
 
@@ -491,25 +491,25 @@ function AppInner() {
   const aboutCards = t.about.cards.map(c => ({ ...c, icon: aboutIcons[c.id] }));
 
   return (
-    <div className="min-h-screen bg-[#080808] text-[#F0EDE8] font-sans selection:bg-[#1de9b6] selection:text-black overflow-x-hidden">
+    <div className="min-h-screen bg-[#080808] text-[#F0EDE8] font-sans selection:bg-[#5EEAD4] selection:text-black overflow-x-hidden">
 
       {/* ── CURSOR SPOTLIGHT — radial glow following mouse ── */}
       <CursorSpotlight />
 
       {/* ── SCROLL PROGRESS BAR ── */}
       <div className="fixed top-0 left-0 right-0 h-[3px] z-[60] bg-transparent">
-        <div className="h-full bg-gradient-to-r from-[#1de9b6] to-[#5fffd9] shadow-[0_0_10px_rgba(29,233,182,0.6)] transition-all duration-150" style={{ width: `${scrollProgress}%` }} />
+        <div className="h-full bg-gradient-to-r from-[#5EEAD4] to-[#5fffd9] shadow-[0_0_10px_rgba(94, 234, 212,0.6)] transition-all duration-150" style={{ width: `${scrollProgress}%` }} />
       </div>
 
       {/* ── HEADER ─────────────────────────────────────────────────────── */}
-      <header className={`fixed top-0 w-full z-50 transition-all duration-500 ${scrolled ? 'bg-[#080808]/98 backdrop-blur-md shadow-[0_1px_0_rgba(29,233,182,0.15)]' : 'bg-gradient-to-b from-[#080808]/95 via-[#080808]/60 to-transparent'}`}>
+      <header className={`fixed top-0 w-full z-50 transition-all duration-500 ${scrolled ? 'bg-[#080808]/98 backdrop-blur-md shadow-[0_1px_0_rgba(94, 234, 212,0.15)]' : 'bg-gradient-to-b from-[#080808]/95 via-[#080808]/60 to-transparent'}`}>
 
         {/* ═══ TIER 1 — utility strip: language + request quote ═══ */}
         <div className="hidden xl:block border-b border-white/[0.06]">
           <div className="max-w-[98%] 2xl:max-w-7xl mx-auto px-6 h-9 flex items-center justify-between">
             <span className="text-[9px] font-mono text-[#5A5A5A] tracking-[0.3em] uppercase">Pitești · Romania — Tier-1 Industrial Supply</span>
             <div className="flex items-center gap-5">
-              <button onClick={() => setWizardOpen(true)} className="group flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.25em] text-[#1de9b6] hover:text-white transition-colors">
+              <button onClick={() => setWizardOpen(true)} className="group flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.25em] text-[#5EEAD4] hover:text-white transition-colors">
                 <FileText size={11} className="transition-transform group-hover:rotate-12" />
                 <span>{t.header.requestQuote}</span>
               </button>
@@ -520,7 +520,7 @@ function AppInner() {
                     key={l}
                     onClick={() => setLang(l)}
                     aria-label={`Switch language to ${l.toUpperCase()}`}
-                    className={`px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.15em] rounded-[2px] transition-all duration-300 ${lang === l ? 'bg-[#1de9b6] text-black shadow-[0_0_10px_rgba(29,233,182,0.3)]' : 'text-[#8A8A8A] hover:text-white'}`}
+                    className={`px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.15em] rounded-[2px] transition-all duration-300 ${lang === l ? 'bg-[#5EEAD4] text-black shadow-[0_0_10px_rgba(94, 234, 212,0.3)]' : 'text-[#8A8A8A] hover:text-white'}`}
                   >
                     {l}
                   </button>
@@ -537,34 +537,34 @@ function AppInner() {
             <div className="relative w-9 h-9 flex items-center justify-center shrink-0">
                <svg viewBox="0 0 100 100" className="w-full h-full overflow-visible">
                   <rect x="14" y="74" width="72" height="12" rx="1.5" fill="#2A2A2A" stroke="#6A6A6A" strokeWidth="0.5" />
-                  <rect x="14" y="74" width="72" height="3" rx="1.5" fill="#1de9b6" opacity="0.25" />
+                  <rect x="14" y="74" width="72" height="3" rx="1.5" fill="#5EEAD4" opacity="0.25" />
                   <g className="opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                    <line x1="8" y1="80" x2="90" y2="80" stroke="#1de9b6" strokeWidth="0.5" strokeDasharray="2 2" opacity="0.4" />
-                    <text x="92" y="83" fill="#1de9b6" fontSize="8" fontWeight="bold" opacity="0.7">X</text>
-                    <line x1="50" y1="6" x2="50" y2="86" stroke="#1de9b6" strokeWidth="0.5" strokeDasharray="2 2" opacity="0.4" />
-                    <text x="53" y="10" fill="#1de9b6" fontSize="8" fontWeight="bold" opacity="0.7">Y</text>
+                    <line x1="8" y1="80" x2="90" y2="80" stroke="#5EEAD4" strokeWidth="0.5" strokeDasharray="2 2" opacity="0.4" />
+                    <text x="92" y="83" fill="#5EEAD4" fontSize="8" fontWeight="bold" opacity="0.7">X</text>
+                    <line x1="50" y1="6" x2="50" y2="86" stroke="#5EEAD4" strokeWidth="0.5" strokeDasharray="2 2" opacity="0.4" />
+                    <text x="53" y="10" fill="#5EEAD4" fontSize="8" fontWeight="bold" opacity="0.7">Y</text>
                   </g>
                   <g className="group-hover:animate-cnc-mill">
                     <rect x="40" y="10" width="20" height="26" rx="2" fill="#8A8A8A" />
                     <rect x="38" y="32" width="24" height="5" rx="1" fill="#7A7A7A" />
                     <g className="origin-center group-hover:animate-spin" style={{ transformOrigin: '50px 52px', animationDuration: '0.4s' }}>
-                      <path d="M42 37 L58 37 L55 68 C54 73, 46 73, 45 68 Z" fill="#1de9b6" />
+                      <path d="M42 37 L58 37 L55 68 C54 73, 46 73, 45 68 Z" fill="#5EEAD4" />
                       <path d="M45 42 Q 50 48, 55 42" stroke="#050505" strokeWidth="1.2" fill="none" opacity="0.5" />
                       <path d="M45 50 Q 50 56, 55 50" stroke="#050505" strokeWidth="1.2" fill="none" opacity="0.5" />
                       <path d="M46 58 Q 50 64, 54 58" stroke="#050505" strokeWidth="1.2" fill="none" opacity="0.5" />
                     </g>
                     <g className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <circle cx="42" cy="69" r="1" fill="#1de9b6" className="group-hover:animate-chip1" />
+                      <circle cx="42" cy="69" r="1" fill="#5EEAD4" className="group-hover:animate-chip1" />
                       <circle cx="58" cy="69" r="1" fill="#5fffd9" className="group-hover:animate-chip2" />
-                      <circle cx="50" cy="71" r="0.8" fill="#1de9b6" className="group-hover:animate-chip3" />
+                      <circle cx="50" cy="71" r="0.8" fill="#5EEAD4" className="group-hover:animate-chip3" />
                     </g>
                   </g>
                </svg>
             </div>
             {/* ── Brand text (full name, 2 stacked lines, right of icon) ── */}
             <div className="flex flex-col items-start leading-none">
-              <span className="text-[13px] md:text-[15px] font-black uppercase tracking-[0.22em] text-white group-hover:text-[#1de9b6] transition-colors whitespace-nowrap">Development General</span>
-              <span className="text-[11px] md:text-[13px] font-light uppercase tracking-[0.48em] text-[#1de9b6] group-hover:text-white transition-colors mt-1 whitespace-nowrap">System Industry</span>
+              <span className="text-[13px] md:text-[15px] font-black uppercase tracking-[0.22em] text-white group-hover:text-[#5EEAD4] transition-colors whitespace-nowrap">Development General</span>
+              <span className="text-[11px] md:text-[13px] font-light uppercase tracking-[0.48em] text-[#5EEAD4] group-hover:text-white transition-colors mt-1 whitespace-nowrap">System Industry</span>
             </div>
           </button>
           <div className="hidden xl:flex flex-1 items-center justify-end gap-8">
@@ -572,7 +572,7 @@ function AppInner() {
               {navItems.map(item => (
                 <button key={item} onClick={() => scrollTo(item)} className="relative text-[12px] font-bold uppercase tracking-[0.15em] text-[#E0E0E0] hover:text-white transition-colors cursor-pointer group py-2 whitespace-nowrap">
                   {t.nav[item]}
-                  <span className="absolute bottom-0 left-1/2 w-0 h-[2px] bg-[#1de9b6] transition-all duration-300 group-hover:w-full group-hover:left-0 shadow-[0_0_8px_rgba(29,233,182,0.5)]" />
+                  <span className="absolute bottom-0 left-1/2 w-0 h-[2px] bg-[#5EEAD4] transition-all duration-300 group-hover:w-full group-hover:left-0 shadow-[0_0_8px_rgba(94, 234, 212,0.5)]" />
                 </button>
               ))}
             </nav>
@@ -580,7 +580,7 @@ function AppInner() {
               href="https://www.industrytools.ro"
               target="_blank"
               rel="noopener noreferrer"
-              className="group relative flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-[#1de9b6] to-[#0bc192] text-[#050505] text-xs font-black uppercase tracking-[0.2em] transition-all duration-300 hover:from-white hover:to-white hover:text-black shadow-[0_0_20px_rgba(29,233,182,0.15)] rounded-sm shrink-0 whitespace-nowrap"
+              className="group relative flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-[#5EEAD4] to-[#0bc192] text-[#050505] text-xs font-black uppercase tracking-[0.2em] transition-all duration-300 hover:from-white hover:to-white hover:text-black shadow-[0_0_20px_rgba(94, 234, 212,0.15)] rounded-sm shrink-0 whitespace-nowrap"
             >
               <ShoppingBag size={15} className="transition-transform duration-300 group-hover:-translate-y-0.5" />
               <span>{t.header.shopOnline}</span>
@@ -593,9 +593,9 @@ function AppInner() {
           </button>
         </div>
         {menuOpen && (
-          <div className="xl:hidden bg-[#080808] border-t border-[#1de9b6]/20 px-6 py-8 flex flex-col gap-6">
+          <div className="xl:hidden bg-[#080808] border-t border-[#5EEAD4]/20 px-6 py-8 flex flex-col gap-6">
             {navItems.map(item => (
-              <button key={item} onClick={() => scrollTo(item)} className="text-left text-sm font-bold uppercase tracking-[0.2em] text-[#F0EDE8] hover:text-[#1de9b6] transition-colors">
+              <button key={item} onClick={() => scrollTo(item)} className="text-left text-sm font-bold uppercase tracking-[0.2em] text-[#F0EDE8] hover:text-[#5EEAD4] transition-colors">
                 {t.nav[item]}
               </button>
             ))}
@@ -605,19 +605,19 @@ function AppInner() {
                 <button
                   key={l}
                   onClick={() => setLang(l)}
-                  className={`px-3 py-2 text-[11px] font-black uppercase tracking-[0.15em] rounded-sm border transition-all ${lang === l ? 'bg-[#1de9b6] text-black border-[#1de9b6]' : 'text-[#8A8A8A] border-white/10 hover:text-white hover:border-white/30'}`}
+                  className={`px-3 py-2 text-[11px] font-black uppercase tracking-[0.15em] rounded-sm border transition-all ${lang === l ? 'bg-[#5EEAD4] text-black border-[#5EEAD4]' : 'text-[#8A8A8A] border-white/10 hover:text-white hover:border-white/30'}`}
                 >
                   {l}
                 </button>
               ))}
             </div>
             <div className="flex flex-col gap-3 mt-6 pt-6 border-t border-[#1A1A1A]">
-               <a href="https://www.industrytools.ro" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-[#1de9b6] to-[#0bc192] text-black text-xs font-black uppercase tracking-[0.2em] rounded-sm shadow-[0_0_15px_rgba(29,233,182,0.15)]">
+               <a href="https://www.industrytools.ro" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-[#5EEAD4] to-[#0bc192] text-black text-xs font-black uppercase tracking-[0.2em] rounded-sm shadow-[0_0_15px_rgba(94, 234, 212,0.15)]">
                   <ShoppingBag size={16} />
                   <span>{t.header.shopOnline}</span>
                </a>
                <button onClick={() => { setWizardOpen(true); setMenuOpen(false); }} className="flex items-center justify-center gap-3 px-6 py-3 text-[#B8B8B8] text-[11px] font-bold uppercase tracking-[0.2em] hover:text-white transition-colors">
-                  <FileText size={15} className="text-[#1de9b6]/60" />
+                  <FileText size={15} className="text-[#5EEAD4]/60" />
                   <span>{t.header.requestQuote}</span>
                </button>
             </div>
@@ -631,21 +631,21 @@ function AppInner() {
           <div className="absolute inset-0 bg-gradient-to-t from-[#080808] via-[#080808]/70 to-[#080808]/30" />
           <div className="absolute inset-0 bg-gradient-to-r from-[#080808] via-[#080808]/70 to-transparent" />
         </div>
-        <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'linear-gradient(#1de9b6 1px, transparent 1px), linear-gradient(90deg, #1de9b6 1px, transparent 1px)', backgroundSize: '80px 80px' }} />
+        <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'linear-gradient(#5EEAD4 1px, transparent 1px), linear-gradient(90deg, #5EEAD4 1px, transparent 1px)', backgroundSize: '80px 80px' }} />
         <div className="absolute top-32 right-6 text-right hidden md:block">
-          <p className="text-[9px] font-mono text-[#1de9b6]/50 tracking-widest">PITEȘTI · ROMANIA</p>
+          <p className="text-[9px] font-mono text-[#5EEAD4]/50 tracking-widest">PITEȘTI · ROMANIA</p>
           <p className="text-[9px] font-mono text-[#7A7A7A] tracking-widest uppercase">{t.hero.tag2}</p>
         </div>
         <div className="relative z-10 max-w-7xl mx-auto px-6 w-full pt-32 pb-16">
           <div className="flex items-center gap-4 mb-8 animate-fade-in">
-            <div className="h-px w-12 bg-[#1de9b6]" />
-            <span className="text-[10px] font-mono text-[#1de9b6] tracking-[0.4em] uppercase">{t.hero.badge}</span>
+            <div className="h-px w-12 bg-[#5EEAD4]" />
+            <span className="text-[10px] font-mono text-[#5EEAD4] tracking-[0.4em] uppercase">{t.hero.badge}</span>
           </div>
           <h1 className="text-[clamp(2.6rem,7.5vw,6.5rem)] font-black uppercase leading-[0.95] tracking-tight text-white mb-8 max-w-5xl">
             <ScrambleText text={t.hero.h1a} /><br />
-            <span className="text-[#1de9b6]"><ScrambleText text={t.hero.h1b} /></span>
+            <span className="text-[#5EEAD4]"><ScrambleText text={t.hero.h1b} /></span>
           </h1>
-          <p className="max-w-2xl text-lg md:text-xl text-[#BCBCBC] font-light leading-relaxed border-l-2 border-[#1de9b6]/40 pl-6 mb-12">
+          <p className="max-w-2xl text-lg md:text-xl text-[#BCBCBC] font-light leading-relaxed border-l-2 border-[#5EEAD4]/40 pl-6 mb-12">
             {t.hero.lead}
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
@@ -653,7 +653,7 @@ function AppInner() {
               href="https://www.industrytools.ro"
               target="_blank"
               rel="noopener noreferrer"
-              className="group flex items-center justify-center gap-3 px-8 py-4 bg-[#1de9b6] text-black font-black uppercase tracking-[0.15em] text-xs hover:bg-[#5fffd9] transition-all shadow-[0_0_30px_rgba(29,233,182,0.25)] rounded-sm"
+              className="group flex items-center justify-center gap-3 px-8 py-4 bg-[#5EEAD4] text-black font-black uppercase tracking-[0.15em] text-xs hover:bg-[#5fffd9] transition-all shadow-[0_0_30px_rgba(94, 234, 212,0.25)] rounded-sm"
             >
               <ShoppingBag size={16} className="group-hover:-translate-y-0.5 transition-transform" />
               {t.header.shopOnline}
@@ -665,7 +665,7 @@ function AppInner() {
         </div>
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
           <span className="text-[8px] font-mono text-[#7A7A7A] tracking-widest uppercase">{t.hero.scroll}</span>
-          <div className="w-px h-12 bg-gradient-to-b from-[#1de9b6]/40 to-transparent" />
+          <div className="w-px h-12 bg-gradient-to-b from-[#5EEAD4]/40 to-transparent" />
         </div>
       </section>
 
@@ -674,7 +674,7 @@ function AppInner() {
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-0 md:divide-x md:divide-white/5">
           {/* Slot 1: static "Since 2023" — no counter */}
           <div className="text-center md:px-8">
-            <div className="text-3xl md:text-4xl font-black text-[#1de9b6] mb-1">{t.stats.since}</div>
+            <div className="text-3xl md:text-4xl font-black text-[#5EEAD4] mb-1">{t.stats.since}</div>
             <div className="text-[10px] text-[#8A8A8A] font-mono uppercase tracking-widest">{t.stats.romaniaBased}</div>
           </div>
           {[
@@ -683,7 +683,7 @@ function AppInner() {
             { value: 30, suffix: '+', label: t.stats.partners },
           ].map((s, i) => (
             <div key={i} className="text-center md:px-8">
-              <div className="text-3xl md:text-4xl font-black text-[#1de9b6] mb-1"><Counter end={s.value} suffix={s.suffix} /></div>
+              <div className="text-3xl md:text-4xl font-black text-[#5EEAD4] mb-1"><Counter end={s.value} suffix={s.suffix} /></div>
               <div className="text-[10px] text-[#8A8A8A] font-mono uppercase tracking-widest">{s.label}</div>
             </div>
           ))}
@@ -698,7 +698,7 @@ function AppInner() {
           {/* Header block: heading + paragraph + CTA, stacked centered/aligned */}
           <div className="max-w-4xl mb-16">
             <h2 className="text-4xl md:text-5xl font-black uppercase leading-tight tracking-tight text-white mb-8">
-              <ScrambleText text={t.about.h2a} /><br /><span className="text-[#1de9b6]"><ScrambleText text={t.about.h2b} /></span>
+              <ScrambleText text={t.about.h2a} /><br /><span className="text-[#5EEAD4]"><ScrambleText text={t.about.h2b} /></span>
             </h2>
             <p className="text-[#C0C0C0] text-lg leading-relaxed mb-10">
               {t.about.lead}
@@ -707,7 +707,7 @@ function AppInner() {
               href="/DGSI-pres-EN.pdf"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-3 px-8 py-4 border border-[#1de9b6]/50 text-[#1de9b6] text-[11px] font-bold uppercase tracking-[0.2em] hover:bg-[#1de9b6] hover:text-black hover:border-[#1de9b6] transition-all duration-300 rounded-sm group shadow-[0_0_15px_rgba(29,233,182,0.1)]"
+              className="inline-flex items-center gap-3 px-8 py-4 border border-[#5EEAD4]/50 text-[#5EEAD4] text-[11px] font-bold uppercase tracking-[0.2em] hover:bg-[#5EEAD4] hover:text-black hover:border-[#5EEAD4] transition-all duration-300 rounded-sm group shadow-[0_0_15px_rgba(94, 234, 212,0.1)]"
             >
               <FileText size={14} className="group-hover:rotate-12 transition-transform" />
               <span>{t.about.viewProfile}</span>
@@ -720,14 +720,14 @@ function AppInner() {
               <div
                 key={f.id}
                 onClick={() => setExpandedCard(f.id)}
-                className="p-8 md:p-9 bg-[#080808]/80 backdrop-blur-sm border border-[#1de9b6]/20 hover:border-[#1de9b6]/60 transition-all group cursor-pointer relative overflow-hidden flex flex-col min-h-[240px]"
+                className="p-8 md:p-9 bg-[#080808]/80 backdrop-blur-sm border border-[#5EEAD4]/20 hover:border-[#5EEAD4]/60 transition-all group cursor-pointer relative overflow-hidden flex flex-col min-h-[240px]"
               >
                 <div className="relative z-10 transition-all duration-300 group-hover:-translate-y-1 flex-1 flex flex-col">
-                  <div className="text-[#1de9b6] mb-6 w-10 h-10">{f.icon}</div>
-                  <div className="w-8 h-px bg-[#1de9b6] mb-5 group-hover:w-14 transition-all duration-300" />
+                  <div className="text-[#5EEAD4] mb-6 w-10 h-10">{f.icon}</div>
+                  <div className="w-8 h-px bg-[#5EEAD4] mb-5 group-hover:w-14 transition-all duration-300" />
                   <h4 className="text-base md:text-lg font-black uppercase tracking-wider text-white mb-4 leading-tight">{f.title}</h4>
                   <p className="text-sm text-[#BCBCBC] leading-relaxed flex-1">{f.desc}</p>
-                  <span className="mt-6 text-[10px] font-bold text-[#1de9b6] uppercase tracking-widest flex items-center gap-2 opacity-60 group-hover:opacity-100 transition-opacity">
+                  <span className="mt-6 text-[10px] font-bold text-[#5EEAD4] uppercase tracking-widest flex items-center gap-2 opacity-60 group-hover:opacity-100 transition-opacity">
                     {t.about.learnMore} <ChevronRight size={11} />
                   </span>
                 </div>
@@ -741,8 +741,111 @@ function AppInner() {
       <Section id="products" bgImage="/products-bg.png">
         <div className="max-w-7xl mx-auto">
           <Eyebrow code="02 /" label={t.products.eyebrow} />
-          <h2 className="text-4xl md:text-5xl font-black uppercase leading-tight tracking-tight text-white mb-6"><ScrambleText text={t.products.h2a} /><br /><span className="text-[#1de9b6]"><ScrambleText text={t.products.h2b} /></span></h2>
-          <p className="max-w-2xl text-[#B8B8B8] text-lg font-light leading-relaxed mb-10">{t.products.lead}</p>
+          <h2 className="text-4xl md:text-5xl font-black uppercase leading-tight tracking-tight text-white mb-6"><ScrambleText text={t.products.h2a} /><br /><span className="text-[#5EEAD4]"><ScrambleText text={t.products.h2b} /></span></h2>
+          <p className="max-w-2xl text-[#B8B8B8] text-lg font-light leading-relaxed mb-16">{t.products.lead}</p>
+
+          {/* ═══ SUB-GROUP 1: OWN MANUFACTURING · INDUSTRYTOOLS BY DGSI ═══ */}
+          <div className="mb-20">
+            <div className="flex items-center gap-4 mb-8">
+              <div className="h-px w-10 bg-[#5EEAD4]" />
+              <span className="text-[10px] md:text-[11px] font-mono text-[#5EEAD4] tracking-[0.3em] uppercase">{t.products.ownGroup}</span>
+              <div className="h-px flex-1 bg-[#5EEAD4]/20" />
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* Card 1 — RPW Ceramic Electrodes */}
+              <div className="group relative bg-gradient-to-br from-[#0D1210] to-[#080808] border border-[#5EEAD4]/25 hover:border-[#5EEAD4]/60 rounded-xl p-8 md:p-9 transition-all duration-300 overflow-hidden flex flex-col hover:shadow-[0_0_40px_rgba(94, 234, 212,0.15)] hover:-translate-y-0.5">
+                <div className="absolute top-0 left-0 w-5 h-5 border-t border-l border-[#5EEAD4]/60" />
+                <div className="absolute top-0 right-0 w-5 h-5 border-t border-r border-[#5EEAD4]/60" />
+                <div className="absolute bottom-0 left-0 w-5 h-5 border-b border-l border-[#5EEAD4]/60" />
+                <div className="absolute bottom-0 right-0 w-5 h-5 border-b border-r border-[#5EEAD4]/60" />
+
+                <div className="relative z-10 flex-1 flex flex-col">
+                  {/* Header: brand badge + icon */}
+                  <div className="flex items-start justify-between mb-6">
+                    <span className="px-3 py-1.5 bg-[#5EEAD4]/15 text-[#5EEAD4] text-[10px] font-black uppercase tracking-[0.2em] rounded">{t.products.ownBadge}</span>
+                    <div className="w-14 h-14 flex items-center justify-center text-[#5EEAD4]">
+                      <WeldingAnimation height={56} />
+                    </div>
+                  </div>
+
+                  <h3 className="text-2xl md:text-[26px] font-black uppercase tracking-tight text-white mb-2 leading-tight">{t.products.rpwTitle}</h3>
+                  <div className="text-[11px] font-mono text-[#5EEAD4] tracking-[0.15em] mb-5">{t.products.rpwMeta}</div>
+
+                  <p className="text-[#B8B8B8] text-sm leading-relaxed mb-8 flex-1">{t.products.rpwDesc}</p>
+
+                  <div className="flex flex-col sm:flex-row gap-3 mt-auto">
+                    <a
+                      href={`/tools/rpw-database.html?lang=${lang}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-[#5EEAD4] text-black text-[11px] font-black uppercase tracking-[0.2em] rounded-sm hover:bg-white transition-all shadow-[0_0_20px_rgba(94, 234, 212,0.25)]"
+                    >
+                      <Database size={14} />
+                      <span>{t.products.rpwOpen}</span>
+                      <ExternalLink size={12} />
+                    </a>
+                    <a
+                      href={`mailto:office@industrytools.ro?subject=${encodeURIComponent(t.rpw.mailSubject)}`}
+                      className="flex-1 inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-[#5EEAD4]/10 border border-[#5EEAD4]/30 text-[#5EEAD4] text-[11px] font-black uppercase tracking-[0.2em] rounded-sm hover:bg-[#5EEAD4] hover:text-black transition-all"
+                    >
+                      <FileText size={14} />
+                      <span>{t.products.rpwQuote}</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              {/* Card 2 — Impact Sockets & Accessories */}
+              <div className="group relative bg-gradient-to-br from-[#0D1210] to-[#080808] border border-[#5EEAD4]/25 hover:border-[#5EEAD4]/60 rounded-xl p-8 md:p-9 transition-all duration-300 overflow-hidden flex flex-col hover:shadow-[0_0_40px_rgba(94, 234, 212,0.15)] hover:-translate-y-0.5">
+                <div className="absolute top-0 left-0 w-5 h-5 border-t border-l border-[#5EEAD4]/60" />
+                <div className="absolute top-0 right-0 w-5 h-5 border-t border-r border-[#5EEAD4]/60" />
+                <div className="absolute bottom-0 left-0 w-5 h-5 border-b border-l border-[#5EEAD4]/60" />
+                <div className="absolute bottom-0 right-0 w-5 h-5 border-b border-r border-[#5EEAD4]/60" />
+
+                <div className="relative z-10 flex-1 flex flex-col">
+                  {/* Header: brand badge + icon */}
+                  <div className="flex items-start justify-between mb-6">
+                    <span className="px-3 py-1.5 bg-[#5EEAD4]/15 text-[#5EEAD4] text-[10px] font-black uppercase tracking-[0.2em] rounded">{t.products.ownBadge}</span>
+                    <div className="w-14 h-14 flex items-center justify-center text-[#5EEAD4]">
+                      <Wrench size={40} strokeWidth={1.5} />
+                    </div>
+                  </div>
+
+                  <h3 className="text-2xl md:text-[26px] font-black uppercase tracking-tight text-white mb-2 leading-tight">{t.products.socketsTitle}</h3>
+                  <div className="text-[11px] font-mono text-[#5EEAD4] tracking-[0.15em] mb-5">{t.products.socketsMeta}</div>
+
+                  <p className="text-[#B8B8B8] text-sm leading-relaxed mb-8 flex-1">{t.products.socketsDesc}</p>
+
+                  <div className="flex flex-col sm:flex-row gap-3 mt-auto">
+                    <a
+                      href="/catalogs/IndustryTools — Impact Sockets Catalog final EN.pdf"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-[#5EEAD4] text-black text-[11px] font-black uppercase tracking-[0.2em] rounded-sm hover:bg-white transition-all shadow-[0_0_20px_rgba(94, 234, 212,0.25)]"
+                    >
+                      <Download size={14} />
+                      <span>{t.products.socketsDownload}</span>
+                    </a>
+                    <a
+                      href={`mailto:office@industrytools.ro?subject=${encodeURIComponent('IndustryTools Sockets — pricing request')}`}
+                      className="flex-1 inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-[#5EEAD4]/10 border border-[#5EEAD4]/30 text-[#5EEAD4] text-[11px] font-black uppercase tracking-[0.2em] rounded-sm hover:bg-[#5EEAD4] hover:text-black transition-all"
+                    >
+                      <Mail size={14} />
+                      <span>{t.products.socketsPricing}</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* ═══ SUB-GROUP 2: DISTRIBUTION PARTNERS ═══ */}
+          <div className="flex items-center gap-4 mb-8">
+            <div className="h-px w-10 bg-[#5EEAD4]" />
+            <span className="text-[10px] md:text-[11px] font-mono text-[#5EEAD4] tracking-[0.3em] uppercase">{t.products.partnerGroup}</span>
+            <div className="h-px flex-1 bg-[#5EEAD4]/20" />
+          </div>
 
           {/* ── Filter bar — BIGGER (user requested these to be larger) ── */}
           <div className="flex flex-wrap gap-3 mb-12">
@@ -750,7 +853,7 @@ function AppInner() {
               <button
                 key={f}
                 onClick={() => { setActiveFilter(f); setExpandedCard(null); }}
-                className={`px-7 py-4 text-[14px] md:text-[15px] font-black uppercase tracking-[0.15em] rounded-sm border transition-all duration-300 ${activeFilter === f ? 'bg-[#1de9b6] text-black border-[#1de9b6] shadow-[0_0_20px_rgba(29,233,182,0.3)]' : 'bg-transparent text-[#B8B8B8] border-white/15 hover:border-[#1de9b6]/60 hover:text-white hover:bg-white/[0.03]'}`}
+                className={`px-7 py-4 text-[14px] md:text-[15px] font-black uppercase tracking-[0.15em] rounded-sm border transition-all duration-300 ${activeFilter === f ? 'bg-[#5EEAD4] text-black border-[#5EEAD4] shadow-[0_0_20px_rgba(94, 234, 212,0.3)]' : 'bg-transparent text-[#B8B8B8] border-white/15 hover:border-[#5EEAD4]/60 hover:text-white hover:bg-white/[0.03]'}`}
               >
                 {f === 'All' ? t.products.all : (t.cats[f] || f)}
               </button>
@@ -763,19 +866,19 @@ function AppInner() {
               <div
                 key={prod.cat}
                 onClick={() => setExpandedCard('product-' + prod.cat)}
-                className="group relative bg-[#0D0D0D] border border-white/5 hover:border-[#1de9b6]/40 rounded-xl p-7 transition-all duration-300 overflow-hidden flex flex-col cursor-pointer"
+                className="group relative bg-[#0D0D0D] border border-white/5 hover:border-[#5EEAD4]/40 rounded-xl p-7 transition-all duration-300 overflow-hidden flex flex-col cursor-pointer"
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-[#1de9b6]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl" />
+                <div className="absolute inset-0 bg-gradient-to-br from-[#5EEAD4]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl" />
                 <div className="relative z-10 flex-1 flex flex-col">
-                  <div className="flex items-center gap-3 mb-5 pb-4 border-b border-white/10 group-hover:border-[#1de9b6]/30 transition-all">
-                    <div className="w-6 h-6 text-[#1de9b6]">{prod.icon}</div>
+                  <div className="flex items-center gap-3 mb-5 pb-4 border-b border-white/10 group-hover:border-[#5EEAD4]/30 transition-all">
+                    <div className="w-6 h-6 text-[#5EEAD4]">{prod.icon}</div>
                     <h3 className="text-lg md:text-xl font-black uppercase tracking-wider text-white flex-1">{t.cats[prod.cat] || prod.cat}</h3>
-                    <ChevronRight size={16} className="text-[#1de9b6] opacity-0 group-hover:opacity-100 transition-all" />
+                    <ChevronRight size={16} className="text-[#5EEAD4] opacity-0 group-hover:opacity-100 transition-all" />
                   </div>
                   <div className="space-y-3 flex-1 mb-7">
                     {prod.items.map((item) => (
                       <div key={item} className="flex items-center gap-3 text-[#D8D8D8] transition-colors cursor-default">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#1de9b6] shrink-0 shadow-[0_0_6px_rgba(29,233,182,0.4)]" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#5EEAD4] shrink-0 shadow-[0_0_6px_rgba(94, 234, 212,0.4)]" />
                         <span className="text-sm md:text-base font-bold tracking-wide">{t.subs[item] || item}</span>
                       </div>
                     ))}
@@ -784,7 +887,7 @@ function AppInner() {
                     <div className="mt-auto">
                       <a href={prod.catalogFile} target="_blank" rel="noopener noreferrer"
                          onClick={(e) => e.stopPropagation()}
-                         className="group/btn relative flex items-center justify-center gap-3 w-full py-3.5 bg-white/5 border border-[#1de9b6]/30 text-[#1de9b6] text-[11px] font-black uppercase tracking-[0.25em] rounded-sm transition-all duration-500 hover:bg-[#1de9b6] hover:text-black hover:border-[#1de9b6]"
+                         className="group/btn relative flex items-center justify-center gap-3 w-full py-3.5 bg-white/5 border border-[#5EEAD4]/30 text-[#5EEAD4] text-[11px] font-black uppercase tracking-[0.25em] rounded-sm transition-all duration-500 hover:bg-[#5EEAD4] hover:text-black hover:border-[#5EEAD4]"
                       >
                         <Download size={14} className="relative z-10" />
                         <span className="relative z-10">{t.products.catalog}</span>
@@ -807,12 +910,12 @@ function AppInner() {
           <p className="max-w-3xl text-[#B8B8B8] text-lg font-light leading-relaxed mb-14">{t.rpw.lead}</p>
 
           {/* ── Hero banner: stats + welding animation ── */}
-          <div className="relative p-8 md:p-14 bg-gradient-to-r from-[#1de9b6]/10 to-transparent border border-[#1de9b6]/30 overflow-hidden rounded-sm mb-10">
+          <div className="relative p-8 md:p-14 bg-gradient-to-r from-[#5EEAD4]/10 to-transparent border border-[#5EEAD4]/30 overflow-hidden rounded-sm mb-10">
             {/* Corner brackets */}
-            <div className="absolute top-3 left-3 w-5 h-5 border-t border-l border-[#1de9b6] pointer-events-none" />
-            <div className="absolute top-3 right-3 w-5 h-5 border-t border-r border-[#1de9b6] pointer-events-none" />
-            <div className="absolute bottom-3 left-3 w-5 h-5 border-b border-l border-[#1de9b6] pointer-events-none" />
-            <div className="absolute bottom-3 right-3 w-5 h-5 border-b border-r border-[#1de9b6] pointer-events-none" />
+            <div className="absolute top-3 left-3 w-5 h-5 border-t border-l border-[#5EEAD4] pointer-events-none" />
+            <div className="absolute top-3 right-3 w-5 h-5 border-t border-r border-[#5EEAD4] pointer-events-none" />
+            <div className="absolute bottom-3 left-3 w-5 h-5 border-b border-l border-[#5EEAD4] pointer-events-none" />
+            <div className="absolute bottom-3 right-3 w-5 h-5 border-b border-r border-[#5EEAD4] pointer-events-none" />
             {/* Weld animation ambience */}
             <div className="absolute right-10 top-1/2 -translate-y-1/2 w-64 h-64 opacity-25 hidden lg:block pointer-events-none">
               <WeldingAnimation height={240} />
@@ -820,7 +923,7 @@ function AppInner() {
             <div className="relative z-10 grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-2xl">
               {t.rpw.stats.map((st, i) => (
                 <div key={i}>
-                  <div className="text-3xl md:text-4xl font-black text-[#1de9b6] mb-2">{st.v}</div>
+                  <div className="text-3xl md:text-4xl font-black text-[#5EEAD4] mb-2">{st.v}</div>
                   <div className="text-[10px] font-mono uppercase tracking-[0.25em] text-[#9A9A9A]">{st.l}</div>
                 </div>
               ))}
@@ -830,8 +933,8 @@ function AppInner() {
           {/* ── 3 value props ── */}
           <div className="grid md:grid-cols-3 gap-6 mb-12">
             {t.rpw.props.map((p, i) => (
-              <div key={i} className="group p-8 bg-[#0D0D0D] border border-white/5 hover:border-[#1de9b6]/60 hover:shadow-[0_0_40px_rgba(29,233,182,0.15)] hover:-translate-y-0.5 transition-all duration-300 rounded-sm">
-                <div className="text-[11px] font-mono text-[#1de9b6] tracking-[0.3em] mb-4">{String(i + 1).padStart(2, '0')} /</div>
+              <div key={i} className="group p-8 bg-[#0D0D0D] border border-white/5 hover:border-[#5EEAD4]/60 hover:shadow-[0_0_40px_rgba(94, 234, 212,0.15)] hover:-translate-y-0.5 transition-all duration-300 rounded-sm">
+                <div className="text-[11px] font-mono text-[#5EEAD4] tracking-[0.3em] mb-4">{String(i + 1).padStart(2, '0')} /</div>
                 <h3 className="text-base font-black uppercase text-white mb-3 tracking-wide">{p.title}</h3>
                 <p className="text-sm text-[#9A9A9A] leading-relaxed">{p.desc}</p>
               </div>
@@ -841,10 +944,10 @@ function AppInner() {
           {/* ── CTAs ── */}
           <div className="flex flex-col sm:flex-row flex-wrap gap-4">
             <a
-              href="/tools/rpw-database.html"
+              href={`/tools/rpw-database.html?lang=${lang}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-3 px-10 py-5 bg-[#1de9b6] text-black text-[11px] font-black uppercase tracking-[0.3em] hover:bg-white transition-all duration-300 rounded-sm shadow-[0_0_20px_rgba(29,233,182,0.25)]"
+              className="inline-flex items-center justify-center gap-3 px-10 py-5 bg-[#5EEAD4] text-black text-[11px] font-black uppercase tracking-[0.3em] hover:bg-white transition-all duration-300 rounded-sm shadow-[0_0_20px_rgba(94, 234, 212,0.25)]"
             >
               <Database size={16} />
               <span>{t.rpw.open}</span>
@@ -852,14 +955,14 @@ function AppInner() {
             </a>
             <a
               href={'mailto:office@industrytools.ro?subject=' + encodeURIComponent(t.rpw.mailSubject)}
-              className="inline-flex items-center justify-center gap-3 px-10 py-5 bg-[#1de9b6]/10 border border-[#1de9b6]/30 text-[#1de9b6] text-[11px] font-black uppercase tracking-[0.3em] hover:bg-[#1de9b6] hover:text-black transition-all duration-300 rounded-sm"
+              className="inline-flex items-center justify-center gap-3 px-10 py-5 bg-[#5EEAD4]/10 border border-[#5EEAD4]/30 text-[#5EEAD4] text-[11px] font-black uppercase tracking-[0.3em] hover:bg-[#5EEAD4] hover:text-black transition-all duration-300 rounded-sm"
             >
               <FileText size={16} />
               <span>{t.rpw.quote}</span>
             </a>
             <button
               onClick={() => scrollTo('contact')}
-              className="inline-flex items-center justify-center gap-3 px-10 py-5 bg-transparent border border-white/10 text-[#B8B8B8] text-[11px] font-black uppercase tracking-[0.3em] hover:border-[#1de9b6]/60 hover:text-[#1de9b6] transition-all duration-300 rounded-sm"
+              className="inline-flex items-center justify-center gap-3 px-10 py-5 bg-transparent border border-white/10 text-[#B8B8B8] text-[11px] font-black uppercase tracking-[0.3em] hover:border-[#5EEAD4]/60 hover:text-[#5EEAD4] transition-all duration-300 rounded-sm"
             >
               <span>{t.rpw.contact}</span>
               <ChevronRight size={14} />
@@ -877,16 +980,16 @@ function AppInner() {
           <p className="max-w-2xl text-[#B8B8B8] text-lg font-light leading-relaxed mb-16">{t.services.lead}</p>
           <div className="grid md:grid-cols-3 gap-4">
             {t.services.cards.map((s, i) => (
-              <div key={i} onClick={() => setExpandedCard(s.id)} className="bg-[#0D0D0D] p-8 border border-white/5 hover:border-[#1de9b6]/40 transition-all group cursor-pointer flex flex-col relative overflow-hidden">
-                <div className="text-[#1de9b6] mb-5 w-9 h-9">{serviceIcons[s.id]}</div>
+              <div key={i} onClick={() => setExpandedCard(s.id)} className="bg-[#0D0D0D] p-8 border border-white/5 hover:border-[#5EEAD4]/40 transition-all group cursor-pointer flex flex-col relative overflow-hidden">
+                <div className="text-[#5EEAD4] mb-5 w-9 h-9">{serviceIcons[s.id]}</div>
                 <h3 className="text-base md:text-lg font-black uppercase text-white mb-4">{s.title}</h3>
                 <p className="text-[14px] md:text-[15px] text-[#B8B8B8] leading-relaxed mb-6 flex-1">{s.desc}</p>
                 <div className="flex items-end justify-between pt-4 border-t border-white/5">
                   <div>
-                    <div className="text-xl md:text-2xl font-black text-[#1de9b6] leading-none">{s.metric}</div>
+                    <div className="text-xl md:text-2xl font-black text-[#5EEAD4] leading-none">{s.metric}</div>
                     <div className="text-[10px] font-mono uppercase tracking-widest text-[#B0B0B0] mt-1.5">{s.metricLabel}</div>
                   </div>
-                  <span className="text-[10px] font-bold text-[#1de9b6] uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">{t.services.more} <ChevronRight size={12} /></span>
+                  <span className="text-[10px] font-bold text-[#5EEAD4] uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">{t.services.more} <ChevronRight size={12} /></span>
                 </div>
               </div>
             ))}
@@ -919,16 +1022,16 @@ function AppInner() {
                 const n = String(i + 1).padStart(2, '0');
                 const icon = stepIcons[i];
                 return (
-                <div key={i} className="group relative bg-[#0D0D0D] border border-white/5 hover:border-[#1de9b6]/50 rounded-xl p-8 transition-all duration-500 overflow-hidden cursor-default min-h-[280px] flex flex-col">
+                <div key={i} className="group relative bg-[#0D0D0D] border border-white/5 hover:border-[#5EEAD4]/50 rounded-xl p-8 transition-all duration-500 overflow-hidden cursor-default min-h-[280px] flex flex-col">
 
                   {/* Glow + corner accent (appear on hover) */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#1de9b6]/[0.08] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-xl pointer-events-none" />
-                  <div className="absolute top-0 right-0 w-0 h-px bg-[#1de9b6] group-hover:w-full transition-all duration-700 ease-out" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#5EEAD4]/[0.08] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-xl pointer-events-none" />
+                  <div className="absolute top-0 right-0 w-0 h-px bg-[#5EEAD4] group-hover:w-full transition-all duration-700 ease-out" />
 
                   {/* DEFAULT state */}
                   <div className="relative z-10 flex flex-col items-center text-center transition-all duration-500 group-hover:opacity-0 group-hover:-translate-y-3">
-                    <div className="text-[5rem] font-black text-white/[0.06] leading-none mb-3 group-hover:text-[#1de9b6]/20 transition-colors">{n}</div>
-                    <h4 className="text-lg font-black text-[#1de9b6] uppercase tracking-wider mb-4">{step.t}</h4>
+                    <div className="text-[5rem] font-black text-white/[0.06] leading-none mb-3 group-hover:text-[#5EEAD4]/20 transition-colors">{n}</div>
+                    <h4 className="text-lg font-black text-[#5EEAD4] uppercase tracking-wider mb-4">{step.t}</h4>
                     <p className="text-[#B0B0B0] text-sm">{step.d}</p>
                   </div>
 
@@ -936,12 +1039,12 @@ function AppInner() {
                   <div className="absolute inset-0 p-6 flex flex-col opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 pointer-events-none">
                     <div className="flex items-center justify-between mb-5">
                       <div className="flex items-center gap-2.5">
-                        <div className="w-9 h-9 rounded-md bg-[#1de9b6]/15 border border-[#1de9b6]/30 flex items-center justify-center text-[#1de9b6]">
+                        <div className="w-9 h-9 rounded-md bg-[#5EEAD4]/15 border border-[#5EEAD4]/30 flex items-center justify-center text-[#5EEAD4]">
                           {React.cloneElement(icon, { size: 18 })}
                         </div>
-                        <span className="text-[10px] font-mono text-[#1de9b6] tracking-[0.3em]">{t.process.step} {n}</span>
+                        <span className="text-[10px] font-mono text-[#5EEAD4] tracking-[0.3em]">{t.process.step} {n}</span>
                       </div>
-                      <span className="text-[10px] font-black text-[#1de9b6] uppercase tracking-widest">{step.time}</span>
+                      <span className="text-[10px] font-black text-[#5EEAD4] uppercase tracking-widest">{step.time}</span>
                     </div>
 
                     <h4 className="text-base font-black text-white uppercase tracking-wider mb-4">{step.t}</h4>
@@ -953,7 +1056,7 @@ function AppInner() {
                           className="flex items-start gap-2.5 text-[13px] text-[#D8D8D8] leading-relaxed opacity-0 group-hover:opacity-100 transition-all duration-500"
                           style={{ transitionDelay: `${150 + idx * 100}ms` }}
                         >
-                          <span className="w-1 h-1 rounded-full bg-[#1de9b6] mt-2 shrink-0 shadow-[0_0_6px_#1de9b6]" />
+                          <span className="w-1 h-1 rounded-full bg-[#5EEAD4] mt-2 shrink-0 shadow-[0_0_6px_#5EEAD4]" />
                           <span>{d}</span>
                         </li>
                       ))}
@@ -962,7 +1065,7 @@ function AppInner() {
                     {/* Bottom progress bar that fills on hover */}
                     <div className="mt-5 h-0.5 bg-white/5 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-gradient-to-r from-[#1de9b6] to-[#5fffd9] w-0 group-hover:w-full transition-all duration-1000 ease-out shadow-[0_0_8px_#1de9b6]"
+                        className="h-full bg-gradient-to-r from-[#5EEAD4] to-[#5fffd9] w-0 group-hover:w-full transition-all duration-1000 ease-out shadow-[0_0_8px_#5EEAD4]"
                         style={{ transitionDelay: '300ms' }}
                       />
                     </div>
@@ -982,41 +1085,41 @@ function AppInner() {
            <Eyebrow code="07 /" label={t.contact.eyebrow} />
            <div className="grid md:grid-cols-2 gap-20">
               <div>
-                 <h2 className="text-5xl md:text-6xl font-black uppercase text-white leading-[0.9] mb-10"><ScrambleText text={t.contact.h2a} /><br/><span className="text-[#1de9b6]"><ScrambleText text={t.contact.h2b} /></span></h2>
+                 <h2 className="text-5xl md:text-6xl font-black uppercase text-white leading-[0.9] mb-10"><ScrambleText text={t.contact.h2a} /><br/><span className="text-[#5EEAD4]"><ScrambleText text={t.contact.h2b} /></span></h2>
                  <p className="text-[#B8B8B8] text-lg leading-relaxed mb-10">{t.contact.lead}</p>
 
                  {/* ── UNIFIED BUSINESS CARD ── */}
-                 <div className="relative bg-gradient-to-br from-[#0D0D0D] to-[#080808] border border-[#1de9b6]/15 rounded-2xl p-8 md:p-10 shadow-[0_0_40px_rgba(29,233,182,0.05)] overflow-hidden">
+                 <div className="relative bg-gradient-to-br from-[#0D0D0D] to-[#080808] border border-[#5EEAD4]/15 rounded-2xl p-8 md:p-10 shadow-[0_0_40px_rgba(94, 234, 212,0.05)] overflow-hidden">
                     {/* corner accents */}
-                    <div className="absolute top-0 left-0 w-12 h-px bg-[#1de9b6]" />
-                    <div className="absolute top-0 left-0 w-px h-12 bg-[#1de9b6]" />
-                    <div className="absolute bottom-0 right-0 w-12 h-px bg-[#1de9b6]" />
-                    <div className="absolute bottom-0 right-0 w-px h-12 bg-[#1de9b6]" />
+                    <div className="absolute top-0 left-0 w-12 h-px bg-[#5EEAD4]" />
+                    <div className="absolute top-0 left-0 w-px h-12 bg-[#5EEAD4]" />
+                    <div className="absolute bottom-0 right-0 w-12 h-px bg-[#5EEAD4]" />
+                    <div className="absolute bottom-0 right-0 w-px h-12 bg-[#5EEAD4]" />
 
                     {/* Header: REACH OUT */}
                     <div className="flex items-center gap-4 mb-8">
-                       <span className="text-[10px] font-mono text-[#1de9b6] tracking-[0.4em] uppercase">{t.contact.reachOut}</span>
-                       <div className="h-px flex-1 bg-[#1de9b6]/20" />
+                       <span className="text-[10px] font-mono text-[#5EEAD4] tracking-[0.4em] uppercase">{t.contact.reachOut}</span>
+                       <div className="h-px flex-1 bg-[#5EEAD4]/20" />
                     </div>
 
                     {/* Passive info rows */}
                     <div className="space-y-7 mb-10">
                        <a href="mailto:office@industrytools.ro" className="flex items-start gap-5 group">
-                          <Mail className="text-[#1de9b6] mt-1 shrink-0" size={22} />
+                          <Mail className="text-[#5EEAD4] mt-1 shrink-0" size={22} />
                           <div className="min-w-0 flex-1">
                              <p className="text-[10px] font-mono text-[#8A8A8A] uppercase tracking-widest mb-1">{t.contact.email}</p>
-                             <p className="text-base md:text-lg font-bold text-white group-hover:text-[#1de9b6] transition-colors truncate">office@industrytools.ro</p>
+                             <p className="text-base md:text-lg font-bold text-white group-hover:text-[#5EEAD4] transition-colors truncate">office@industrytools.ro</p>
                           </div>
                        </a>
                        <a href="tel:+40770852576" className="flex items-start gap-5 group">
-                          <Phone className="text-[#1de9b6] mt-1 shrink-0" size={22} />
+                          <Phone className="text-[#5EEAD4] mt-1 shrink-0" size={22} />
                           <div className="min-w-0 flex-1">
                              <p className="text-[10px] font-mono text-[#8A8A8A] uppercase tracking-widest mb-1">{t.contact.phone}</p>
-                             <p className="text-base md:text-lg font-bold text-white group-hover:text-[#1de9b6] transition-colors">+40 770 852 576</p>
+                             <p className="text-base md:text-lg font-bold text-white group-hover:text-[#5EEAD4] transition-colors">+40 770 852 576</p>
                           </div>
                        </a>
                        <div className="flex items-start gap-5">
-                          <MapPin className="text-[#1de9b6] mt-1 shrink-0" size={22} />
+                          <MapPin className="text-[#5EEAD4] mt-1 shrink-0" size={22} />
                           <div className="min-w-0 flex-1">
                              <p className="text-[10px] font-mono text-[#8A8A8A] uppercase tracking-widest mb-1">{t.contact.office}</p>
                              <p className="text-base md:text-lg font-bold text-white">Pitești, Romania</p>
@@ -1093,9 +1196,9 @@ function AppInner() {
         <div className="border-b border-white/5 py-10 px-6">
           <div className="max-w-5xl mx-auto flex flex-col items-center gap-8">
             <div className="flex items-center gap-4 w-full">
-              <div className="h-px flex-1 bg-gradient-to-r from-transparent to-[#1de9b6]/30" />
-              <span className="text-[10px] font-mono text-[#1de9b6] tracking-[0.3em] uppercase shrink-0">{t.footer.certifications}</span>
-              <div className="h-px flex-1 bg-gradient-to-l from-transparent to-[#1de9b6]/30" />
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent to-[#5EEAD4]/30" />
+              <span className="text-[10px] font-mono text-[#5EEAD4] tracking-[0.3em] uppercase shrink-0">{t.footer.certifications}</span>
+              <div className="h-px flex-1 bg-gradient-to-l from-transparent to-[#5EEAD4]/30" />
             </div>
             <div className="flex items-center justify-center gap-8 md:gap-14 flex-wrap">
               {[
@@ -1106,10 +1209,10 @@ function AppInner() {
                 { primary: 'ISO', secondary: '27001', name: 'ISO 27001', title: 'Information Security' },
               ].map((cert) => (
                 <div key={cert.name} className="group/cert flex flex-col items-center gap-3" title={cert.title}>
-                  <div className="opacity-85 group-hover/cert:opacity-100 transition-all duration-300 group-hover/cert:scale-110 group-hover/cert:drop-shadow-[0_0_18px_rgba(29,233,182,0.45)]">
+                  <div className="opacity-85 group-hover/cert:opacity-100 transition-all duration-300 group-hover/cert:scale-110 group-hover/cert:drop-shadow-[0_0_18px_rgba(94, 234, 212,0.45)]">
                     <CertBadge primary={cert.primary} secondary={cert.secondary} />
                   </div>
-                  <span className="text-[9px] font-mono text-[#777] tracking-[0.15em] uppercase group-hover/cert:text-[#1de9b6] transition-colors">{cert.name}</span>
+                  <span className="text-[9px] font-mono text-[#777] tracking-[0.15em] uppercase group-hover/cert:text-[#5EEAD4] transition-colors">{cert.name}</span>
                 </div>
               ))}
             </div>
@@ -1121,7 +1224,7 @@ function AppInner() {
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
             <div className="text-[10px] font-mono text-[#6A6A6A] tracking-[0.3em] uppercase">{t.footer.copyright}</div>
             <nav className="flex flex-wrap justify-center gap-8">
-              {navItems.map(item => (<button key={item} onClick={() => scrollTo(item)} className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#7A7A7A] hover:text-[#1de9b6] transition-colors">{t.nav[item]}</button>))}
+              {navItems.map(item => (<button key={item} onClick={() => scrollTo(item)} className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#7A7A7A] hover:text-[#5EEAD4] transition-colors">{t.nav[item]}</button>))}
             </nav>
           </div>
         </div>
@@ -1149,7 +1252,7 @@ function AppInner() {
       <button
         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         aria-label="Back to top"
-        className={`fixed bottom-24 right-6 z-[55] w-12 h-12 rounded-full bg-[#1de9b6] text-black flex items-center justify-center shadow-[0_4px_20px_rgba(29,233,182,0.3)] hover:scale-110 transition-all duration-300 ${showTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}
+        className={`fixed bottom-24 right-6 z-[55] w-12 h-12 rounded-full bg-[#5EEAD4] text-black flex items-center justify-center shadow-[0_4px_20px_rgba(94, 234, 212,0.3)] hover:scale-110 transition-all duration-300 ${showTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}
       >
         <ArrowUp size={22} />
       </button>
@@ -1158,10 +1261,10 @@ function AppInner() {
       {expandedCard && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 animate-fade-in" onClick={() => setExpandedCard(null)}>
           <div className="absolute inset-0 bg-black/90 backdrop-blur-md" />
-          <div className="relative z-10 w-full max-w-[85vw] md:max-w-[75vw] h-[85vh] md:h-[75vh] bg-[#0A0A0A] border border-[#1de9b6]/50 shadow-[0_0_60px_rgba(29,233,182,0.2)] rounded-md overflow-y-auto p-12 animate-modal-slide" onClick={(e) => e.stopPropagation()}>
+          <div className="relative z-10 w-full max-w-[85vw] md:max-w-[75vw] h-[85vh] md:h-[75vh] bg-[#0A0A0A] border border-[#5EEAD4]/50 shadow-[0_0_60px_rgba(94, 234, 212,0.2)] rounded-md overflow-y-auto p-12 animate-modal-slide" onClick={(e) => e.stopPropagation()}>
             <button onClick={() => setExpandedCard(null)} className="absolute top-6 right-6 text-[#8A8A8A] hover:text-white transition-colors bg-[#111] p-3 rounded-full z-50"><X size={28} /></button>
             <div className="flex items-center gap-4 mb-12 border-b border-white/5 pb-8">
-               <span className="text-xs text-[#1de9b6] font-mono tracking-[0.4em] uppercase">{t.modal.scope}</span>
+               <span className="text-xs text-[#5EEAD4] font-mono tracking-[0.4em] uppercase">{t.modal.scope}</span>
                <div className="h-px flex-1 bg-white/5" />
             </div>
 
@@ -1192,7 +1295,7 @@ function AppInner() {
                 <div className="grid md:grid-cols-2 gap-8">
                     {t.modal.audit.items.map((item, i) => (
                         <div key={i} className="bg-[#080808] border border-white/5 p-8 rounded-lg flex items-start gap-8">
-                            <div className="w-16 h-16 text-[#1de9b6] flex-shrink-0">{auditIcons[i]}</div>
+                            <div className="w-16 h-16 text-[#5EEAD4] flex-shrink-0">{auditIcons[i]}</div>
                             <div><h5 className="text-2xl font-bold text-white mb-4">{item.title}</h5><p className="text-xl text-[#B0B0B0] leading-relaxed">{item.desc}</p></div>
                         </div>
                     ))}
@@ -1207,13 +1310,13 @@ function AppInner() {
                 <p className="text-[#D0D0D0] text-xl md:text-2xl max-w-4xl mb-16 leading-relaxed">{t.modal.tooling.p}</p>
                 <div className="flex flex-col md:flex-row gap-10">
                     <div className="bg-[#080808] border border-white/5 p-10 rounded-lg flex-1">
-                        <div className="flex items-center gap-6 mb-8 pb-6 border-b border-white/5"><Wrench className="text-[#1de9b6] w-8 h-8" /><h5 className="text-3xl font-bold text-white">{t.modal.tooling.box1Title}</h5></div>
+                        <div className="flex items-center gap-6 mb-8 pb-6 border-b border-white/5"><Wrench className="text-[#5EEAD4] w-8 h-8" /><h5 className="text-3xl font-bold text-white">{t.modal.tooling.box1Title}</h5></div>
                         <ul className="text-xl text-[#B0B0B0] space-y-6 list-disc list-inside">
                             {t.modal.tooling.box1.map((li, i) => <li key={i}>{li}</li>)}
                         </ul>
                     </div>
                     <div className="bg-[#080808] border border-white/5 p-10 rounded-lg flex-1">
-                        <div className="flex items-center gap-6 mb-8 pb-6 border-b border-white/5"><ShieldCheck className="text-[#1de9b6] w-8 h-8" /><h5 className="text-3xl font-bold text-white">{t.modal.tooling.box2Title}</h5></div>
+                        <div className="flex items-center gap-6 mb-8 pb-6 border-b border-white/5"><ShieldCheck className="text-[#5EEAD4] w-8 h-8" /><h5 className="text-3xl font-bold text-white">{t.modal.tooling.box2Title}</h5></div>
                         <ul className="text-xl text-[#B0B0B0] space-y-6 list-disc list-inside">
                             {t.modal.tooling.box2.map((li, i) => <li key={i}>{li}</li>)}
                         </ul>
@@ -1230,7 +1333,7 @@ function AppInner() {
               return (
                 <div className="animate-fade-in">
                   <div className="flex items-center gap-5 mb-10">
-                    <div className="w-12 h-12 text-[#1de9b6]">{prod.icon}</div>
+                    <div className="w-12 h-12 text-[#5EEAD4]">{prod.icon}</div>
                     <h3 className="text-4xl md:text-6xl font-black uppercase text-white tracking-tight">{t.cats[prod.cat] || prod.cat}</h3>
                   </div>
 
@@ -1238,16 +1341,16 @@ function AppInner() {
                     {/* LEFT — subcategories with animated icons */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-3 mb-6">
-                        <span className="text-[11px] font-mono text-[#1de9b6] tracking-[0.3em] uppercase">{t.modal.subcategories}</span>
-                        <div className="h-px flex-1 bg-[#1de9b6]/20" />
+                        <span className="text-[11px] font-mono text-[#5EEAD4] tracking-[0.3em] uppercase">{t.modal.subcategories}</span>
+                        <div className="h-px flex-1 bg-[#5EEAD4]/20" />
                       </div>
                       <div className="grid sm:grid-cols-2 gap-4">
                         {prod.items.map((item) => (
                           <div
                             key={item}
-                            className="group/sub flex items-center gap-4 p-5 bg-white/[0.02] border border-white/5 rounded-xl hover:border-[#1de9b6]/30 hover:bg-[#1de9b6]/[0.04] transition-all duration-300"
+                            className="group/sub flex items-center gap-4 p-5 bg-white/[0.02] border border-white/5 rounded-xl hover:border-[#5EEAD4]/30 hover:bg-[#5EEAD4]/[0.04] transition-all duration-300"
                           >
-                            <span className="w-14 h-14 flex items-center justify-center bg-[#1de9b6]/10 border border-[#1de9b6]/25 rounded-xl text-[#1de9b6] shrink-0 group-hover/sub:bg-[#1de9b6]/20 transition-all">
+                            <span className="w-14 h-14 flex items-center justify-center bg-[#5EEAD4]/10 border border-[#5EEAD4]/25 rounded-xl text-[#5EEAD4] shrink-0 group-hover/sub:bg-[#5EEAD4]/20 transition-all">
                               <SubcategoryIcon name={item} size={28} />
                             </span>
                             <span className="flex-1 text-lg md:text-xl font-bold tracking-wide text-[#D8D8D8] group-hover/sub:text-white transition-colors">{t.subs[item] || item}</span>
@@ -1258,7 +1361,7 @@ function AppInner() {
 
                       {prod.catalogFile && (
                         <a href={prod.catalogFile} target="_blank" rel="noopener noreferrer"
-                           className="mt-8 flex items-center justify-center gap-3 w-full max-w-md py-5 bg-[#1de9b6]/10 border border-[#1de9b6]/30 text-[#1de9b6] text-[12px] font-black uppercase tracking-[0.25em] rounded-sm transition-all duration-500 hover:bg-[#1de9b6] hover:text-black"
+                           className="mt-8 flex items-center justify-center gap-3 w-full max-w-md py-5 bg-[#5EEAD4]/10 border border-[#5EEAD4]/30 text-[#5EEAD4] text-[12px] font-black uppercase tracking-[0.25em] rounded-sm transition-all duration-500 hover:bg-[#5EEAD4] hover:text-black"
                         >
                           <Download size={16} />
                           <span>{t.modal.downloadCatalog}</span>
@@ -1270,14 +1373,14 @@ function AppInner() {
                     {prod.brands && prod.brands.length > 0 && (
                       <div className="lg:w-80 shrink-0 lg:border-l lg:border-white/10 lg:pl-10">
                         <div className="flex items-center gap-3 mb-6">
-                          <span className="text-[11px] font-mono text-[#1de9b6] tracking-[0.3em] uppercase">{t.modal.partnerBrands}</span>
-                          <div className="h-px flex-1 bg-[#1de9b6]/20" />
+                          <span className="text-[11px] font-mono text-[#5EEAD4] tracking-[0.3em] uppercase">{t.modal.partnerBrands}</span>
+                          <div className="h-px flex-1 bg-[#5EEAD4]/20" />
                         </div>
                         <div className="grid grid-cols-3 gap-3">
                           {prod.brands.map((brand) => (
                             <div
                               key={brand.name}
-                              className={`flex items-center justify-center rounded-xl p-2 h-16 overflow-hidden transition-all hover:scale-105 ${brand.src ? 'bg-white shadow-sm' : 'bg-white/[0.04] border border-[#1de9b6]/15'}`}
+                              className={`flex items-center justify-center rounded-xl p-2 h-16 overflow-hidden transition-all hover:scale-105 ${brand.src ? 'bg-white shadow-sm' : 'bg-white/[0.04] border border-[#5EEAD4]/15'}`}
                               title={brand.name}
                             >
                               {brand.src ? (
