@@ -627,7 +627,7 @@ function AppInner() {
 
       {/* ── HERO ───────────────────────────────────────────────────────── */}
       <section className="relative min-h-screen w-full flex items-center overflow-hidden">
-        <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url('/hero-bg.png')" }}>
+        <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url('/hero-bg.webp')" }}>
           <div className="absolute inset-0 bg-gradient-to-t from-[#080808] via-[#080808]/70 to-[#080808]/30" />
           <div className="absolute inset-0 bg-gradient-to-r from-[#080808] via-[#080808]/70 to-transparent" />
         </div>
@@ -691,7 +691,7 @@ function AppInner() {
       </div>
 
       {/* ── ABOUT ──────────────────────────────────────────────────────── */}
-      <Section id="about" bgImage="/about-bg.png">
+      <Section id="about" bgImage="/about-bg.webp">
         <div className="max-w-7xl mx-auto">
           <Eyebrow code="01 /" label={t.about.eyebrow} />
 
@@ -738,7 +738,7 @@ function AppInner() {
       </Section>
 
       {/* ── PRODUCTS ───────────────────────────────────────────────────── */}
-      <Section id="products" bgImage="/products-bg.png">
+      <Section id="products" bgImage="/products-bg.webp">
         <div className="max-w-7xl mx-auto">
           <Eyebrow code="02 /" label={t.products.eyebrow} />
           <h2 className="text-4xl md:text-5xl font-black uppercase leading-tight tracking-tight text-white mb-6"><ScrambleText text={t.products.h2a} /><br /><span className="text-[#5EEAD4]"><ScrambleText text={t.products.h2b} /></span></h2>
@@ -903,7 +903,7 @@ function AppInner() {
       </Section>
 
       {/* ── RPW DATABASE SECTION ── */}
-      <Section id="rpw" className="bg-[#0A0F0D]">
+      <Section id="rpw" className="bg-[#0A0F0D]" bgImage="/welding-bg.webp">
         <div className="max-w-7xl mx-auto">
           <Eyebrow code="03 /" label={t.rpw.eyebrow} />
           <h2 className="text-4xl md:text-5xl font-black uppercase text-white mb-6"><ScrambleText text={t.rpw.h2} /></h2>
@@ -973,7 +973,7 @@ function AppInner() {
       </Section>
 
       {/* ── SERVICES SECTION ── */}
-      <Section id="services" className="bg-[#0B0B0B]" bgImage="/services-bg.png">
+      <Section id="services" className="bg-[#0B0B0B]" bgImage="/services-bg.webp">
         <div className="max-w-7xl mx-auto">
           <Eyebrow code="04 /" label={t.services.eyebrow} />
           <h2 className="text-4xl md:text-5xl font-black uppercase text-white mb-6"><ScrambleText text={t.services.h2} /></h2>
@@ -998,7 +998,7 @@ function AppInner() {
       </Section>
 
       {/* ── CLIENTS ── */}
-      <Section id="clients" bgImage="/clients-bg.png">
+      <Section id="clients" bgImage="/clients-bg.webp">
         <div className="max-w-7xl mx-auto">
           <Eyebrow code="05 /" label={t.clients.eyebrow} />
           <h2 className="text-5xl font-black uppercase text-white mb-6"><ScrambleText text={t.clients.h2} /></h2>
@@ -1011,7 +1011,7 @@ function AppInner() {
       </Section>
 
       {/* ── PROCESS — interactive hover with detail reveal ── */}
-      <Section id="process" className="bg-[#0B0B0B]" bgImage="/process-bg.png">
+      <Section id="process" className="bg-[#0B0B0B]" bgImage="/process-bg.webp">
         <div className="max-w-7xl mx-auto text-center">
            <Eyebrow code="06 /" label={t.process.eyebrow} />
            <h2 className="text-5xl font-black uppercase text-white mb-6"><ScrambleText text={t.process.h2} /></h2>
