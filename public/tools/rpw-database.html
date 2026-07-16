@@ -135,6 +135,13 @@ td.xref{font-family:var(--mono);color:var(--mut)}
 .langsw button:hover{color:var(--mint);border-color:var(--mint-dim)}
 .langsw button.on{color:#06110d;background:var(--mint);border-color:var(--mint);font-weight:700}
 #adminZone.admin-locked{display:none}
+#masterZone.master-locked{display:none}
+#masterZone{margin:10px 0 2px}
+.master-btn{display:inline-flex;align-items:center;gap:7px;background:var(--mint);color:#06110d;
+  font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.05em;padding:8px 12px;
+  border-radius:4px;text-decoration:none}
+.master-btn:hover{background:#fff}
+#dupStat{cursor:default;user-select:none}
 .admin-lockbtn{margin-top:12px;background:none;border:1px solid var(--line2);color:var(--mut);font-family:var(--mono);font-size:10px;padding:6px 10px;border-radius:4px;cursor:pointer;letter-spacing:.05em}
 .admin-lockbtn:hover{color:var(--mint);border-color:var(--mint-dim)}
 .logo small{cursor:default;user-select:none}
@@ -179,6 +186,10 @@ td.xref{font-family:var(--mono);color:var(--mut)}
   <div class="card"><h2>Coduri materiale</h2><div class="bd" id="matCfg"></div></div>
   </div>
   <div class="card"><h2>Stare baza de date</h2>
+    <div id="masterZone" class="master-locked">
+      <a id="masterLink" class="master-btn" href="/tools/DGSI_Welding_Catalog_Master.xlsx" download>&#128202; <span id="masterLbl"></span></a>
+      <div class="hint" id="masterHint"></div>
+    </div>
     <div class="bd">
       <div class="stat" id="stats"></div>
       <div class="hint">Codurile duplicate apar cu galben in catalog &mdash; semn ca formula activa nu diferentiaza
@@ -1014,7 +1025,7 @@ const CFG = {
   famName:{PCP:'Pini Ceramici de Pozitionare', ELB:'Electrozi de Baza (inferiori)',
            ELS:'Electrozi Superiori', BIZ:'Bucse si Insertii Izolante'},
   mat:{ZR:'ZR', CC:'CC', AL:'AL', CZ:'CZ'},
-  matName:{ZR:'ZrO2 ceramic (ZrO2 ceramic)', CC:'CuCrZr (2.1293)', AL:'Al2O3 / Al2O3 izolant', CZ:'Alama CuZn39Pb3 (2.0401)'},
+  matName:{ZR:'ZrO2 ceramic', CC:'CuCrZr (2.1293)', AL:'Al2O3 izolant', CZ:'Alama CuZn39Pb3 (2.0401)'},
   forma:{S:'S', L:'L', G:'G'},
   con:{K1:'K1', K2:'K2', K3:'K3'},
   racToken:'R',
@@ -1373,7 +1384,7 @@ function renderStats(dupTotal){
   P.forEach(function(p){ perFam[p.familie] = (perFam[p.familie]||0)+1; });
   var h = '<span>'+U('total')+' <b>'+P.length+'</b></span>';
   Object.keys(CFG.fam).forEach(function(k){ h += '<span>'+esc(CFG.fam[k])+' <b>'+(perFam[k]||0)+'</b></span>'; });
-  h += '<span'+(dupTotal? ' class="warn"':'')+'>'+U('dups')+' <b>'+dupTotal+'</b></span>';
+  h += '<span id="dupStat" title="'+U('dupHint')+'"'+(dupTotal? ' class="warn"':'')+'>'+U('dups')+' <b>'+dupTotal+'</b></span>';
   $('#stats').innerHTML = h;
 }
 function copyTxt(t){
@@ -1421,6 +1432,19 @@ function refresh(){
   }, 60);
 }
 /* init */
+/* MASTER_XLSX: dublu-click pe contorul de duplicate -> link catre Excel-ul master
+   (proba ca dublura vine din codificare, nu din import) */
+function masterToggle(){
+  var z=document.getElementById('masterZone'); if(!z) return;
+  z.classList.toggle('master-locked');
+  if(!z.classList.contains('master-locked')) toast(U('masterOpen'));
+}
+(function(){
+  document.addEventListener('dblclick', function(e){
+    var t=e.target;
+    while(t && t!==document.body){ if(t.id==='dupStat'){ masterToggle(); return; } t=t.parentNode; }
+  });
+})();
 /* Admin gate (Punct 3): double-click the logo subtitle -> password prompt */
 var ADMIN_HASH = 539911732;
 function _h(str){ var h=0; for(var i=0;i<str.length;i++){ h=((h<<5)-h+str.charCodeAt(i))|0; } return h; }
@@ -1442,6 +1466,10 @@ function adminLock(){
   try{ if(sessionStorage.getItem('dgsi_admin')==='1'){ var z=document.getElementById('adminZone'); if(z) z.classList.remove('admin-locked'); } }catch(e){}
 })();
 applyStatic();
+(function(){
+  var l=document.getElementById('masterLbl'); if(l) l.textContent=U('masterBtn');
+  var h=document.getElementById('masterHint'); if(h) h.textContent=U('masterHint');
+})();
 pickPreview();
 renderFamCfg(); renderMatCfg();
 $('#sepSel').addEventListener('change', function(){ CFG.sep = this.value; refresh(); });
