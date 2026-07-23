@@ -1,9 +1,19 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- DGSI light theme · 1/3 · anti-FOUC, trebuie sa ramana inainte de orice CSS -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('dgsi-theme');
+          document.documentElement.setAttribute('data-theme', t === 'light' ? 'light' : 'dark');
+        } catch (e) {}
+      })();
+    </script>
     
     <!-- SEO & Meta Tags -->
     <title>DGSI - Industrial Precision Manufacturing & CNC Tooling</title>
@@ -32,32 +42,35 @@
     <!-- Favicon -->
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.json" />
+
+    <!-- DGSI light theme · 2/3 · nelayered, deci bate @layer utilities. Sterge linia = rollback total -->
+    <link rel="stylesheet" href="/light-theme.css?v=1" />
   </head>
   <body>
     <div id="root"></div>
-
-    <!-- ═══ NETLIFY FORMS — hidden declarations for build-time bot detection ═══ -->
-    <!-- These are never shown to users. Netlify scans them at deploy to register the forms. -->
-    <!-- Submissions appear in: Netlify Dashboard → Site → Forms -->
-    <!-- To get email notifications: Dashboard → Site → Forms → Form notifications → Add → Email -->
-    <form name="dgsi-contact" netlify netlify-honeypot="bot-field" hidden>
-      <input name="bot-field" />
-      <input name="company" />
-      <input name="name" />
-      <input name="email" />
-      <textarea name="message"></textarea>
-    </form>
-    <form name="dgsi-rfq" netlify netlify-honeypot="bot-field" hidden>
-      <input name="bot-field" />
-      <input name="ref" />
-      <input name="company" />
-      <input name="name" />
-      <input name="email" />
-      <input name="category" />
-      <textarea name="details"></textarea>
-      <textarea name="items"></textarea>
-    </form>
-
     <script type="module" src="/src/main.jsx"></script>
+
+    <!-- DGSI light theme · 3/3 · buton injectat in body, zero atingeri in .jsx -->
+    <script>
+      (function () {
+        var btn = document.createElement('button');
+        btn.id = 'dgsi-theme-toggle';
+        btn.type = 'button';
+        function paint() {
+          var light = document.documentElement.getAttribute('data-theme') === 'light';
+          btn.textContent = light ? '\u263D' : '\u2600';
+          btn.setAttribute('aria-label', light ? 'Switch to dark theme' : 'Switch to light theme');
+          btn.setAttribute('title', light ? 'Dark mode' : 'Light mode');
+        }
+        btn.addEventListener('click', function () {
+          var next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', next);
+          try { localStorage.setItem('dgsi-theme', next); } catch (e) {}
+          paint();
+        });
+        paint();
+        document.body.appendChild(btn);
+      })();
+    </script>
   </body>
 </html>
