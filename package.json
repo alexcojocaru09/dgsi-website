@@ -3,19 +3,20 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
- "scripts": {
-  "dev": "vite",
-  "build": "vite build",
-  "preview": "vite preview",
-  "catalog": "python scripts/excel_to_json.py Welding_database.xlsx",
-  "rename:pdfs:dry": "python scripts/rename_pdfs.py",
-  "rename:pdfs": "python scripts/rename_pdfs.py --apply --copy"
-},
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "catalog": "python scripts/excel_to_json.py Welding_database.xlsx",
+    "rename:pdfs:dry": "python scripts/rename_pdfs.py",
+    "rename:pdfs": "python scripts/rename_pdfs.py --apply --copy"
+  },
   "dependencies": {
     "@gsap/react": "^2.1.2",
     "gsap": "^3.15.0",
     "react": "^19.2.6",
-    "react-dom": "^19.2.6"
+    "react-dom": "^19.2.6",
+    "three": "^0.128.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
