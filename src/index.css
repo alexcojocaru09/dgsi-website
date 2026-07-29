@@ -174,14 +174,14 @@
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: #0A0E11; }
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #5EEAD4 0%, #0e7a61 100%);
+  background: linear-gradient(180deg, #1de9b6 0%, #0e7a61 100%);
   border-radius: 5px;
   border: 2px solid #0A0E11;
 }
-::-webkit-scrollbar-thumb:hover { background: #5EEAD4; }
+::-webkit-scrollbar-thumb:hover { background: #1de9b6; }
 
 /* ── Text selection in brand color ── */
-::selection { background: rgba(94, 234, 212, 0.35); color: #fff; }
+::selection { background: rgba(29, 233, 182, 0.35); color: #fff; }
 
 /* ── Smooth anchor scrolling ── */
 html { scroll-behavior: smooth; }
@@ -214,7 +214,7 @@ html { scroll-behavior: smooth; }
 }
 .weld-scanline {
   position: absolute; left: 0; right: 0; height: 120px;
-  background: linear-gradient(180deg, transparent, rgba(94, 234, 212,0.045), transparent);
+  background: linear-gradient(180deg, transparent, rgba(29,233,182,0.045), transparent);
   animation: scanline 7s linear infinite;
   pointer-events: none;
 }
@@ -234,7 +234,7 @@ html { scroll-behavior: smooth; }
 .shimmer-hover { position: relative; overflow: hidden; }
 .shimmer-hover::after {
   content: ''; position: absolute; top: 0; bottom: 0; width: 40%;
-  background: linear-gradient(90deg, transparent, rgba(94, 234, 212,0.08), transparent);
+  background: linear-gradient(90deg, transparent, rgba(29,233,182,0.08), transparent);
   transform: translateX(-150%) skewX(-18deg);
   pointer-events: none;
 }
@@ -249,10 +249,10 @@ html { scroll-behavior: smooth; }
 .weld-current { stroke-dasharray: 4 8; animation: current-flow 0.9s linear infinite; }
 
 /* ── Glow text utility (headings accent) ── */
-.glow-accent { text-shadow: 0 0 18px rgba(94, 234, 212, 0.45); }
+.glow-accent { text-shadow: 0 0 18px rgba(29, 233, 182, 0.45); }
 
 /* ── Focus ring in brand color (accessibility + look) ── */
 button:focus-visible, a:focus-visible, input:focus-visible {
-  outline: 2px solid rgba(94, 234, 212, 0.7);
+  outline: 2px solid rgba(29, 233, 182, 0.7);
   outline-offset: 2px;
 }
