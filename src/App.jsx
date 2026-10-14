@@ -1,7 +1,9 @@
 // src/App.jsx
+// v · 14.10.26 · Sockets catalogs + presentations → 6 languages (RO/EN/FR/DE/IT/ES), new file names, IT/ES flags
+// v · 08.10.26 · Welding catalog RO/EN/FR/DE + Sockets printed brochure (EN) + RPW database paused (SHOW_RPW_DATABASE)
 // v · 04.08.26 · Impact Sockets — cataloage multilingve RO/EN/FR/DE cu butoane-steag
 import React, { useState, useEffect, useRef } from 'react';
-import { ShoppingBag, FileText, Zap, Wrench, Phone, Monitor, Settings, Truck, X, Target, CheckCircle, Droplets, Ruler, ShieldCheck, Download, ChevronRight, Mail, MapPin, MessageCircle, ArrowUp, Package, Database, ExternalLink } from 'lucide-react';
+import { ShoppingBag, FileText, Zap, Wrench, Phone, Monitor, Settings, Truck, X, Target, CheckCircle, Droplets, Ruler, ShieldCheck, Download, ChevronRight, Mail, MapPin, MessageCircle, ArrowUp, Package, Database, ExternalLink, BookOpen } from 'lucide-react';
 import SubcategoryIcon from './components/SubcategoryIcons';
 import WeldingModal, { WeldingAnimation } from './components/WeldingModal';
 import { RFQProvider, AddToRFQButton, RFQFloatingBadge, RFQWizard, useRFQ } from './components/RFQSystem';
@@ -45,6 +47,21 @@ function Flag({ code }) {
     </svg>
   );
 
+  if (code === 'IT') return (
+    <svg viewBox="0 0 3 2" preserveAspectRatio="xMidYMid slice" className={box} aria-hidden="true">
+      <rect width="1" height="2" fill="#009246" />
+      <rect x="1" width="1" height="2" fill="#FFFFFF" />
+      <rect x="2" width="1" height="2" fill="#CE2B37" />
+    </svg>
+  );
+
+  if (code === 'ES') return (
+    <svg viewBox="0 0 3 2" preserveAspectRatio="xMidYMid slice" className={box} aria-hidden="true">
+      <rect width="3" height="2" fill="#AA151B" />
+      <rect y="0.5" width="3" height="1" fill="#F1BF00" />
+    </svg>
+  );
+
   if (code === 'DE') return (
     <svg viewBox="0 0 5 3" preserveAspectRatio="xMidYMid slice" className={box} aria-hidden="true">
       <rect width="5" height="1" fill="#000000" />
@@ -71,20 +88,82 @@ function Flag({ code }) {
 // ─── Impact Sockets — cataloage multilingve ───────────────────────────────────
 // Fișierele stau în /public/catalogs/ — schimbă doar aici dacă se modifică numele
 const SOCKET_CATALOGS = [
-  { code: 'RO', file: '/catalogs/Catalog-tubulare-RO-w32.pdf' },
-  { code: 'EN', file: '/catalogs/Catalog-tubulare-EN-w32.pdf' },
-  { code: 'FR', file: '/catalogs/Catalog-tubulare-FR-w32.pdf' },
-  { code: 'DE', file: '/catalogs/Catalog-tubulare-DE-w32.pdf' },
+  { code: 'RO', file: '/catalogs/Catalog tubulare DGSI w35 RO - compressed.pdf' },
+  { code: 'EN', file: '/catalogs/Socket Catalogue DGSI w35 EN - compressed.pdf' },
+  { code: 'FR', file: '/catalogs/Catalogue Douilles DGSI w35 FR - compressed.pdf' },
+  { code: 'DE', file: '/catalogs/Katalog Stecknuesse DGSI w35 DE - compressed.pdf' },
+  { code: 'IT', file: '/catalogs/Catalogo Bussole DGSI w35 IT - compressed.pdf' },
+  { code: 'ES', file: '/catalogs/Catalogo Vasos DGSI w35 ES - compressed.pdf' },
 ];
+
+// ─── Impact Sockets — broșură tipărită (rezumat întreaga gamă, EN) ────────────
+// Urci PDF-ul în /public/catalogs/ cu exact acest nume. ready: false → buton gri „coming soon”.
+const SOCKET_BROCHURE = { code: 'EN', file: '/catalogs/Brosura-tubulare-EN-w41.pdf', ready: false };
+
+// ─── RPW Welding — cataloage multilingve ──────────────────────────────────────
+// Fișierele stau în /public/catalogs/ — aceeași logică ca la tubulare.
+// Dacă o limbă nu e gata: ready: false → steag gri, neclicabil.
+const WELDING_CATALOGS = [
+  { code: 'RO', file: '/catalogs/Catalog-welding-RO-w41.pdf', ready: true },
+  { code: 'EN', file: '/catalogs/Catalog-welding-EN-w41.pdf', ready: true },
+  { code: 'FR', file: '/catalogs/Catalog-welding-FR-w41.pdf', ready: true },
+  { code: 'DE', file: '/catalogs/Catalog-welding-DE-w41.pdf', ready: true },
+];
+
+// ─── RPW Database — PAUZĂ ─────────────────────────────────────────────────────
+// false = ascunde secțiunea 03 „RPW Electrode Database” + modalul cu baza de date.
+// Codul (WeldingModal, weldingCatalog.js, PartViewer3D) rămâne intact pentru reconstrucție.
+// Când revine baza de date nouă: treci pe true.
+const SHOW_RPW_DATABASE = false;
+
+// ─── Grilă de 4 steaguri pentru cataloage multilingve (sockets + welding) ─────
+function CatalogFlags({ catalogs, label }) {
+  return (
+    <div className={`grid gap-2 mb-3 ${catalogs.length > 4 ? 'grid-cols-3 sm:grid-cols-6' : 'grid-cols-4'}`}>
+      {catalogs.map((c) => (
+        c.ready === false ? (
+          <span
+            key={c.code}
+            title={`${label} — ${c.code} — coming soon`}
+            aria-disabled="true"
+            className="flex flex-col items-center justify-center gap-1.5 py-3 bg-white/[0.02] border border-white/10 rounded-sm opacity-40 cursor-not-allowed"
+          >
+            <span className="block w-[26px] h-[17px] overflow-hidden rounded-[2px] grayscale">
+              <Flag code={c.code} />
+            </span>
+            <span className="text-[9px] font-black tracking-[0.15em] text-[#7A7A7A]">{c.code}</span>
+          </span>
+        ) : (
+          <a
+            key={c.code}
+            href={encodeURI(c.file)}
+            target="_blank"
+            rel="noopener noreferrer"
+            title={`${label} — ${c.code} (PDF)`}
+            aria-label={`Download ${label} ${c.code}`}
+            className="group/flag flex flex-col items-center justify-center gap-1.5 py-3 bg-[#5EEAD4]/[0.06] border border-[#5EEAD4]/25 rounded-sm hover:bg-[#5EEAD4]/15 hover:border-[#5EEAD4] hover:-translate-y-0.5 hover:shadow-[0_0_20px_rgba(94,234,212,0.25)] transition-all duration-200"
+          >
+            <span className="block w-[26px] h-[17px] overflow-hidden rounded-[2px] ring-1 ring-black/40 group-hover/flag:ring-[#5EEAD4]/60 transition">
+              <Flag code={c.code} />
+            </span>
+            <span className="text-[9px] font-black tracking-[0.15em] text-[#B8B8B8] group-hover/flag:text-[#5EEAD4] transition-colors">{c.code}</span>
+          </a>
+        )
+      ))}
+    </div>
+  );
+}
 
 // ─── Prezentare de firmă — PDF multilingv ─────────────────────────────────────
 // Fișierele stau în /public/business-presentations/
 // Când primești FR/DE: urci fișierul și treci ready: true — atât.
 const PRESENTATIONS = [
-  { code: 'RO', file: '/business-presentations/Prezentare-DGSI-RO-w31.pdf', ready: true },
-  { code: 'EN', file: '/business-presentations/Prezentare-DGSI-EN-w31.pdf', ready: true },
-  { code: 'FR', file: '/business-presentations/Prezentare-DGSI-FR-w31.pdf', ready: true },
-  { code: 'DE', file: '/business-presentations/Prezentare-DGSI-DE-w31.pdf', ready: true },
+  { code: 'RO', file: '/business-presentations/DGSI pres RO - optimizat.pdf', ready: true },
+  { code: 'EN', file: '/business-presentations/DGSI pres EN - optimizat.pdf', ready: true },
+  { code: 'FR', file: '/business-presentations/DGSI pres FR - optimizat.pdf', ready: true },
+  { code: 'DE', file: '/business-presentations/DGSI pres DE - optimizat.pdf', ready: true },
+  { code: 'IT', file: '/business-presentations/DGSI pres IT - optimizat.pdf', ready: true },
+  { code: 'ES', file: '/business-presentations/DGSI pres ES - optimizat.pdf', ready: true },
 ];
 
 // ─── Constants: Certifications (imagini PNG cu fundal negru) ──────────────
@@ -742,19 +821,19 @@ function AppInner() {
             <p className="text-[#C0C0C0] text-lg leading-relaxed mb-10">
               {t.about.lead}
             </p>
-            {/* ── Prezentare de firmă — 4 limbi, flag buttons ── */}
+            {/* ── Prezentare de firmă — 6 limbi, flag buttons ── */}
             <div className="inline-flex flex-wrap items-center gap-x-4 gap-y-3 px-5 py-4 border border-[#5EEAD4]/30 bg-[#5EEAD4]/[0.04] rounded-sm shadow-[0_0_15px_rgba(94, 234, 212,0.08)]">
               <span className="inline-flex items-center gap-2.5 text-[11px] font-bold uppercase tracking-[0.2em] text-[#5EEAD4]">
                 <FileText size={14} />
                 {t.about.viewProfile}
               </span>
               <span className="hidden sm:block h-6 w-px bg-[#5EEAD4]/25" />
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 {PRESENTATIONS.map((p) => (
                   p.ready ? (
                     <a
                       key={p.code}
-                      href={p.file}
+                      href={encodeURI(p.file)}
                       target="_blank"
                       rel="noopener noreferrer"
                       title={`DGSI company profile — ${p.code} (PDF)`}
@@ -839,21 +918,33 @@ function AppInner() {
                   <h3 className="text-2xl md:text-[26px] font-black uppercase tracking-tight text-white mb-2 leading-tight">{t.products.rpwTitle}</h3>
                   <div className="text-[11px] font-mono text-[#5EEAD4] tracking-[0.15em] mb-5">{t.products.rpwMeta}</div>
                   <p className="text-[#B8B8B8] text-sm leading-relaxed mb-8 flex-1">{t.products.rpwDesc}</p>
-                  <div className="flex flex-col sm:flex-row gap-3 mt-auto">
-                    <button
-                      onClick={() => setWeldingOpen(true)}
-                      className="flex-1 inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-[#5EEAD4] text-black text-[11px] font-black uppercase tracking-[0.2em] rounded-sm hover:bg-white transition-all shadow-[0_0_20px_rgba(94, 234, 212,0.25)]"
-                    >
-                      <Database size={14} />
-                      <span>{t.products.rpwOpen}</span>
-                    </button>
-                    <a
-                      href={`mailto:office@industrytools.ro?subject=${encodeURIComponent(t.rpw.mailSubject)}`}
-                      className="flex-1 inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-[#5EEAD4]/10 border border-[#5EEAD4]/30 text-[#5EEAD4] text-[11px] font-black uppercase tracking-[0.2em] rounded-sm hover:bg-[#5EEAD4] hover:text-black transition-all"
-                    >
-                      <FileText size={14} />
-                      <span>{t.products.rpwQuote}</span>
-                    </a>
+                  {/* ── Cataloage welding multilingve: 4 butoane-steag + request quote ── */}
+                  <div className="mt-auto">
+                    <div className="flex items-center gap-3 mb-3">
+                      <span className="text-[10px] font-mono text-[#5EEAD4] tracking-[0.3em] uppercase">{t.products.weldingDownload}</span>
+                      <div className="h-px flex-1 bg-[#5EEAD4]/20" />
+                    </div>
+
+                    <CatalogFlags catalogs={WELDING_CATALOGS} label="RPW Welding Catalog" />
+
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      {SHOW_RPW_DATABASE && (
+                        <button
+                          onClick={() => setWeldingOpen(true)}
+                          className="flex-1 inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-[#5EEAD4] text-black text-[11px] font-black uppercase tracking-[0.2em] rounded-sm hover:bg-white transition-all shadow-[0_0_20px_rgba(94, 234, 212,0.25)]"
+                        >
+                          <Database size={14} />
+                          <span>{t.products.rpwOpen}</span>
+                        </button>
+                      )}
+                      <a
+                        href={`mailto:office@industrytools.ro?subject=${encodeURIComponent(t.rpw.mailSubject)}`}
+                        className="flex-1 w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-[#5EEAD4]/10 border border-[#5EEAD4]/30 text-[#5EEAD4] text-[11px] font-black uppercase tracking-[0.2em] rounded-sm hover:bg-[#5EEAD4] hover:text-black transition-all"
+                      >
+                        <FileText size={14} />
+                        <span>{t.products.rpwQuote}</span>
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -883,24 +974,28 @@ function AppInner() {
                       <div className="h-px flex-1 bg-[#5EEAD4]/20" />
                     </div>
 
-                    <div className="grid grid-cols-4 gap-2 mb-3">
-                      {SOCKET_CATALOGS.map((c) => (
-                        <a
-                          key={c.code}
-                          href={c.file}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          title={`Impact Sockets Catalog — ${c.code} (PDF)`}
-                          aria-label={`Download catalog ${c.code}`}
-                          className="group/flag flex flex-col items-center justify-center gap-1.5 py-3 bg-[#5EEAD4]/[0.06] border border-[#5EEAD4]/25 rounded-sm hover:bg-[#5EEAD4]/15 hover:border-[#5EEAD4] hover:-translate-y-0.5 hover:shadow-[0_0_20px_rgba(94,234,212,0.25)] transition-all duration-200"
-                        >
-                          <span className="block w-[26px] h-[17px] overflow-hidden rounded-[2px] ring-1 ring-black/40 group-hover/flag:ring-[#5EEAD4]/60 transition">
-                            <Flag code={c.code} />
-                          </span>
-                          <span className="text-[9px] font-black tracking-[0.15em] text-[#B8B8B8] group-hover/flag:text-[#5EEAD4] transition-colors">{c.code}</span>
-                        </a>
-                      ))}
-                    </div>
+                    <CatalogFlags catalogs={SOCKET_CATALOGS} label="Impact Sockets Catalog" />
+
+                    {/* ── Broșură tipărită — rezumat întreaga gamă (EN) ── */}
+                    {SOCKET_BROCHURE.ready ? (
+                      <a
+                        href={SOCKET_BROCHURE.file}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title="Impact Sockets — printed brochure, full range summary (EN, PDF)"
+                        className="group/bro w-full mb-3 flex items-center gap-3 px-4 py-3 bg-white/[0.02] border border-[#5EEAD4]/25 rounded-sm hover:border-[#5EEAD4] hover:bg-[#5EEAD4]/[0.08] transition-all duration-200"
+                      >
+                        <BookOpen size={16} className="text-[#5EEAD4] shrink-0" />
+                        <span className="flex-1 text-left">
+                          <span className="block text-[11px] font-black uppercase tracking-[0.18em] text-white group-hover/bro:text-[#5EEAD4] transition-colors">{t.products.socketsBrochure}</span>
+                          <span className="block text-[9px] font-mono uppercase tracking-[0.2em] text-[#8A8A8A] mt-0.5">{t.products.socketsBrochureMeta}</span>
+                        </span>
+                        <span className="block w-[20px] h-[13px] overflow-hidden rounded-[2px] ring-1 ring-black/40 shrink-0">
+                          <Flag code={SOCKET_BROCHURE.code} />
+                        </span>
+                        <Download size={14} className="text-[#5EEAD4] shrink-0" />
+                      </a>
+                    ) : null}
 
                     <a
                       href={`mailto:office@industrytools.ro?subject=${encodeURIComponent('IndustryTools Sockets — pricing request')}`}
@@ -977,7 +1072,8 @@ function AppInner() {
         </div>
       </Section>
 
-      {/* ── RPW DATABASE SECTION ── */}
+      {/* ── RPW DATABASE SECTION — în pauză (SHOW_RPW_DATABASE) ── */}
+      {SHOW_RPW_DATABASE && (
       <Section id="rpw" className="bg-[#0A0F0D]" bgImage="/welding-bg.webp">
         <div className="max-w-7xl mx-auto">
           <Eyebrow code="03 /" label={t.rpw.eyebrow} />
@@ -1040,11 +1136,12 @@ function AppInner() {
           <p className="mt-6 text-xs font-mono text-[#7A7A7A] tracking-wide">{t.rpw.note}</p>
         </div>
       </Section>
+      )}
 
       {/* ── SERVICES SECTION ── */}
       <Section id="services" className="bg-[#0B0B0B]" bgImage="/services-bg.webp">
         <div className="max-w-7xl mx-auto">
-          <Eyebrow code="04 /" label={t.services.eyebrow} />
+          <Eyebrow code={SHOW_RPW_DATABASE ? '04 /' : '03 /'} label={t.services.eyebrow} />
           <h2 className="text-4xl md:text-5xl font-black uppercase text-white mb-6"><ScrambleText text={t.services.h2} /></h2>
           <p className="max-w-2xl text-[#B8B8B8] text-lg font-light leading-relaxed mb-16">{t.services.lead}</p>
           <div className="grid md:grid-cols-3 gap-4">
@@ -1069,7 +1166,7 @@ function AppInner() {
       {/* ── CLIENTS ── */}
       <Section id="clients" bgImage="/clients-bg.webp">
         <div className="max-w-7xl mx-auto">
-          <Eyebrow code="05 /" label={t.clients.eyebrow} />
+          <Eyebrow code={SHOW_RPW_DATABASE ? '05 /' : '04 /'} label={t.clients.eyebrow} />
           <h2 className="text-5xl font-black uppercase text-white mb-6"><ScrambleText text={t.clients.h2} /></h2>
           <p className="max-w-2xl text-[#B8B8B8] text-lg font-light leading-relaxed mb-4">{t.clients.lead}</p>
         </div>
@@ -1082,7 +1179,7 @@ function AppInner() {
       {/* ── PROCESS — interactive hover with detail reveal ── */}
       <Section id="process" className="bg-[#0B0B0B]" bgImage="/process-bg.webp">
         <div className="max-w-7xl mx-auto text-center">
-           <Eyebrow code="06 /" label={t.process.eyebrow} />
+           <Eyebrow code={SHOW_RPW_DATABASE ? '06 /' : '05 /'} label={t.process.eyebrow} />
            <h2 className="text-5xl font-black uppercase text-white mb-6"><ScrambleText text={t.process.h2} /></h2>
            <p className="max-w-2xl mx-auto text-[#C0C0C0] text-lg font-light leading-relaxed mb-20">{t.process.lead}</p>
            <div className="grid md:grid-cols-4 gap-5">
@@ -1143,7 +1240,7 @@ function AppInner() {
       {/* ── CONTACT (CHANGE #4: unified business card + active channels + live indicators) ── */}
       <Section id="contact">
         <div className="max-w-7xl mx-auto">
-           <Eyebrow code="07 /" label={t.contact.eyebrow} />
+           <Eyebrow code={SHOW_RPW_DATABASE ? '07 /' : '06 /'} label={t.contact.eyebrow} />
            <div className="grid md:grid-cols-2 gap-20">
               <div>
                  <h2 className="text-5xl md:text-6xl font-black uppercase text-white leading-[0.9] mb-10"><ScrambleText text={t.contact.h2a} /><br/><span className="text-[#5EEAD4]"><ScrambleText text={t.contact.h2b} /></span></h2>
@@ -1452,7 +1549,7 @@ function AppInner() {
       )}
 
       {/* ── WELDING MODAL — configurator RPW CONSUMABILE (41 piese + 3D) ── */}
-      {weldingOpen && <WeldingModal onClose={() => setWeldingOpen(false)} />}
+      {SHOW_RPW_DATABASE && weldingOpen && <WeldingModal onClose={() => setWeldingOpen(false)} />}
 
       {/* ── RFQ SYSTEM — floating badge + wizard ── */}
       <RFQFloatingBadge />
