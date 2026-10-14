@@ -1,5 +1,5 @@
 // src/App.jsx
-// v · 14.10.26 · SocketsAnimation icon (HEX/TORX + extension) · Sockets catalogs + presentations → 6 languages (RO/EN/FR/DE/IT/ES), new file names, IT/ES flags
+// v · 14.10.26 · Sockets wrench icon metallic finish · Sockets catalogs + presentations → 6 languages (RO/EN/FR/DE/IT/ES), new file names, IT/ES flags
 // v · 08.10.26 · Welding catalog RO/EN/FR/DE + Sockets printed brochure (EN) + RPW database paused (SHOW_RPW_DATABASE)
 // v · 04.08.26 · Impact Sockets — cataloage multilingve RO/EN/FR/DE cu butoane-steag
 import React, { useState, useEffect, useRef } from 'react';
@@ -85,82 +85,23 @@ function Flag({ code }) {
   );
 }
 
-// ─── Impact Sockets — animated product icon (style: WeldingAnimation) ─────────
-// Shows the product families: extension bar plugging into an impact socket
-// (side view) + socket face (end view) cycling HEX ↔ TORX profile.
-// Keyframes: sock-* in index.css.
-const TORX_STAR = (() => {
-  const pts = [];
-  for (let i = 0; i < 72; i++) {
-    const a = (i / 72) * Math.PI * 2;
-    const r = 30 + 9 * Math.cos(6 * a);
-    pts.push(`${(120 + r * Math.sin(a)).toFixed(2)},${(330 - r * Math.cos(a)).toFixed(2)}`);
-  }
-  return pts.join(' ');
-})();
-const HEX_BORE = Array.from({ length: 6 }, (_, i) => {
-  const a = (i / 6) * Math.PI * 2;
-  return `${(120 + 37 * Math.sin(a)).toFixed(2)},${(330 - 37 * Math.cos(a)).toFixed(2)}`;
-}).join(' ');
-
-function SocketsAnimation({ height = 56 }) {
+// ─── Impact Sockets — wrench icon, metallic finish (matches WeldingAnimation palette) ──
+const WRENCH_PATH = 'M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z';
+function SocketsIcon({ size = 44 }) {
   return (
-    <div style={{ maxHeight: height }} className="w-full h-auto">
-      <svg viewBox="0 0 240 400" className="w-full h-full" aria-hidden="true">
-        <defs>
-          <linearGradient id="sk-chrome" x1="0" x2="1">
-            <stop offset="0" stopColor="#6a7378" /><stop offset="0.35" stopColor="#f4f7f8" />
-            <stop offset="0.62" stopColor="#aab3b8" /><stop offset="1" stopColor="#555e63" />
-          </linearGradient>
-          <linearGradient id="sk-black" x1="0" x2="1">
-            <stop offset="0" stopColor="#202427" /><stop offset="0.33" stopColor="#7a858b" />
-            <stop offset="0.6" stopColor="#30363a" /><stop offset="1" stopColor="#141618" />
-          </linearGradient>
-          <radialGradient id="sk-face" cx="0.4" cy="0.35">
-            <stop offset="0" stopColor="#7a858b" /><stop offset="0.7" stopColor="#2c3134" />
-            <stop offset="1" stopColor="#141618" />
-          </radialGradient>
-          <clipPath id="sk-clip-hex"><path d="M80 150 H160 V196 L184 212 V262 H56 V212 L80 196 Z" /></clipPath>
-          <clipPath id="sk-clip-torx"><path d="M80 150 H160 V262 H80 Z" /></clipPath>
-        </defs>
-
-        {/* Extension bar — plugs into the socket */}
-        <g className="sock-plug">
-          <rect x="92" y="8" width="56" height="34" rx="4" fill="url(#sk-chrome)" stroke="#2c3134" strokeWidth="0.8" />
-          <rect x="92" y="16" width="56" height="3" fill="#2c3134" opacity="0.3" />
-          <rect x="92" y="24" width="56" height="3" fill="#2c3134" opacity="0.3" />
-          <rect x="92" y="32" width="56" height="3" fill="#2c3134" opacity="0.3" />
-          <rect x="108" y="42" width="24" height="76" fill="url(#sk-chrome)" stroke="#2c3134" strokeWidth="0.8" />
-          <rect x="98" y="116" width="44" height="18" rx="4" fill="url(#sk-chrome)" stroke="#2c3134" strokeWidth="0.8" />
-          <rect x="106" y="134" width="28" height="18" fill="url(#sk-chrome)" stroke="#2c3134" strokeWidth="0.6" />
-          <circle cx="120" cy="143" r="3" fill="#2c3134" />
-        </g>
-
-        {/* Socket — side view: HEX impact socket ↔ TORX socket */}
-        <g className="sock-phase-a">
-          <path d="M80 150 H160 V196 L184 212 V262 H56 V212 L80 196 Z" fill="url(#sk-black)" stroke="#0b0c0d" strokeWidth="0.8" />
-          <rect x="56" y="226" width="128" height="6" fill="#5EEAD4" opacity="0.9" />
-          <g clipPath="url(#sk-clip-hex)">
-            <rect x="46" y="150" width="18" height="112" fill="#ffffff" opacity="0.16" className="sock-shimmer" />
-          </g>
-        </g>
-        <g className="sock-phase-b">
-          <path d="M80 150 H160 V262 H80 Z" fill="url(#sk-black)" stroke="#0b0c0d" strokeWidth="0.8" />
-          <rect x="80" y="190" width="80" height="6" fill="#5EEAD4" opacity="0.9" />
-          <g clipPath="url(#sk-clip-torx)">
-            <rect x="70" y="150" width="16" height="112" fill="#ffffff" opacity="0.16" className="sock-shimmer" />
-          </g>
-        </g>
-
-        {/* Socket face — end view, profile HEX ↔ TORX */}
-        <circle cx="120" cy="330" r="66" fill="url(#sk-face)" stroke="#0b0c0d" strokeWidth="1" />
-        <circle cx="120" cy="330" r="56" fill="none" stroke="#5EEAD4" strokeOpacity="0.4" strokeWidth="2" />
-        <g className="sock-spin">
-          <polygon points={HEX_BORE} fill="#07090a" stroke="#5EEAD4" strokeWidth="4" className="sock-phase-a" />
-          <polygon points={TORX_STAR} fill="#07090a" stroke="#5EEAD4" strokeWidth="4" className="sock-phase-b" />
-        </g>
-      </svg>
-    </div>
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className="float-soft" aria-hidden="true">
+      <defs>
+        <linearGradient id="sk-wrench-steel" x1="2" y1="22" x2="22" y2="2" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="#5b6469" />
+          <stop offset="0.38" stopColor="#f2f5f6" />
+          <stop offset="0.6" stopColor="#a7b0b5" />
+          <stop offset="1" stopColor="#4d565b" />
+        </linearGradient>
+      </defs>
+      <path d={WRENCH_PATH} stroke="#0b0d0e" strokeWidth="3.6" strokeLinecap="round" strokeLinejoin="round" />
+      <path d={WRENCH_PATH} stroke="url(#sk-wrench-steel)" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
+      <path d={WRENCH_PATH} stroke="#5EEAD4" strokeOpacity="0.55" strokeWidth="0.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
   );
 }
 
@@ -1039,7 +980,7 @@ function AppInner() {
                   <div className="flex items-start justify-between mb-6">
                     <span className="px-3 py-1.5 bg-[#5EEAD4]/15 text-[#5EEAD4] text-[10px] font-black uppercase tracking-[0.2em] rounded">{t.products.ownBadge}</span>
                     <div className="w-14 h-14 flex items-center justify-center text-[#5EEAD4]">
-                      <SocketsAnimation height={56} />
+                      <SocketsIcon size={44} />
                     </div>
                   </div>
                   <h3 className="text-2xl md:text-[26px] font-black uppercase tracking-tight text-white mb-2 leading-tight">{t.products.socketsTitle}</h3>
