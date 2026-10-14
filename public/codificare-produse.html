@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IndustryTools — Generator coduri</title>
+  <style>
+    :root { --bg:#060b0d; --panel:#0b1215; --line:#203035; --cyan:#21e6e6; --text:#f4f7f7; --muted:#819096; --copper:#b96f45; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; color:var(--text); font-family:Inter,Arial,sans-serif; background:radial-gradient(circle at 70% 0,#152329 0,transparent 35%),linear-gradient(145deg,#05090b,#0a1114 58%,#050809); }
+    body:before { content:""; position:fixed; inset:0; pointer-events:none; opacity:.13; background-image:linear-gradient(rgba(33,230,230,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(33,230,230,.08) 1px,transparent 1px); background-size:42px 42px; }
+    .wrap { width:min(1450px,calc(100% - 40px)); margin:auto; padding:34px 0 60px; position:relative; }
+    header { border-bottom:1px solid var(--line); padding-bottom:25px; display:flex; justify-content:space-between; gap:30px; align-items:end; }
+    .eyebrow,.micro { color:var(--muted); font:600 11px/1.4 ui-monospace,Consolas,monospace; letter-spacing:.25em; text-transform:uppercase; }
+    .eyebrow:before { content:""; display:inline-block; width:72px; height:3px; margin-right:18px; vertical-align:middle; background:var(--cyan); }
+    h1 { margin:13px 0 5px; font-size:clamp(34px,5vw,72px); line-height:.95; letter-spacing:-.045em; text-transform:uppercase; }
+    .subtitle { color:#a9b3b6; font:500 14px ui-monospace,Consolas,monospace; letter-spacing:.23em; text-transform:uppercase; }
+    .diagram { width:310px; height:124px; flex:0 0 auto; opacity:.95; }
+    .tabs { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:26px 0 18px; }
+    .tab { cursor:pointer; text-align:left; border:1px solid var(--line); color:#9ca8ac; background:rgba(10,18,21,.78); padding:19px 20px; border-radius:3px; transition:.2s; }
+    .tab:hover,.tab.active { border-color:var(--cyan); color:white; background:rgba(33,230,230,.07); box-shadow:inset 0 -3px var(--cyan); }
+    .tab strong { display:block; font-size:22px; letter-spacing:.08em; }
+    .tab span { display:block; margin-top:6px; font:11px ui-monospace,Consolas,monospace; letter-spacing:.13em; color:var(--muted); }
+    .grid { display:grid; grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr); gap:18px; }
+    .card { border:1px solid var(--line); background:rgba(7,13,15,.88); border-radius:3px; padding:24px; box-shadow:0 20px 60px rgba(0,0,0,.28); }
+    .card h2 { margin:0 0 20px; text-transform:uppercase; letter-spacing:.09em; font-size:17px; }
+    .card h2:after { content:""; display:block; width:44px; height:3px; margin-top:10px; background:var(--cyan); }
+    label { display:block; margin-bottom:8px; color:#a9b3b6; font:600 10px ui-monospace,Consolas,monospace; letter-spacing:.16em; text-transform:uppercase; }
+    input,select,textarea { width:100%; color:white; background:#060b0d; border:1px solid #27383e; border-radius:2px; padding:13px 14px; outline:none; font:14px ui-monospace,Consolas,monospace; }
+    input:focus,select:focus,textarea:focus { border-color:var(--cyan); box-shadow:0 0 0 2px rgba(33,230,230,.1); }
+    textarea { min-height:206px; resize:vertical; line-height:1.7; }
+    .row { display:grid; grid-template-columns:1fr 1fr; gap:13px; margin-bottom:14px; }
+    .help { margin:-3px 0 18px; color:#718086; font-size:12px; line-height:1.55; }
+    .preview { margin:19px 0; padding:22px; border-left:3px solid var(--cyan); background:linear-gradient(90deg,rgba(33,230,230,.09),transparent); }
+    .preview small { color:var(--muted); letter-spacing:.18em; text-transform:uppercase; }
+    .preview-output { margin-top:9px; color:white; font:800 clamp(24px,4vw,42px) ui-monospace,Consolas,monospace; letter-spacing:.02em; word-break:break-all; }
+    .arrow { color:var(--cyan); margin:0 9px; }
+    .actions { display:flex; gap:10px; flex-wrap:wrap; }
+    button.action { cursor:pointer; border:1px solid var(--cyan); background:var(--cyan); color:#001013; padding:11px 15px; border-radius:2px; font-weight:800; text-transform:uppercase; letter-spacing:.08em; }
+    button.action.secondary { color:var(--cyan); background:transparent; }
+    table { width:100%; border-collapse:collapse; font:12px ui-monospace,Consolas,monospace; }
+    th { color:#819096; text-align:left; letter-spacing:.12em; text-transform:uppercase; font-size:9px; }
+    th,td { padding:11px 9px; border-bottom:1px solid #1a282d; }
+    td:last-child { color:var(--cyan); font-weight:700; }
+    .table-wrap { max-height:390px; overflow:auto; }
+    .empty { text-align:center; color:#647278; padding:50px 10px; }
+    .status { min-height:18px; margin-top:12px; color:#8ddfdc; font-size:12px; }
+    footer { margin-top:20px; display:flex; justify-content:space-between; color:#5e6d72; font:10px ui-monospace,Consolas,monospace; letter-spacing:.16em; text-transform:uppercase; }
+    @media(max-width:850px){ header{align-items:start}.diagram{display:none}.grid{grid-template-columns:1fr}.tabs{grid-template-columns:1fr}.row{grid-template-columns:1fr} }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header>
+      <div>
+        <div class="eyebrow">Technical coding system</div>
+        <h1>Generator coduri</h1>
+        <div class="subtitle">DOCERAM → INDUSTRYTOOLS</div>
+      </div>
+      <svg class="diagram" viewBox="0 0 310 124" aria-hidden="true">
+        <g fill="none" stroke="#21e6e6" stroke-width="2">
+          <path d="M16 102h278M43 32v70M104 22v80M206 22v80M267 32v70" opacity=".35"/>
+          <path d="M55 84V42h37v42M218 84V42h37v42M118 88V36h74v52"/>
+          <path d="M118 36h21v19h32V36h21M118 88h74"/>
+          <path d="M128 20h54M128 15v10M182 15v10M198 100h71M198 95v10M269 95v10"/>
+        </g>
+        <text x="142" y="15" fill="#21e6e6" font-family="monospace" font-size="12">ØD</text>
+        <text x="221" y="119" fill="#21e6e6" font-family="monospace" font-size="12">SW</text>
+        <text x="145" y="74" fill="#21e6e6" font-family="monospace" font-size="12">G</text>
+      </svg>
+    </header>
+
+    <nav class="tabs" id="tabs"></nav>
+
+    <section class="grid">
+      <div class="card">
+        <h2>Regulă de conversie</h2>
+        <div class="row">
+          <div><label for="prefix">Prefix IndustryTools</label><input id="prefix" /></div>
+          <div><label for="digits">Cifre păstrate la final</label><select id="digits"><option>4</option><option selected>5</option><option>6</option><option>7</option></select></div>
+        </div>
+        <div class="row">
+          <div><label for="separator">Separator</label><select id="separator"><option value="-">Cratimă — IT-EB-10000</option><option value="">Fără — ITEB10000</option><option value="/">Slash — IT-EB/10000</option></select></div>
+          <div><label for="caseMode">Formatare</label><select id="caseMode"><option value="upper">MAJUSCULE</option><option value="keep">Păstrează originalul</option></select></div>
+        </div>
+        <label for="source">Cod DOCERAM — previzualizare</label>
+        <input id="source" autocomplete="off" spellcheck="false" />
+        <div class="preview"><small>Conversie live</small><div class="preview-output"><span id="sourcePreview"></span><span class="arrow">→</span><span id="outputPreview"></span></div></div>
+        <p class="help">Regula implicită păstrează ultimele 5 cifre, la fel ca în catalogul actual: 8228ZK11000 → IT-CP-11000.</p>
+        <label for="batch">Conversie în serie — un cod pe rând</label>
+        <textarea id="batch" spellcheck="false" placeholder="1111ZK10000&#10;1111ZK20000&#10;1111ZK13000"></textarea>
+        <div class="actions">
+          <button class="action" id="convert">Generează lista</button>
+          <button class="action secondary" id="copy">Copiază</button>
+          <button class="action secondary" id="csv">Export CSV</button>
+          <button class="action secondary" id="reset">Reset rubrică</button>
+        </div>
+        <div class="status" id="status"></div>
+      </div>
+
+      <div class="card">
+        <h2>Rezultate și corespondențe</h2>
+        <div class="table-wrap"><table><thead><tr><th>#</th><th>Cod DOCERAM</th><th>Familie</th><th>Cod IndustryTools</th></tr></thead><tbody id="results"></tbody></table><div class="empty" id="empty">Introdu codurile și apasă „Generează lista”.</div></div>
+      </div>
+    </section>
+    <footer><span>DGSI · sistem intern de codificare</span><span>configurația se salvează local</span></footer>
+  </main>
+  <script>
+    const defaults = {
+      pins: { label:'Pini', title:'Ceramic Pins', prefix:'IT-CP', sample:'8228ZK11000', batch:'8228ZK11000\n8228ZK10000\n8228ZK10300' },
+      els: { label:'ELS', title:'Electrozi superiori', prefix:'IT-ES', sample:'111182418030', batch:'111182418030\n111182418065\n111182418090' },
+      elb: { label:'ELB', title:'Electrozi de bază', prefix:'IT-EB', sample:'1111ZK10000', batch:'1111ZK10000\n1111ZK20000\n1111ZK13000\n1111ZK22000' }
+    };
+    const saved = JSON.parse(localStorage.getItem('it-code-tool-v1') || '{}');
+    const state = { active:'pins', configs:{}, rows:[] };
+    for (const [key,val] of Object.entries(defaults)) state.configs[key] = { ...val, digits:'5', separator:'-', caseMode:'upper', ...(saved[key] || {}) };
+    const $ = id => document.getElementById(id);
+    function suffix(code,digits){ const clean=code.trim().replace(/[^a-zA-Z0-9]/g,''); const match=clean.match(new RegExp('(\\d{'+digits+'})$')); return match ? match[1] : clean.slice(-digits); }
+    function transform(code,cfg){ if(!code.trim()) return ''; let out = cfg.prefix + cfg.separator + suffix(code,Number(cfg.digits)); return cfg.caseMode==='upper' ? out.toUpperCase() : out; }
+    function save(){ localStorage.setItem('it-code-tool-v1',JSON.stringify(state.configs)); }
+    function renderTabs(){ $('tabs').innerHTML=Object.entries(state.configs).map(([k,v])=>`<button class="tab ${k===state.active?'active':''}" data-key="${k}"><strong>${v.label}</strong><span>${v.title} · ${v.prefix}</span></button>`).join(''); document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>switchTab(b.dataset.key)); }
+    function switchTab(key){ sync(); state.active=key; state.rows=[]; load(); renderTabs(); renderRows(); }
+    function load(){ const c=state.configs[state.active]; $('prefix').value=c.prefix; $('digits').value=c.digits; $('separator').value=c.separator; $('caseMode').value=c.caseMode; $('source').value=c.sample; $('batch').value=c.batch; preview(); }
+    function sync(){ const c=state.configs[state.active]; c.prefix=$('prefix').value.trim(); c.digits=$('digits').value; c.separator=$('separator').value; c.caseMode=$('caseMode').value; c.sample=$('source').value.trim(); c.batch=$('batch').value; save(); }
+    function preview(){ const c={...state.configs[state.active],prefix:$('prefix').value.trim(),digits:$('digits').value,separator:$('separator').value,caseMode:$('caseMode').value}; $('sourcePreview').textContent=$('source').value.trim()||'—'; $('outputPreview').textContent=transform($('source').value,c)||'—'; }
+    function generate(){ sync(); const c=state.configs[state.active]; state.rows=c.batch.split(/\r?\n|,|;/).map(x=>x.trim()).filter(Boolean).map(source=>({source,target:transform(source,c)})); renderRows(); $('status').textContent=`${state.rows.length} coduri generate.`; }
+    function renderRows(){ $('empty').style.display=state.rows.length?'none':'block'; $('results').innerHTML=state.rows.map((r,i)=>`<tr><td>${i+1}</td><td>${r.source}</td><td>${state.configs[state.active].label}</td><td>${r.target}</td></tr>`).join(''); }
+    async function copyRows(){ if(!state.rows.length) generate(); const text=state.rows.map(r=>`${r.source}\t${r.target}`).join('\n'); await navigator.clipboard.writeText(text); $('status').textContent='Lista a fost copiată.'; }
+    function exportCsv(){ if(!state.rows.length) generate(); const csv='Cod DOCERAM,Categorie,Cod IndustryTools\n'+state.rows.map(r=>`${r.source},${state.configs[state.active].label},${r.target}`).join('\n'); const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'})); a.download=`coduri-${state.active}.csv`; a.click(); URL.revokeObjectURL(a.href); $('status').textContent='Fișierul CSV a fost exportat.'; }
+    function reset(){ state.configs[state.active]={...defaults[state.active],digits:'5',separator:'-',caseMode:'upper'}; save(); state.rows=[]; load(); renderTabs(); renderRows(); $('status').textContent='Rubrica a revenit la valorile implicite.'; }
+    ['prefix','digits','separator','caseMode','source'].forEach(id=>$(id).addEventListener('input',()=>{sync();preview();renderTabs()}));
+    $('batch').addEventListener('input',sync); $('convert').onclick=generate; $('copy').onclick=copyRows; $('csv').onclick=exportCsv; $('reset').onclick=reset;
+    renderTabs(); load(); renderRows();
+  </script>
+</body>
+</html>

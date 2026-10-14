@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Work folders (not part of the site)
+tmp/
+output/
+outputs/
+.artifact-work/

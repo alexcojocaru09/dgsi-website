@@ -1,5 +1,5 @@
 // src/data/weldingCatalog.js
-// Catalog consumabile RPW · v3.8 — +DGSI-RPW-PIN-0042 (YRD-W1PCNCNM000131) · 0033 lipsă
+// Catalog consumabile RPW · v4.5 — +DGSI-RPW-PIN-0049 (EZ2) · 0033 lipsă
 // Structură: 3 piloni (Electrozi | Bucșe | Pini) → familii → piese.
 //
 // ⚠️ ATENȚIE — CONFLICT DE CODIFICARE NEREZOLVAT (vezi DGSI_codificare_toate_
@@ -4493,4 +4493,1160 @@ export const PARTS = [
       },
     },
   },
-];
+  {
+    tempCode: 'DGSI-RPW-PIN-0043',
+    dgsiCode: null,                       // PENDING — vezi conflict codificare
+    dgsiCodeCandidates: {
+      cartusPdf: 'PIN-12.8-32.6-01',      // Ø corp (12,8mm) · L=32,6mm
+    },
+    docerawEquivalent: '17270',
+    family: 'pcp',
+    name: 'Ceramic centering pin Ø12,8 · L32,6',
+    specs: [
+      ['Ø corp',        '12,8 mm  (+0 / -0,05)'],
+      ['Ø cap',         '8,15 mm  (+0 / -0,05)'],
+      ['Ø bază',        '14,4 mm'],
+      ['Ø pinten',      '6 mm'],
+      ['Vârf',          'plat Ø8,15 (fără con / coroană)'],
+      ['Umăr superior', '180° (față radială plană)'],
+      ['Șamfren bază',  '90° (inclus)'],
+      ['L (total)',     '32,6 mm'],
+      ['Material',      'ZrO2 (Cerazur®)'],
+      ['Rev.',          'R00 · DRAFT'],
+    ],
+    assets: {
+      drawing2d: '/welding-drawings/17270.png',
+      pdf: '/welding-drawings/PIN-12.8-32.6-01__17270__R00.pdf',
+      cad: null,
+    },
+    // PIESĂ ATIPICĂ PENTRU CATALOG — cea mai simplă de până acum: patru
+    // tronsoane cilindrice + un singur șamfren. NU are con, NU are coroană
+    // și NU are gât în sensul obișnuit: capul Ø8,15 se termină cu o FAȚĂ
+    // PLANĂ la Y=32,6, iar trecerea Ø12,8 → Ø8,15 e o față radială plană
+    // (disc orizontal), nu un umăr conic. Desenul nu cotează nicio rază.
+    //
+    // Desen sursă alb pe fundal negru (17270.png, 582×572, antialiasat) →
+    // binarizare pe canale RGB (R,G,B > 150). Desenul e trasat în CONTUR
+    // (doar muchii), nu umplut, deci validarea compară poziția coloanelor de
+    // muchie, nu runuri pline.
+    // Calibrare pe 4 datum-uri de înălțime (32,6 / 22 / 3,2 / 0) →
+    // scale = 9,437440 px/mm, y0 = 367,6210 px, AX = 302,145 px.
+    // Δ max 0,045 mm (la Y=3,2). Model de rasterizare px = ROUND(true), ca la
+    // piesele 0040–0042: cu round, toate cele 4 cote de înălțime cad pe
+    // rândul desenat (60 / 160 / 337 / 368), iar cu floor doar una din patru.
+    //
+    // Toate cele PATRU diametre cotate se reproduc EXACT, 8/8 muchii:
+    //     Ø8,15 → 264 / 341 ✓✓    Ø12,8 → 242 / 363 ✓✓
+    //     Ø14,4 → 234 / 370 ✓✓    Ø6    → 274 / 330 ✓✓
+    // Validare forward-raster: 616 muchii pe 308 rânduri ·
+    // 99,7% potrivire EXACTĂ (0 px) · 100,0% în ±1px · 0 abateri > 1px.
+    // Pe zone: pinten Ø6 100% · bază Ø14,4 100% · șamfren 90° 100% ·
+    // corp Ø12,8 99,7% · cap Ø8,15 99,5%. Cele două rânduri non-exacte
+    // (y=60 și y=160) sunt capete de linie orizontală care se opresc cu 1 px
+    // înainte de muchia verticală — artefact de desen, nu eroare de model.
+    // (Nu am primit JSON de la ChatGPT pentru piesa asta, deci nu există
+    // coloană de comparație JSON vs măsurat.)
+    //
+    // ⚠️ Ø6 E UN PINTEN (protuberanță), NU O GAURĂ. Asta e singura decizie
+    // de interpretare a piesei și e demonstrată direct de raster:
+    //   a) la Y=0 (y=368) linia orizontală desenată e x=274…330 — EXACT
+    //      lățimea Ø6 (56 px). Dacă Ø6 ar fi o gaură borgită de jos, fața
+    //      de jos a piesei ar fi desenată pe toată lățimea bazei (234…370);
+    //   b) la Y=2,0 (y=349) linia orizontală e x=234…370 — EXACT lățimea
+    //      Ø14,4. Asta e fața inelară de dedesubtul flanșei, adică exact ce
+    //      apare când un pinten mai subțire iese din bază. Dacă ar fi gaură,
+    //      fundul ei s-ar desena doar pe 274…330;
+    //   c) liniile de extensie confirmă: cota „22" / „32,6" / „3,2" pleacă
+    //      din stânga și se opresc la x=268 pe rândul y=368, adică fix
+    //      înaintea muchiei pintenului (274) — cu spațiul standard de
+    //      extensie. Coloanele x=234/370 sub y=349 și x=274/330 sub y=368
+    //      sunt liniile de extensie ale cotelor Ø14,4 (dim la y=428) și Ø6
+    //      (dim la y=393), cu depășirea obișnuită de ~11 px.
+    // Structura rezultată e identică cu tiparul „pinten 2,00 mm + flanșă" de
+    // la piesele 0003 / 0004 / 0005 / 0010 / 0011 / 0012 / 0022 / 0023 /
+    // 0024 — a zecea oară în catalog, mereu cu pinten de exact 2 mm.
+    //
+    // ✅ ÎNĂLȚIMEA PINTENULUI = 2,00 mm, necotată dar determinată strict:
+    // muchia de la y=349 admite Y ∈ [1,9200 · 2,0260] cu modelul round, iar
+    // 2,00 e singurul număr rotund din fereastră (și valoarea de familie).
+    // Consecință: flanșa Ø14,4 are doar 1,2 mm grosime (2,0 → 3,2).
+    //
+    // ✅ ȘAMFRENUL DE 90° (singurul unghi cotat) e confirmat independent:
+    //   • capătul lui de sus nu e cotat, dar desenul conține muchia reală a
+    //     cercului de joncțiune corp↔șamfren — linie orizontală la y=330,
+    //     x=242…363, EXACT lățimea corpului Ø12,8 — la Y=3,986. Cu 90°
+    //     inclus și baza la Y=3,2 rezultă 3,2 + 0,8 = 4,00, care se
+    //     rasterizează la round(329,87) = 330 → Δ 0,014 mm;
+    //   • panta măsurată pe cele 7 rânduri ale șamfrenului e EXACT 1 px x
+    //     per 1 px y pe ambele muchii (242→235 și 363→370), adică 45° față
+    //     de axă = 90° inclus. Nicio presupunere.
+    //
+    // ✅ FAȚA RADIALĂ DE LA Y=22 e plană, nu conică: la y=160 muchiile trec
+    // de la 264/341 (Ø8,15) la 242/363 (Ø12,8) într-UN SINGUR rând, iar
+    // linia orizontală de la y=160 are lățimea corpului (242…362). Un umăr
+    // conic ar ocupa minim 2-3 rânduri.
+    //
+    // ✅ VÂRF PLAT: la y=60 există linia orizontală a feței de sus (segmentul
+    // 264…341 din runul 113…340, contopit cu linia de extensie a cotei 32,6),
+    // iar coloanele 264/341 merg neîntrerupt de la y=61 la y=160 — deci
+    // capul e cilindric până sus. Nu există nicio rază cotată și niciun pixel
+    // deasupra lui y=60.
+    //
+    // ⚠️ VEDEREA ISO DIN CARTUȘUL PDF NU E CORECTĂ (a doua oară după 0032).
+    // Vectorii ei (extrași cu pdfplumber, scală 4,8 pt/mm) dau nivelurile
+    // 0 / 3,2 / 4,1 / 22 / 32,6 și pun Ø6 pe TOT intervalul 0…3,2, adică:
+    //   – modelează Ø6 ca inel interior (gaură), nu ca pinten;
+    //   – ratează complet muchia de la Y=2,0;
+    //   – trasează șamfrenul pe 0,9 mm (3,2 → 4,1) în loc de 0,8 mm, ceea ce
+    //     ar da 83,3° inclus în loc de cei 90° cotați pe desen.
+    // Generatorul PDF e fidel când datele de intrare sunt corecte, deci
+    // înseamnă că sursa lui (JSON-ul / intrarea de catalog folosită la
+    // generare) are aceleași două erori. Modelul de mai jos, măsurat pe
+    // desenul furnizorului, e cel corect — de regenerat PDF-ul din el.
+    //
+    // Notă: fără cote de toleranță pe Ø14,4 și Ø6 în desen; Ø12,8 și Ø8,15
+    // au ambele +0/−0,05.
+    //
+    // STRUCTURA (Y=0 bază pinten → Y=32,6 vârf):
+    //   • pinten cilindric Ø6                Y ∈ [0.00,  2.00]
+    //   • față radială spre flanșă Ø14,4     Y = 2.00
+    //   • flanșă/bază cilindrică Ø14,4       Y ∈ [2.00,  3.20]
+    //   • șamfren 90° inclus Ø14,4→Ø12,8     Y ∈ [3.20,  4.00]
+    //   • corp cilindric Ø12,8               Y ∈ [4.00, 22.00]
+    //   • față radială plană Ø12,8→Ø8,15     Y = 22.00
+    //   • cap cilindric Ø8,15                Y ∈ [22.00, 32.60]
+    //   • față plată Ø8,15 la vârf           Y = 32.60
+    profile3d: {
+      material3d: 'zro2',        // preset material: 'zro2' | 'kcf' | 'cupru'
+      lathePoints: [
+        [3.0,     0.0],
+        [3.0,     2.0],
+        [7.2,     2.0],
+        [7.2,     3.2],
+        [6.4,     4.0],
+        [6.4,     22.0],
+        [4.075,   22.0],
+        [4.075,   32.6],
+        [0.0,     32.6],
+      ],
+      height: 32.6,
+      footprint: 18,
+      camera: { theta: 0.6, phi: 1.15, radius: 95 },
+      orthoSize: 24,
+      drawing2d: '/welding-drawings/17270.png',
+      pdf: '/welding-drawings/PIN-12.8-32.6-01__17270__R00.pdf',
+      dims3d: {
+        items: [
+          { type: 'diameter', y: 2.6,   r: 7.2,   lineY: -4, label: 'Ø14,4', radial: true  },
+          { type: 'diameter', y: 1,     r: 3.0,   lineY: -8, label: 'Ø6',    radial: true  },
+          { type: 'diameter', y: 13,    r: 6.4,   lineY: 36, label: 'Ø12,8', radial: true  },
+          { type: 'diameter', y: 27,    r: 4.075, lineY: 39, label: 'Ø8,15', radial: false },
+          { type: 'length', y1: 0, y2: 32.6, edgeR1: 3.0, edgeR2: 4.075, label: 'L 32,6', radial: false },
+          { type: 'length', y1: 0, y2: 22,   edgeR1: 3.0, edgeR2: 6.4,   label: '22',     radial: false },
+          { type: 'length', y1: 0, y2: 4,    edgeR1: 3.0, edgeR2: 6.4,   label: '4',      radial: false },
+          { type: 'length', y1: 0, y2: 3.2,  edgeR1: 3.0, edgeR2: 7.2,   label: '3,2',    radial: false },
+          { type: 'length', y1: 0, y2: 2,    edgeR1: 3.0, edgeR2: 7.2,   label: '2',      radial: false },
+        ],
+      },
+    },
+  },
+  {
+    tempCode: 'DGSI-RPW-PIN-0044',
+    dgsiCode: null,                       // PENDING — vezi conflict codificare
+    dgsiCodeCandidates: {
+      cartusPdf: 'PIN-15-32.5-01',        // Ø corp (15mm) · L=32,5mm
+    },
+    docerawEquivalent: '6564860',
+    family: 'pcp',
+    name: 'Ceramic centering pin Ø15 · L32,5',
+    specs: [
+      ['Ø corp',        '15 mm  (+0 / -0,05)'],
+      ['Ø bază',        '16,5 mm'],
+      ['Ø gât',         '10 mm  (+0 / -0,05)'],
+      ['Rază coroană',  'R5 mm  (emisferă, centrată pe axă)'],
+      ['Umăr superior', '90° (inclus)'],
+      ['Șamfren bază',  '60° (inclus)'],
+      ['L (total)',     '32,5 mm'],
+      ['Material',      'ZrO2 (Cerazur®)'],
+      ['Rev.',          'R00 · DRAFT'],
+    ],
+    assets: {
+      drawing2d: '/welding-drawings/6564860.png',
+      pdf: '/welding-drawings/PIN-15-32.5-01__6564860__R00.pdf',
+      cad: null,
+    },
+    // ✅ PRIMA PIESĂ DIN LOT CU JSON COMPLET CORECT. Nicio corecție de
+    // geometrie — nici măcar la unghiul umărului, marcat în JSON ca
+    // presupunere („45deg_assumed"), care aici chiar IESE exact 90° inclus.
+    // Piesă „cu capăt emisferic": coroana R5 e exact jumătate din Ø10 al
+    // gâtului, deci e o EMISFERĂ perfectă așezată pe cilindru — nu există
+    // con intermediar, iar tangența e exactă prin construcție (0,00°), fără
+    // niciun calcul de racordare. Prima de acest tip din catalog.
+    //
+    // Desen sursă alb pe fundal negru (6564860.png, 599×596), BINAR PUR —
+    // exact două culori, zero antialiasing, deci muchiile sunt neambigue.
+    // Calibrare pe 5 datum-uri de înălțime (32,5 / 27,5 / 19,5 / 3,5 / 0) →
+    // scale = 11,000010 px/mm, y0 = 440,2503 px, AX = 180,0000 px.
+    // Δ max 0,0228 mm — cea mai bună calibrare din tot catalogul.
+    // Scara iese practic exact 11 px/mm, iar fereastra admisibilă pentru AX
+    // se strânge la [179,9999 · 180,0001] — adică axa cade pe un pixel
+    // întreg, la 180,000.
+    //
+    // Model de rasterizare px = ROUND(true). Aici floor și round sunt
+    // echivalente (diferă doar printr-un offset de 0,5 în y0 și AX, ambii
+    // parametri liberi): floor dă y0=440,7503 / AX=180,5000 cu aceleași
+    // reziduuri. Am păstrat round, ca la piesele 0040–0043.
+    //
+    // Toate cele TREI diametre cotate se reproduc EXACT, 6/6 muchii:
+    //     Ø16,5 → 89 / 271 ✓✓    Ø15 → 97 / 263 ✓✓    Ø10 → 125 / 235 ✓✓
+    // (Ø15 e la limită: muchiile cad la 97,4999 și 262,5001, adică la o
+    // miime de pixel de pragul de rotunjire — de aici fereastra îngustă
+    // de scară, s ∈ [11,0000 · 11,0154].)
+    //
+    // Validare forward-raster: 648 muchii pe 324 rânduri ·
+    // 98,6% potrivire EXACTĂ (0 px) · 100,0% în ±1px · 0 abateri > 1px.
+    // Pe zone: bază Ø16,5 100% · corp Ø15 100% · umăr 90° 100% ·
+    // gât Ø10 100% · șamfren 60° 95,8% · coroană R5 91,8% (toate 100%
+    // în ±1px — abaterile de 1px sunt doar pe muchiile înclinate/curbe).
+    //
+    // ✅ UMĂRUL Ø15→Ø10: 90° INCLUS, Y ∈ [19,50 · 22,00]. Necotat ca unghi,
+    // dar determinat fără nicio presupunere:
+    //   a) panta desenată e EXACT 1 px x per 1 px y pe toate cele 27 de
+    //      rânduri ale diagonalei, pe ambele muchii (125→97 pe y=198→226,
+    //      și simetric 235→263) → 45° față de axă = 90° inclus;
+    //   b) Δr = (15−10)/2 = 2,5 mm, deci cu 90° inclus ΔY = 2,5 mm, iar
+    //      capătul de sus iese la 19,5 + 2,5 = 22,00 — valoare rotundă;
+    //   c) muchia reală a cercului de joncțiune umăr↔gât e desenată la
+    //      y=198, iar Y=22,00 se rasterizează la round(198,250) = 198,
+    //      EXACT rândul desenat.
+    //   Cotele 19,5 și 27,5 NU încadrează umărul (cum s-a întâmplat la
+    //   0037–0041): 19,5 e piciorul umărului, iar 27,5 e centrul coroanei.
+    //
+    // ✅ COROANA R5: emisferă centrată pe axă în (0 / 27,5). Verificări:
+    //   • R5 = Ø10/2 exact → tangentă la cilindrul gâtului prin construcție,
+    //     eroare de tangență 0,00°, fără con intermediar;
+    //   • apexul cade la 27,5 + 5 = 32,50 = lungimea totală cotată, iar
+    //     round(82,750) = 83 = rândul liniei orizontale de sus din desen;
+    //   • linia de cotă R5 (leader diagonal din stânga-sus) are vârful
+    //     săgeții pe arc la (135 / 103) și continuă exact până la (180 / 138)
+    //     — adică fix la centrul (AX / Y=27,5) dedus independent. Confirmare
+    //     directă a poziției centrului.
+    //   Discretizată în 12 segmente de 7,5° (săgeată max 0,011 mm).
+    //
+    // ✅ ȘAMFRENUL DE 60° (singurul unghi cotat) confirmat pe raster:
+    //   piciorul lui iese la 3,5 − 0,75/tan(30°) = 2,200962, care se
+    //   rasterizează la round(416,04) = 416 — exact rândul liniei orizontale
+    //   desenate pe toată lățimea bazei (x=89…271, cu întreruperea de la
+    //   x=180 unde trece leader-ul cotei „60°").
+    //
+    // ⚠️ VEDEREA ISO DIN CARTUȘUL PDF — o singură abatere, minoră. Vectorii
+    // ei (pdfplumber, scală 4,8 pt/mm, centru x=682, Y=0 la top=351,28) dau
+    // nivelurile 0 / 2,100 / 3,500 / 19,500 / 22,000 / 27,500 / 32,500.
+    // Toate corecte, INCLUSIV umărul la 22,00 — cu excepția piciorului
+    // șamfrenului: 2,100 în loc de 2,200962, ceea ce ar da 56,4° inclus în
+    // loc de cei 60° cotați. Pe raster diferența se vede: cu 2,100 linia ar
+    // cădea la round(417,15) = 417, dar desenul o are la 416. Δ 0,101 mm —
+    // vizibil doar la lupă, dar de corectat la regenerarea PDF-ului.
+    //
+    // STRUCTURA (Y=0 bază → Y=32,5 vârf):
+    //   • bază cilindrică Ø16,5              Y ∈ [0.00,  2.2010]
+    //   • șamfren 60° inclus Ø16,5→Ø15       Y ∈ [2.2010, 3.50]
+    //   • corp cilindric Ø15                 Y ∈ [3.50, 19.50]
+    //   • umăr 90° inclus Ø15→Ø10            Y ∈ [19.50, 22.00]
+    //   • gât cilindric Ø10 (5,5 mm)         Y ∈ [22.00, 27.50]
+    //   • coroană emisferică R5 (0/27,5)     Y ∈ [27.50, 32.50]
+    profile3d: {
+      material3d: 'zro2',        // preset material: 'zro2' | 'kcf' | 'cupru'
+      lathePoints: [
+        [8.25,    0.0],
+        [8.25,    2.200961894323],
+        [7.5,     3.5],
+        [7.5,     19.5],
+        [5.0,     22.0],
+        [5.0,     27.5],
+        [4.9572,  28.1526],
+        [4.8296,  28.7941],
+        [4.6194,  29.4134],
+        [4.3301,  30.0],
+        [3.9668,  30.5438],
+        [3.5355,  31.0355],
+        [3.0438,  31.4668],
+        [2.5,     31.8301],
+        [1.9134,  32.1194],
+        [1.2941,  32.3296],
+        [0.6526,  32.4572],
+        [0.0,     32.5],
+      ],
+      height: 32.5,
+      footprint: 20,
+      camera: { theta: 0.6, phi: 1.15, radius: 95 },
+      orthoSize: 24,
+      drawing2d: '/welding-drawings/6564860.png',
+      pdf: '/welding-drawings/PIN-15-32.5-01__6564860__R00.pdf',
+      dims3d: {
+        items: [
+          { type: 'diameter', y: 1.1,   r: 8.25, lineY: -4, label: 'Ø16,5', radial: true  },
+          { type: 'diameter', y: 11,    r: 7.5,  lineY: 36, label: 'Ø15',   radial: true  },
+          { type: 'diameter', y: 24.8,  r: 5.0,  lineY: 39, label: 'Ø10',   radial: false },
+          { type: 'radius',   y: 27.5,  r: 5.0,  lineY: 42, label: 'R5',    radial: false },
+          { type: 'length', y1: 0, y2: 32.5, edgeR1: 8.25, edgeR2: 0,    label: 'L 32,5', radial: false },
+          { type: 'length', y1: 0, y2: 27.5, edgeR1: 8.25, edgeR2: 5.0,  label: '27,5',  radial: false },
+          { type: 'length', y1: 0, y2: 19.5, edgeR1: 8.25, edgeR2: 7.5,  label: '19,5',  radial: false },
+          { type: 'length', y1: 0, y2: 3.5,  edgeR1: 8.25, edgeR2: 7.5,  label: '3,5',   radial: false },
+          { type: 'length', y1: 0, y2: 2.2,  edgeR1: 8.25, edgeR2: 8.25, label: '2,2',   radial: false },
+        ],
+      },
+    },
+  },
+  {
+    tempCode: 'DGSI-RPW-PIN-0045',
+    dgsiCode: null,                       // PENDING — vezi conflict codificare
+    dgsiCodeCandidates: {
+      cartusPdf: 'PIN-12.45-27.8-01',     // Ø corp (12,45mm) · L=27,8mm
+    },
+    docerawEquivalent: '7073683',
+    family: 'pcp',
+    name: 'Ceramic centering pin Ø12,45 · L27,8',
+    specs: [
+      ['Ø corp',        '12,45 mm  (+0 / -0,05)'],
+      ['Ø bază',        '14,5 mm'],
+      ['Ø gât',         '8,4 mm  (+0 / -0,05)'],
+      ['Ø ref. racord', '10,3 mm  (la Y=21,3)'],
+      ['Ø vârf plat',   '3,4 mm'],
+      ['Rază coroană',  'R2,5 mm  (toroidală, centru pe Ø3,4)'],
+      ['Rază racordare','R1,9 mm  (necotată · interval 1,79…2,01)'],
+      ['Con inferior',  '148,7° (inclus, necotat)'],
+      ['Șamfren bază',  '60° (inclus)'],
+      ['L (total)',     '27,8 mm'],
+      ['Material',      'ZrO2 (Cerazur®)'],
+      ['Rev.',          'R00 · DRAFT'],
+    ],
+    assets: {
+      drawing2d: '/welding-drawings/7073683.png',
+      pdf: '/welding-drawings/PIN-12.45-27.8-01__7073683__R00.pdf',
+      cad: null,
+    },
+    // ⚠️ JSON-UL DECLARA GEOMETRIA NEDETERMINABILA (`geometry_is_uniquely_
+    // determined: false`, 5 cote „lipsă", 2 conflicte). NU E CAZUL: desenul
+    // e complet determinat, iar toate cele 11 cote se închid simultan.
+    // Singurul parametru cu adevărat necotat e raza racordării de la mijloc,
+    // strânsă de raster la un interval de 0,22 mm.
+    //
+    // Desen binar pur (7073683.png, 639×672, două culori, zero antialiasing).
+    // Calibrare pe 5 datum-uri de înălțime (27,8 / 25,3 / 21,3 / 21 / 0) →
+    // scale = 11,030750 px/mm, y0 = 470,3048 px, AX = 419,5000 px
+    // (fereastră AX [419,473 · 419,527]). Δ max 0,0317 mm. Model round.
+    //
+    // TOATE cele CINCI diametre cotate se reproduc EXACT, 10/10 muchii:
+    //     Ø14,5 → 340/499 ✓✓   Ø12,45 → 351/488 ✓✓   Ø10,3 → 363/476 ✓✓
+    //     Ø8,4  → 373/466 ✓✓   Ø3,4   → 401/438 ✓✓
+    //
+    // Validare forward-raster: 552 muchii pe 276 rânduri ·
+    // 96,7% potrivire EXACTĂ · 100,0% în ±1px · 0 abateri > 1px.
+    // Pe zone: bază Ø14,5 100% · corp Ø12,45 100% · gât Ø8,4 100% ·
+    // arc racordare 91,7% · coroană R2,5 88,5% · șamfren 60° 85,7% ·
+    // con 21→21,3 0% exact dar 100% în ±1px (doar 6 muchii, toate la 1px).
+    //
+    // ✅ COROANA E UN SFERT DE TOR PERFECT — R2,5 centrat în (1,7 / 25,3).
+    // JSON a inventat „R1.7" (nicio rază nu e cotată pe desen!) și a raportat
+    // apoi două conflicte inexistente („dimension_conflict" pe Ø3,4 și
+    // „height_conflict" pe 27,8). Construcția reală închide TOATE cele patru
+    // cote fără reziduu:
+    //   • R = (Ø8,4 − Ø3,4)/2 = 2,5 exact;
+    //   • centrul la r = Ø3,4/2 = 1,7 și Y = 25,3 (cotă de pe desen);
+    //   • punctul cel mai din dreapta al cercului cade în (4,2 / 25,3) →
+    //     tangentă VERTICALĂ, deci racordare perfectă la gâtul Ø8,4;
+    //   • punctul cel mai de sus cade în (1,7 / 25,3+2,5 = 27,8) → tangentă
+    //     ORIZONTALĂ, deci racordare perfectă la fața plată Ø3,4, iar 27,8
+    //     iese exact lungimea totală cotată.
+    // Fit de cerc independent pe 20 de pixeli ai coroanei (fără nicio cotă)
+    // dă centrul în (r=1,771 / Y=25,383) — la 0,07/0,08 mm de (1,7 / 25,3),
+    // adică sub un pixel. Confirmare directă.
+    //
+    // ✅ RACORDAREA INFERIOARĂ = ARC + CON, cu vertexul exact pe cotele
+    // Ø10,3 / 21,3. Asta e cheia piesei, și e vizibilă direct în raster:
+    // desenul are TREI linii de joncțiune orizontale în zonă, la
+    // y=222 (lățime = Ø8,4), y=235 (lățime = Ø10,3) și y=239 (lățime =
+    // Ø12,45) — adică Y = 22,50 · 21,30 · 21,00, toate trei cotate.
+    // Segmentul de jos (21,0 → 21,3) e o dreaptă: panta măsurată
+    // 3,58 px/rând reproduce rândurile 236/237/238 la 478/481/485, exact
+    // ca desenul, în timp ce orice arc care ar continua acolo rămâne cu
+    // 2-3 px în urmă. Con de 148,7° inclus (necotat).
+    // Segmentul de sus (21,3 → 22,5) e curbat: o dreaptă ar da 472 la
+    // y=230 față de 470 măsurat, deci profilul e concav.
+    //
+    // ⚠️ RAZA RACORDĂRII: R1,9 — SINGURUL parametru necotat al piesei.
+    // Sweep exhaustiv al cercului prin cele două puncte cotate (4,2 / 22,5)
+    // și (5,15 / 21,3): potrivire 12/12 EXACTĂ pe toate rândurile arcului
+    // pentru R ∈ [1,791 · 2,014] mm. Am ales 1,9 (mijlocul intervalului,
+    // valoare rotundă); 1,8 / 1,85 / 1,95 / 2,0 sunt la fel de compatibile.
+    // Diferența pe model între capetele intervalului e 0,05 mm.
+    // Două ipoteze „elegante" au fost testate și RESPINSE de raster:
+    //   • arc tangent la gâtul Ø8,4 (ar impune R = 1,2329): scor 9/15 exact,
+    //     12/15 în ±1px — profilul iese cu 2 px prea spre interior la mijloc;
+    //   • arc tangent la conul de jos (ar impune R = 1,3004): în afara
+    //     intervalului admis.
+    // Deci profilul are colțuri reale la ambele capete ale arcului:
+    // ~16° față de generatoarea gâtului la Y=22,5 și ~13° față de con la
+    // Y=21,3 — ceea ce explică de ce desenul trasează linii de joncțiune
+    // acolo. Discretizat în 6 segmente de 7,9°.
+    //
+    // ✅ CONFIRMAT (JSON corect) — partea de jos:
+    //   • bază Ø14,5 0→2,2249 + șamfren 60° ancorat pe Y=4 (4 − 1,025/tan30°
+    //     = 2,224873, cotat 2,22 ✓) — 100% exact pe bază
+    //   • corp Ø12,45 — 100% exact pe 171 de rânduri
+    //   Notă: linia de joncțiune de la piciorul șamfrenului e desenată la
+    //   y=445, iar modelul o pune la 445,76 (Δ 0,76 px). Alternativa
+    //   Y=2,294 ar reproduce pixelul exact, dar s-ar cota „2,29", nu „2,22" —
+    //   deci cota decide, nu pixelul.
+    //
+    // ⚠️ VEDEREA ISO DIN CARTUȘUL PDF ARE DOUĂ ERORI (a treia piesă la rând).
+    // Vectorii ei (pdfplumber, scală 5,2993 pt/mm, centru x=682, Y=0 la
+    // top=351,28) dau nivelurile 0 / 2,221 / 4,100 / 21,300 / 21,600 /
+    // 22,500 / 25,300 / 27,800:
+    //   a) toată zona de racordare e URCATĂ cu 0,3 mm — pune capătul
+    //      corpului Ø12,45 la 21,3 (în loc de 21,0) și Ø10,3 la 21,6 (în loc
+    //      de 21,3), adică folosește cota 21,3 pentru muchia greșită;
+    //   b) trasează racordarea ca DOUĂ DREPTE (6,225/21,3 → 5,15/21,6 →
+    //      4,2/22,5), fără arc — pe raster o astfel de poliliniune ratează
+    //      14 din 15 rânduri (6,7% exact, 20,0% în ±1px);
+    //   c) în plus, piciorul șamfrenului de bază e la 4,100 în loc de 4,000
+    //      — exact aceeași abatere de +0,1 mm ca la piesa 0044.
+    // Coroana e însă corectă în ISO (25,3 → 27,8, capăt r=1,7).
+    // De regenerat PDF-ul din intrarea de mai jos.
+    //
+    // STRUCTURA (Y=0 bază → Y=27,8 vârf):
+    //   • bază cilindrică Ø14,5              Y ∈ [0.00,  2.2249]
+    //   • șamfren 60° inclus Ø14,5→Ø12,45    Y ∈ [2.2249, 4.00]
+    //   • corp cilindric Ø12,45              Y ∈ [4.00, 21.00]
+    //   • con 148,7° inclus Ø12,45→Ø10,3     Y ∈ [21.00, 21.30]
+    //   • arc concav R1,9 Ø10,3→Ø8,4         Y ∈ [21.30, 22.50]
+    //   • gât cilindric Ø8,4 (2,8 mm)        Y ∈ [22.50, 25.30]
+    //   • coroană torică R2,5, centru (1,7/25,3)  Y ∈ [25.30, 27.80]
+    //   • față plată Ø3,4 la vârf            Y = 27.80
+    profile3d: {
+      material3d: 'zro2',        // preset material: 'zro2' | 'kcf' | 'cupru'
+      lathePoints: [
+        [7.25,    0.0],
+        [7.25,    2.224872981078],
+        [6.225,   4.0],
+        [6.225,   21.0],
+        [5.15,    21.3],
+        [4.9271,  21.4384],
+        [4.7255,  21.6062],
+        [4.5488,  21.8001],
+        [4.4006,  22.0165],
+        [4.2836,  22.2513],
+        [4.2,     22.5],
+        [4.2,     25.3],
+        [4.1786,  25.6263],
+        [4.1148,  25.947],
+        [4.0097,  26.2567],
+        [3.8651,  26.55],
+        [3.6834,  26.8219],
+        [3.4678,  27.0678],
+        [3.2219,  27.2834],
+        [2.95,    27.4651],
+        [2.6567,  27.6097],
+        [2.347,   27.7148],
+        [2.0263,  27.7786],
+        [1.7,     27.8],
+        [0.0,     27.8],
+      ],
+      height: 27.8,
+      footprint: 18,
+      camera: { theta: 0.6, phi: 1.15, radius: 84 },
+      orthoSize: 21,
+      drawing2d: '/welding-drawings/7073683.png',
+      pdf: '/welding-drawings/PIN-12.45-27.8-01__7073683__R00.pdf',
+      dims3d: {
+        items: [
+          { type: 'diameter', y: 1.1,   r: 7.25,  lineY: -4, label: 'Ø14,5',  radial: true  },
+          { type: 'diameter', y: 12,    r: 6.225, lineY: 33, label: 'Ø12,45', radial: true  },
+          { type: 'diameter', y: 21.3,  r: 5.15,  lineY: 36, label: 'Ø10,3',  radial: false },
+          { type: 'diameter', y: 23.9,  r: 4.2,   lineY: 39, label: 'Ø8,4',   radial: false },
+          { type: 'diameter', y: 27.8,  r: 1.7,   lineY: 42, label: 'Ø3,4',   radial: false },
+          { type: 'length', y1: 0, y2: 27.8, edgeR1: 7.25, edgeR2: 1.7,   label: 'L 27,8', radial: false },
+          { type: 'length', y1: 0, y2: 25.3, edgeR1: 7.25, edgeR2: 4.2,   label: '25,3',  radial: false },
+          { type: 'length', y1: 0, y2: 21.3, edgeR1: 7.25, edgeR2: 5.15,  label: '21,3',  radial: false },
+          { type: 'length', y1: 0, y2: 21,   edgeR1: 7.25, edgeR2: 6.225, label: '21',    radial: false },
+          { type: 'length', y1: 0, y2: 2.22, edgeR1: 7.25, edgeR2: 7.25,  label: '2,22',  radial: false },
+        ],
+      },
+    },
+  },
+  {
+    tempCode: 'DGSI-RPW-PIN-0046',
+    dgsiCode: null,                       // PENDING — vezi conflict codificare
+    dgsiCodeCandidates: {
+      cartusPdf: 'PIN-13.45-28.3-01',     // Ø corp (13,45mm) · L=28,3mm
+    },
+    docerawEquivalent: '7073665 / 7073679',
+    family: 'pcp',
+    name: 'Ceramic centering pin Ø13,45 · L28,3',
+    specs: [
+      ['Ø corp',        '13,45 mm  (+0 / -0,05)'],
+      ['Ø bază',        '16,1 mm'],
+      ['Ø gât',         '8,4 mm  (+0 / -0,05)'],
+      ['Ø ref. umăr',   '10,8 mm  (la Y=21,8)'],
+      ['Ø vârf plat',   '3,4 mm'],
+      ['Rază coroană',  'R2,5 mm  (toroidală, centru pe Ø3,4)'],
+      ['Rază umăr',     'R2 mm  (tangentă la con)'],
+      ['Con umăr',      '138,7° (inclus, necotat)'],
+      ['Șamfren bază',  '60° (inclus)'],
+      ['L (total)',     '28,3 mm'],
+      ['Material',      'ZrO2 (Cerazur®)'],
+      ['Rev.',          'R00 · DRAFT'],
+    ],
+    assets: {
+      drawing2d: '/welding-drawings/707366579.png',
+      pdf: '/welding-drawings/PIN-13.45-28.3-01__707366579__R00.pdf',
+      cad: null,
+    },
+    // SORĂ GEOMETRICĂ CU PIESA 0045: aceeași arhitectură de vârf (coroană
+    // torică + față plată Ø3,4) și aceeași arhitectură de umăr (arc + con,
+    // cu un Ø de referință măsurat pe curbă). Diferă toate cotele, iar aici
+    // AMBELE raze sunt cotate pe desen (R2 și R2,5), deci umărul e complet
+    // determinat — spre deosebire de 0045, unde raza a trebuit dedusă.
+    //
+    // ⚠️ JSON-UL DECLARĂ DIN NOU GEOMETRIA NEDETERMINABILĂ
+    // (`geometry_is_uniquely_determined_without_assumptions: false`, patru
+    // „unresolved_regions", cinci cote „lipsă"). Nu e cazul — desenul e
+    // complet determinat, iar toate cele 14 cote se închid simultan.
+    // Greșeala de fond: JSON a presupus un CILINDRU Ø10,8 între Y=23 și
+    // Y=25,8, plus o treaptă radială Ø10,8→Ø8,4 la Y=25,8. Rasterul îl
+    // contrazice direct: pe tot intervalul y=149…181 (Y = 22,89 … 25,80)
+    // muchiile sunt fix 356/449, adică Ø8,4 — nu Ø10,8. Extensiile cotei
+    // Ø10,8 (coloanele x=343 și x=462) trăiesc între y=199 și 251, adică
+    // INTERIORUL siluetei corpului Ø13,45; feretele lor se opresc la 7 px
+    // sub linia y=193, exact tiparul de gap al desenului. Deci Ø10,8 nu e
+    // un cilindru, ci un diametru de referință măsurat PE curbă, la Y=21,8.
+    //
+    // Desen binar pur (707366579.png, 570×675, două culori, zero antialias).
+    // Calibrare pe 7 datum-uri (28,3 / 25,8 / 23 / 21,8 / 21,3 / 4,8 / 0) →
+    // scale = 11,021800 px/mm, y0 = 433,3343 px, AX = 402,5000 px
+    // (fereastră AX [402,378 · 402,622]). Δ max 0,039 mm. Model round.
+    //
+    // TOATE cele CINCI diametre cotate se reproduc EXACT, 10/10 muchii:
+    //     Ø16,1 → 314/491 ✓✓   Ø13,45 → 328/477 ✓✓   Ø10,8 → 343/462 ✓✓
+    //     Ø8,4  → 356/449 ✓✓   Ø3,4   → 384/421 ✓✓
+    //
+    // Validare forward-raster: 538 muchii pe 269 rânduri ·
+    // 96,7% potrivire EXACTĂ · 100,0% în ±1px · 0 abateri > 1px.
+    // Pe zone: bază Ø16,1 100% · corp Ø13,45 100% · gât Ø8,4 100% ·
+    // șamfren 60° 93,3% · arc R2 91,7% · coroană R2,5 77,8% ·
+    // con 21,3→21,8 40% exact (10 muchii) — toate 100% în ±1px.
+    //
+    // ✅ COROANA — sfert de tor R2,5 centrat în (1,7 / 25,8), identic ca
+    // schemă cu 0045. Aici R2,5 e COTAT pe desen, iar valoarea confirmă
+    // regula de familie: R = (Ø8,4 − Ø3,4)/2 = 2,5. Se închid simultan:
+    //   • centrul la r = Ø3,4/2 = 1,7, Y = 25,8 (cotat);
+    //   • punctul din dreapta în (4,2 / 25,8) → tangentă verticală la gât;
+    //   • punctul de sus în (1,7 / 28,3) → tangentă orizontală la fața plată,
+    //     iar 28,3 iese exact lungimea totală cotată.
+    //
+    // ✅ UMĂRUL = ARC R2 + CON, cu vertexul exact pe cotele Ø10,8 / 21,8.
+    //   • Segmentul 21,3 → 21,8 e o DREAPTĂ: panta măsurată e 2,50 px/rând
+    //     constant pe toate cele 6 rânduri (328→343), iar predicția liniară
+    //     reproduce y=194…198 la ±0,5 px. Con de 138,7° inclus (necotat).
+    //   • Segmentul 21,8 → 23,0 e CURBAT: o dreaptă ar cădea cu până la
+    //     2,1 px spre interior (săgeata arcului R2 pe coarda de 1,697 mm e
+    //     0,1889 mm = 2,08 px), iar pe raster coarda ratează 11 rânduri din
+    //     11 (0% exact, 18% în ±1px). Arcul R2 cotat dă 10/11 exact,
+    //     11/11 în ±1px.
+    //   • Centrul arcului iese în (r=6,0806 / Y=23,6806) — determinat de
+    //     cele două puncte cotate + raza cotată, fără nicio presupunere.
+    //   • Sweep-ul de rază pe rândurile arcului dă 11/11 exact pentru
+    //     R ∈ [2,018 · 2,224]; R=2,000 (valoarea cotată) dă 10/11 exact și
+    //     11/11 în ±1px, deci cota e confirmată, nu doar plauzibilă.
+    //   • Racordare la con: arcul e TANGENT la conul de dedesubt în
+    //     (5,4 / 21,8) — kink de doar 0,78°, adică zero în limita
+    //     desenului. La capătul de sus însă arcul întâlnește gâtul Ø8,4 cu
+    //     un COLȚ real de 19,9° (nu e tangent). Rasterul o confirmă: de la
+    //     y=181 (x=356, cilindru) la y=182 (x=355) profilul sare imediat
+    //     1 px, în loc să rămână lipit de generatoare 4-5 rânduri cum ar
+    //     face o racordare tangentă. Ipoteza „tangent și la Ø8,4" (care ar
+    //     muta punctul la Y=23,64) ratează y=181 cu 1 px.
+    //
+    // ✅ CONFIRMAT (JSON corect) — partea de jos:
+    //   • bază Ø16,1 0→2,505 + șamfren 60° ancorat pe Y=4,8
+    //     (4,8 − 1,325/tan30° = 2,505033, cotat 2,51 ✓)
+    //   • corp Ø13,45 — 100% exact pe 166 de rânduri
+    //   Ca la 0045, linia de joncțiune de la piciorul șamfrenului e desenată
+    //   la y=405 iar modelul o pune la 405,73 (Δ 0,73 px) — cota 2,51 decide.
+    //
+    // ⚠️ VEDEREA ISO DIN CARTUȘUL PDF — o singură eroare, dar exact în
+    // zona critică. Vectorii (pdfplumber, scală 5,2 pt/mm, centru x=682,
+    // Y=0 la top=351,28) redau CORECT toate nivelurile: 0 / 2,500 / 4,800 /
+    // 21,300 / 21,800 / 23,000 / 25,800 / 28,300 — inclusiv conul
+    // (6,725/21,3)→(5,4/21,8), care apare ca dreaptă și acolo. Însă
+    // segmentul (5,4/21,8)→(4,2/23,0) e trasat tot ca DREAPTĂ, adică R2 e
+    // pierdut complet: coarda în loc de arc. Pe raster varianta asta ratează
+    // 11 rânduri din 11. Coroana R2,5 e corectă în ISO.
+    // De regenerat PDF-ul din intrarea de mai jos.
+    //
+    // STRUCTURA (Y=0 bază → Y=28,3 vârf):
+    //   • bază cilindrică Ø16,1              Y ∈ [0.00,  2.5050]
+    //   • șamfren 60° inclus Ø16,1→Ø13,45    Y ∈ [2.5050, 4.80]
+    //   • corp cilindric Ø13,45              Y ∈ [4.80, 21.30]
+    //   • con 138,7° inclus Ø13,45→Ø10,8     Y ∈ [21.30, 21.80]
+    //   • arc concav R2 Ø10,8→Ø8,4           Y ∈ [21.80, 23.00]
+    //   • gât cilindric Ø8,4 (2,8 mm)        Y ∈ [23.00, 25.80]
+    //   • coroană torică R2,5, centru (1,7/25,8)  Y ∈ [25.80, 28.30]
+    //   • față plată Ø3,4 la vârf            Y = 28.30
+    profile3d: {
+      material3d: 'zro2',        // preset material: 'zro2' | 'kcf' | 'cupru'
+      lathePoints: [
+        [8.05,    0.0],
+        [8.05,    2.505032706815],
+        [6.725,   4.8],
+        [6.725,   21.3],
+        [5.4,     21.8],
+        [5.1336,  21.9191],
+        [4.8873,  22.0757],
+        [4.6664,  22.2664],
+        [4.4757,  22.4873],
+        [4.3191,  22.7336],
+        [4.2,     23.0],
+        [4.2,     25.8],
+        [4.1786,  26.1263],
+        [4.1148,  26.447],
+        [4.0097,  26.7567],
+        [3.8651,  27.05],
+        [3.6834,  27.3219],
+        [3.4678,  27.5678],
+        [3.2219,  27.7834],
+        [2.95,    27.9651],
+        [2.6567,  28.1097],
+        [2.347,   28.2148],
+        [2.0263,  28.2786],
+        [1.7,     28.3],
+        [0.0,     28.3],
+      ],
+      height: 28.3,
+      footprint: 20,
+      camera: { theta: 0.6, phi: 1.15, radius: 86 },
+      orthoSize: 22,
+      drawing2d: '/welding-drawings/707366579.png',
+      pdf: '/welding-drawings/PIN-13.45-28.3-01__707366579__R00.pdf',
+      dims3d: {
+        items: [
+          { type: 'diameter', y: 1.2,   r: 8.05,  lineY: -4, label: 'Ø16,1',  radial: true  },
+          { type: 'diameter', y: 12,    r: 6.725, lineY: 34, label: 'Ø13,45', radial: true  },
+          { type: 'diameter', y: 21.8,  r: 5.4,   lineY: 37, label: 'Ø10,8',  radial: false },
+          { type: 'diameter', y: 24.4,  r: 4.2,   lineY: 40, label: 'Ø8,4',   radial: false },
+          { type: 'diameter', y: 28.3,  r: 1.7,   lineY: 43, label: 'Ø3,4',   radial: false },
+          { type: 'length', y1: 0, y2: 28.3, edgeR1: 8.05, edgeR2: 1.7,   label: 'L 28,3', radial: false },
+          { type: 'length', y1: 0, y2: 25.8, edgeR1: 8.05, edgeR2: 4.2,   label: '25,8',  radial: false },
+          { type: 'length', y1: 0, y2: 23,   edgeR1: 8.05, edgeR2: 4.2,   label: '23',    radial: false },
+          { type: 'length', y1: 0, y2: 21.8, edgeR1: 8.05, edgeR2: 5.4,   label: '21,8',  radial: false },
+          { type: 'length', y1: 0, y2: 21.3, edgeR1: 8.05, edgeR2: 6.725, label: '21,3',  radial: false },
+          { type: 'length', y1: 0, y2: 4.8,  edgeR1: 8.05, edgeR2: 6.725, label: '4,8',   radial: false },
+          { type: 'length', y1: 0, y2: 2.51, edgeR1: 8.05, edgeR2: 8.05,  label: '2,51',  radial: false },
+        ],
+      },
+    },
+  },
+  {
+    tempCode: 'DGSI-RPW-PIN-0047',
+    dgsiCode: null,                       // PENDING — vezi conflict codificare
+    dgsiCodeCandidates: {
+      cartusPdf: 'PIN-13-28.5-01',        // Ø corp (13mm) · L=28,5mm
+    },
+    docerawEquivalent: 'ENDR0040926',
+    family: 'pcp',
+    name: 'Ceramic centering pin Ø13 · L28,5',
+    specs: [
+      ['Ø corp',        '13 mm  (+0 / -0,05)'],
+      ['Ø bază',        '15 mm'],
+      ['Ø gât',         '10,1 mm  (+0 / -0,05)'],
+      ['Ø ref. umăr',   '11 mm  (la Y=19,2)'],
+      ['Ø ref. vârf',   '9,3 mm  (la Y=28,09)'],
+      ['Rază racordări','R0,5 mm  (umăr + vârf)'],
+      ['Rază calotă',   'R26,57 mm  (cotat R20 — vezi notă)'],
+      ['Con umăr',      '141,2° (inclus, necotat)'],
+      ['Șamfren bază',  '60° (inclus)'],
+      ['L (total)',     '28,5 mm'],
+      ['Material',      'ZrO2 (Cerazur®)'],
+      ['Rev.',          'R00 · DRAFT'],
+    ],
+    assets: {
+      drawing2d: '/welding-drawings/ENDR0040926.png',
+      pdf: '/welding-drawings/PIN-13-28.5-01__ENDR0040926__R00.pdf',
+      cad: null,
+    },
+    // ⚠️ JSON DECLARĂ IARĂȘI NEDETERMINARE + un „dimension_conflict" pe R0,5.
+    // Piesa e determinată; conflictul dispare complet odată ce R0,5 e pus
+    // unde îl cer cotele. Vezi mai jos — e cel mai frumos rezultat din lot.
+    //
+    // Desen alb pe fundal negru (ENDR0040926.png, 655×691), cu eticheta
+    // ROȘIE „ENDR0040926" exclusă automat prin mască pe canale (R,G,B>127).
+    // Calibrare pe 7 datum-uri de înălțime (28,5 / 28,09 / 27,6 / 20,5 /
+    // 18,7 / 4,3 / 0) → scale = 11,000420 px/mm, y0 = 448,6518 px,
+    // AX = 458,7999 px. Δ max 0,032 mm. Model round.
+    //
+    // TOATE cele CINCI diametre cotate se reproduc EXACT, 10/10 muchii:
+    //     Ø15 → 376/541 ✓✓   Ø13 → 387/530 ✓✓   Ø11 → 398/519 ✓✓
+    //     Ø10,1 → 403/514 ✓✓ Ø9,3 → 408/510 ✓✓
+    //
+    // Validare forward-raster: 515 muchii pe 258 rânduri ·
+    // 97,5% potrivire EXACTĂ · 99,2% în ±1px · 4 abateri de 2px (toate în
+    // calotă, unde arcul e aproape orizontal și un rând de rotunjire
+    // înseamnă 2-3 px pe orizontală).
+    // Pe zone: bază Ø15 100% · corp Ø13 100% · gât Ø10,1 100% ·
+    // R0,5 umăr 90% · R0,5 vârf 87,5% · șamfren 60° 88% · con 84,6%.
+    //
+    // ✅✅ DESCOPERIREA CHEIE — R0,5 E RACORDAREA DE LA VÂRFUL GÂTULUI,
+    // și iese EXACT din cote, fără nicio presupunere. Un arc tangent la
+    // cilindrul Ø10,1 în (5,05 / 27,6) și care trece prin Ø9,3 la Y=28,09
+    // are raza:
+    //     R = (0,4² + 0,49²) / (2 × 0,4) = 0,500125 mm
+    // adică R0,5 la a patra zecimală. Cele patru cote (Ø10,1 · 27,6 ·
+    // Ø9,3 · 28,09) sunt exact cele care definesc racordarea. JSON a mutat
+    // R0,5 la umărul de jos, unde apoi i-a ieșit „conflictul" Ø11 vs Ø11,1 —
+    // conflict care nu există în locul corect.
+    //
+    // ✅ AL DOILEA R0,5 — la umăr, tot convex, tot confirmat pe raster.
+    // Muchia orizontală desenată la y=237 se termină în dreapta la x=525,
+    // adică EXACT r = 6,0 = 6,5 − 0,5. Deci: corp Ø13 până la Y=18,7
+    // (cotat, tangența racordării), arc R0,5 convex până la (6,0 / 19,2),
+    // apoi fața radială Ø12 → Ø11 la Y=19,2. Consecință directă:
+    // 19,2 = 18,7 + 0,5, ceea ce reproduce rândul desenat la round(237,44)
+    // = 237 ✓ și explică de ce e cotat 18,7 (piciorul racordării, nu
+    // muchia teoretică).
+    //
+    // ⚠️ Ø11 NU E CILINDRU, ci diametrul feței radiale de la Y=19,2.
+    // Extensiile cotei Ø11 (x=398 și 519) trăiesc între y=245 și 291, adică
+    // în interiorul siluetei corpului Ø13, și se opresc la 8 px sub linia
+    // y=237 — tiparul de gap al desenului. Pe rândurile 224…236 profilul
+    // urcă lent de la Ø10,1 la Ø10,91 (0,375 px/rând), deci acolo e un con,
+    // nu un cilindru Ø11.
+    //
+    // ⚠️ CONUL 19,2 → 20,5 e necotat ca unghi: Ø11 → Ø10,1 pe 1,3 mm →
+    // 141,2° inclus. Panta măsurată (0,375 px/rând pe 12 rânduri) confirmă
+    // 0,346 teoretic la 0,03 px/rând.
+    //
+    // ⚠️⚠️ R20 NU SE ÎNCHIDE — de confirmat cu furnizorul.
+    // Calota de sus e cotată R20, dar niciun arc R20 nu reproduce desenul:
+    //   • R20 pe axă cu vârful la 28,5 (cota de lungime): trece prin Ø10,1
+    //     la Y=27,85 și prin Ø9,3 la Y=27,95, adică ratează AMBELE cote de
+    //     nivel (27,6 și 28,09) cu 0,25 și 0,14 mm; pe raster nimerește
+    //     2 rânduri din 8;
+    //   • R20 pe axă prin Ø9,3 la 28,09: vârful iese la Y=28,638, cu
+    //     0,138 mm PESTE lungimea totală cotată de 28,5;
+    //   • R20 pe axă prin Ø10,1 la 27,6: vârful iese la 28,248, cu 0,25 mm
+    //     SUB 28,5, și nu atinge niciun rând desenat.
+    // Arcul efectiv desenat, ancorat pe cotele care se închid (vârf pe axă
+    // la 28,5 + racordul R0,5 care se termină în Ø9,3 la 28,09), are
+    //     centru (0 / 1,9261) · R = 26,5739 mm
+    // și trece prin toate rândurile măsurate (abaterile rămase sunt de
+    // maximum 2 px, pe porțiunea cvasi-orizontală de lângă vârf).
+    // Am modelat R26,57 pentru că închide lungimea totală și racordarea;
+    // dacă furnizorul confirmă R20 ca fiind cota corectă, atunci una dintre
+    // cotele 27,6 / 28,09 / 28,5 trebuie revizuită.
+    //
+    // ✅ CONFIRMAT — partea de jos (JSON greșit și aici):
+    //   • JSON pune piciorul șamfrenului la 2,835 și corpul de la 4,567;
+    //     desenul cotează 4,3 pentru corp, deci piciorul iese
+    //     4,3 − 1/tan30° = 2,567949, care se rasterizează la round(420,4)
+    //     = 420 — EXACT linia orizontală desenată pe toată lățimea bazei.
+    //     Varianta JSON ar cădea la rândul 417.
+    //   • bază Ø15 și corp Ø13 — 100% exact (28 + 272 de muchii).
+    //
+    // ⚠️ VEDEREA ISO DIN PDF — trei erori. Vectorii (5,2 pt/mm, centru
+    // x=682, Y=0 la top=351,28) dau nivelurile 0 / 2,500 / 4,300 / 18,700 /
+    // 20,500 / 20,900 / 27,600 / 28,090:
+    //   a) piciorul șamfrenului la 2,500 în loc de 2,568;
+    //   b) zona umărului e modelată ca două conuri drepte
+    //      (6,5/18,7 → 5,5/20,5 → 5,05/20,9), fără cele două R0,5 și cu
+    //      Ø11 mutat de la Y=19,2 la Y=20,5, iar capătul gâtului de la
+    //      20,5 la 20,9;
+    //   c) CALOTA LIPSEȘTE COMPLET — piesa se termină plat la Y=28,09 cu
+    //      Ø9,3, deci vederea ISO e cu 0,41 mm mai scurtă decât cota de
+    //      lungime 28,5 pe care o scrie chiar cartușul ei.
+    // De regenerat PDF-ul din intrarea de mai jos.
+    //
+    // STRUCTURA (Y=0 bază → Y=28,5 vârf):
+    //   • bază cilindrică Ø15                Y ∈ [0.00,  2.5679]
+    //   • șamfren 60° inclus Ø15→Ø13         Y ∈ [2.5679, 4.30]
+    //   • corp cilindric Ø13                 Y ∈ [4.30, 18.70]
+    //   • racordare R0,5 convexă Ø13→Ø12     Y ∈ [18.70, 19.20]
+    //   • față radială Ø12→Ø11               Y = 19.20
+    //   • con 141,2° inclus Ø11→Ø10,1        Y ∈ [19.20, 20.50]
+    //   • gât cilindric Ø10,1 (7,1 mm)       Y ∈ [20.50, 27.60]
+    //   • racordare R0,5 convexă Ø10,1→Ø9,3  Y ∈ [27.60, 28.09]
+    //   • calotă R26,57 pe axă (0/1,926)     Y ∈ [28.09, 28.50]
+    profile3d: {
+      material3d: 'zro2',        // preset material: 'zro2' | 'kcf' | 'cupru'
+      lathePoints: [
+        [7.5,     0.0],
+        [7.5,     2.567949],
+        [6.5,     4.3],
+        [6.5,     18.7],
+        [6.4904,  18.7975],
+        [6.4619,  18.8913],
+        [6.4157,  18.9778],
+        [6.3536,  19.0536],
+        [6.2778,  19.1157],
+        [6.1913,  19.1619],
+        [6.0975,  19.1904],
+        [6.0,     19.2],
+        [5.5,     19.2],
+        [5.05,    20.5],
+        [5.05,    27.6],
+        [5.0405,  27.6972],
+        [5.0122,  27.7907],
+        [4.9663,  27.8769],
+        [4.9046,  27.9525],
+        [4.8293,  28.0147],
+        [4.7433,  28.0611],
+        [4.65,    28.0899],
+        [4.0737,  28.1859],
+        [3.4954,  28.2691],
+        [2.9154,  28.3396],
+        [2.334,   28.3973],
+        [1.7515,  28.4422],
+        [1.1681,  28.4743],
+        [0.5842,  28.4936],
+        [0.0,     28.5],
+      ],
+      height: 28.5,
+      footprint: 18,
+      camera: { theta: 0.6, phi: 1.15, radius: 86 },
+      orthoSize: 22,
+      drawing2d: '/welding-drawings/ENDR0040926.png',
+      pdf: '/welding-drawings/PIN-13-28.5-01__ENDR0040926__R00.pdf',
+      dims3d: {
+        items: [
+          { type: 'diameter', y: 1.2,   r: 7.5,  lineY: -4, label: 'Ø15',   radial: true  },
+          { type: 'diameter', y: 11,    r: 6.5,  lineY: 34, label: 'Ø13',   radial: true  },
+          { type: 'diameter', y: 19.2,  r: 5.5,  lineY: 37, label: 'Ø11',   radial: false },
+          { type: 'diameter', y: 24,    r: 5.05, lineY: 40, label: 'Ø10,1', radial: false },
+          { type: 'diameter', y: 28.09, r: 4.65, lineY: 43, label: 'Ø9,3',  radial: false },
+          { type: 'length', y1: 0, y2: 28.5,  edgeR1: 7.5, edgeR2: 0,    label: 'L 28,5', radial: false },
+          { type: 'length', y1: 0, y2: 28.09, edgeR1: 7.5, edgeR2: 4.65, label: '28,09', radial: false },
+          { type: 'length', y1: 0, y2: 27.6,  edgeR1: 7.5, edgeR2: 5.05, label: '27,6',  radial: false },
+          { type: 'length', y1: 0, y2: 20.5,  edgeR1: 7.5, edgeR2: 5.05, label: '20,5',  radial: false },
+          { type: 'length', y1: 0, y2: 18.7,  edgeR1: 7.5, edgeR2: 6.5,  label: '18,7',  radial: false },
+          { type: 'length', y1: 0, y2: 4.3,   edgeR1: 7.5, edgeR2: 6.5,  label: '4,3',   radial: false },
+          { type: 'length', y1: 0, y2: 2.51,  edgeR1: 7.5, edgeR2: 7.5,  label: '2,51',  radial: false },
+        ],
+      },
+    },
+  },
+  {
+    tempCode: 'DGSI-RPW-PIN-0048',
+    dgsiCode: null,                       // PENDING — vezi conflict codificare
+    dgsiCodeCandidates: {
+      cartusPdf: 'PIN-8.8-52.1-01',       // Ø corp (8,8mm) · L=52,1mm
+    },
+    docerawEquivalent: 'EZ1',
+    family: 'pcp',
+    name: 'Ceramic centering pin Ø8,8 · L52,1 · M8',
+    specs: [
+      ['Ø corp',        '8,8 mm  (+0 / -0,05)'],
+      ['Ø cap',         '6,7 mm  (+0 / -0,05)'],
+      ['Ø bloc bază',   '12 mm  (+0,1 / -0)'],
+      ['Lăsări plane',  '10,8 mm între fețe  (Y 11…21)'],
+      ['Filet interior','M8 · adâncime 15 mm  (orb, din bază)'],
+      ['Ø față vârf',   '5,7 mm  (plată)'],
+      ['Rază muchie',   'R0,5 mm  (doar muchia superioară)'],
+      ['Trunchi con',   '92,79° (inclus, necotat)'],
+      ['L (total)',     '52,1 mm'],
+      ['Material',      'ZrO2 (Cerazur®)'],
+      ['Rev.',          'R00 · DRAFT'],
+    ],
+    assets: {
+      drawing2d: '/welding-drawings/EZ1.png',
+      pdf: '/welding-drawings/PIN-8.8-52.1-01__EZ1__R00.pdf',
+      cad: null,
+    },
+    // ⚠️ PRIMA PIESĂ DIN CATALOG CARE NU E CORP DE REVOLUȚIE PUR ȘI PRIMA
+    // CU FILET INTERIOR. `lathePoints` de mai jos descrie DOAR conturul de
+    // revoluție; cele două lăsări plane și gaura filetată M8 nu pot fi
+    // reprezentate în modelul de strung și sunt documentate aici + în specs.
+    // Randarea 3D va arăta blocul de bază ca cilindru Ø12 plin — corect ca
+    // siluetă exterioară, dar fără fețele plane și fără filet.
+    //
+    // ✅ JSON-UL E CORECT PE TOATĂ GEOMETRIA DE REVOLUȚIE — a doua oară în
+    // lot, după 0044. Inclusiv unghiul trunchiului (92,794°, necotat) și
+    // regula explicită „do_not_replace_top_R0.5_with_domed_crown", care e
+    // exactă: aici R0,5 rotunjește doar muchia, nu formează coroană.
+    // Singurul lucru pe care nu îl prinde e natura cotei „10,8".
+    //
+    // ⚠️ COTA „扁位10,8" NU E DIAMETRU, CI DESCHIDEREA ÎNTRE DOUĂ LĂSĂRI
+    // PLANE. Dovada e comparația celor două vederi ale desenului:
+    //   • vederea din stânga (privire paralelă cu fețele) dă silueta 251/353
+    //     = 102 px = 10,8 mm pe Y ∈ [11,04 · 21,00];
+    //   • vederea din dreapta (privire perpendiculară pe fețe) dă pe EXACT
+    //     aceleași rânduri silueta 591/704 = 113 px = Ø12 — neîntreruptă de
+    //     la Y=0 la Y=21.
+    //   Dacă ar fi fost un tronson strunjit la Ø10,8, ambele vederi ar fi
+    //   arătat 10,8. Confirmare cantitativă: dreptunghiul desenat în vederea
+    //   din dreapta (x 623…672 = 49 px) e fața plană văzută frontal, iar
+    //   coarda teoretică a unei lăsări de 10,8 pe Ø12 e
+    //   2·√(6² − 5,4²) = 5,2307 mm = 49,4 px. Potrivire la 0,4 px.
+    //   Capătul de jos al lăsării: Y=11,04 în vederea din stânga (planul
+    //   propriu-zis) și Y=10,20 în cea din dreapta (curba de ieșire de pe
+    //   cilindru) — diferența de 0,85 mm e degajarea sculei. Lungimea
+    //   lăsării nu e cotată; de confirmat cu furnizorul dacă e 10 mm exact.
+    //
+    // Desen alb pe fundal negru (EZ1.png, 768×804), cu DOUĂ vederi.
+    // Calibrare pe 5 datum-uri de înălțime (52,1 / 48,5 / 47,5 / 21 / 0) →
+    // scale = 9,443360 px/mm, y0 = 581,2796 px, AX = 301,6728 px (vederea
+    // din stânga) și AX = 647,5 px (vederea din dreapta). Δ max 0,030 mm.
+    //
+    // Toate cele PATRU lățimi cotate se reproduc EXACT, 8/8 muchii:
+    //     Ø12 → 245/358 ✓✓   10,8 → 251/353 ✓✓
+    //     Ø8,8 → 260/343 ✓✓  Ø6,7 → 270/333 ✓✓
+    //
+    // Validare forward-raster pe VEDEREA DIN DREAPTA (singura în care tot
+    // profilul e de revoluție): 966 muchii pe 483 rânduri ·
+    // 99,7% potrivire EXACTĂ · 100,0% în ±1px · 0 abateri > 1px.
+    // Pe zone: bloc Ø12 100% · corp Ø8,8 100% · cap Ø6,7 100% ·
+    // trunchi 88,9% · R0,5 87,5% (ambele 100% în ±1px).
+    // Pe vederea din stânga aceleași zone dau tot 100% exact, cu excepția
+    // zonei lăsării plane, unde modelul de revoluție se abate sistematic
+    // cu 5-6 px — exact adâncimea lăsării, deci confirmarea ei.
+    //
+    // ✅ VÂRFUL — plat, cu muchia ruptă R0,5, fără coroană:
+    //   • fața plată are r = 3,35 − 0,5 = 2,85 → Ø5,7, iar linia de cotă
+    //     52,1 se termină la x=329, adică EXACT round(301,673 + 9,4434×2,85)
+    //     = 329 ✓;
+    //   • tangența arcului la cilindrul Ø6,7 iese la Y = 52,1 − 0,5 = 51,6,
+    //     care se rasterizează la round(94,0) = 94 — EXACT linia orizontală
+    //     desenată pe lățimea Ø6,7 ✓.
+    //
+    // ✅ FILETUL M8 × 15 adâncime confirmat pe raster: linia întreruptă a
+    // fundului găurii e desenată la y=439 → Y = 15,067 (cotat 15, Δ 0,067).
+    // Liniile laterale ale filetului (perechile 264/339 și 269/335) dau
+    // 75 px = 7,94 mm și 66 px = 6,99 mm — adică Ø nominal M8 și Ø de fund
+    // ≈ 6,8 (burghiu standard pentru M8×1,25). Nu sunt cotate pe desen.
+    //
+    // ✅ TRUNCHIUL Ø8,8 → Ø6,7 e o dreaptă pe exact 1 mm (Y 47,5 → 48,5,
+    // ambele cotate) → Δr = 1,05 ⇒ 92,79° inclus. Necotat, dar determinat
+    // fără nicio presupunere. 100% exact pe raster.
+    //
+    // STRUCTURA (Y=0 bază → Y=52,1 vârf):
+    //   • bloc cilindric Ø12                 Y ∈ [0.00, 21.00]
+    //     (cu două lăsări plane 10,8 pe Y ∈ [11.04, 21.00] — nemodelate)
+    //     (cu filet interior M8, orb, adâncime 15 din bază — nemodelat)
+    //   • treaptă radială Ø12→Ø8,8           Y = 21.00
+    //   • corp cilindric Ø8,8                Y ∈ [21.00, 47.50]
+    //   • trunchi 92,79° inclus Ø8,8→Ø6,7    Y ∈ [47.50, 48.50]
+    //   • cap cilindric Ø6,7                 Y ∈ [48.50, 51.60]
+    //   • muchie ruptă R0,5                  Y ∈ [51.60, 52.10]
+    //   • față plată Ø5,7 la vârf            Y = 52.10
+    //
+    // ⚠️ VEDEREA ISO DIN CARTUȘUL PDF — DOUĂ ERORI, ambele în blocul de bază.
+    // (Notă de extracție: aici vederea ISO e la x ∈ [665 · 699], centru
+    // x=682, scală 2,85 pt/mm identică pe orizontală și verticală, Y=0 la
+    // top=351,28. Liniile de la x=586/663/708/726/762 sunt chenarul
+    // cartușului, nu geometrie — la prima extracție le luasem drept piesă.)
+    // Silhuetele verticale extrase dau:
+    //     Ø12   → Y ∈ [0,00 ·  1,00]   (1,0 mm!)
+    //     Ø8    → Y ∈ [0,00 · 15,00]   (filetul M8, corect ✓)
+    //     Ø10,8 → Y ∈ [2,00 · 21,00]
+    //     Ø8,8  → Y ∈ [21,00 · 47,50]  ✓
+    //     Ø6,7  → Y ∈ [48,50 · 51,60]  ✓
+    //   a) tratează cei 10,8 ca DIAMETRU STRUNJIT (corp de revoluție), nu ca
+    //      deschidere între două lăsări plane — exact confuzia demontată mai
+    //      sus prin compararea celor două vederi ale desenului;
+    //   b) pune treapta Ø12→Ø10,8 la Y=2,00, în timp ce desenul o dă la
+    //      Y≈11,04 (planul propriu-zis) / Y=10,20 (ieșirea de sculă).
+    //      Diferență de ~9 mm: în ISO blocul Ø12 are doar 1 mm înălțime, pe
+    //      desen are 11.
+    // Restul vederii (filet M8×15, corp Ø8,8, cap Ø6,7, trunchi, R0,5) e
+    // corect. De regenerat PDF-ul — și de reținut că lăsările plane nu pot
+    // fi redate de un generator pur de revoluție, deci ISO-ul va rămâne
+    // aproximativ până când se trece pe un model solid.
+    profile3d: {
+      material3d: 'zro2',        // preset material: 'zro2' | 'kcf' | 'cupru'
+      lathePoints: [
+        [6.0,     0.0],
+        [6.0,     21.0],
+        [4.4,     21.0],
+        [4.4,     47.5],
+        [3.35,    48.5],
+        [3.35,    51.6],
+        [3.3404,  51.6975],
+        [3.3119,  51.7913],
+        [3.2657,  51.8778],
+        [3.2036,  51.9536],
+        [3.1278,  52.0157],
+        [3.0413,  52.0619],
+        [2.9475,  52.0904],
+        [2.85,    52.1],
+        [0.0,     52.1],
+      ],
+      height: 52.1,
+      footprint: 16,
+      camera: { theta: 0.6, phi: 1.15, radius: 140 },
+      orthoSize: 36,
+      drawing2d: '/welding-drawings/EZ1.png',
+      pdf: '/welding-drawings/PIN-8.8-52.1-01__EZ1__R00.pdf',
+      dims3d: {
+        items: [
+          { type: 'diameter', y: 10,   r: 6.0,  lineY: -4, label: 'Ø12',   radial: true  },
+          { type: 'diameter', y: 34,   r: 4.4,  lineY: 30, label: 'Ø8,8',  radial: true  },
+          { type: 'diameter', y: 50,   r: 3.35, lineY: 33, label: 'Ø6,7',  radial: false },
+          { type: 'length', y1: 0, y2: 52.1, edgeR1: 6.0, edgeR2: 2.85, label: 'L 52,1', radial: false },
+          { type: 'length', y1: 0, y2: 48.5, edgeR1: 6.0, edgeR2: 3.35, label: '48,5',  radial: false },
+          { type: 'length', y1: 0, y2: 47.5, edgeR1: 6.0, edgeR2: 4.4,  label: '47,5',  radial: false },
+          { type: 'length', y1: 0, y2: 21,   edgeR1: 6.0, edgeR2: 6.0,  label: '21',    radial: false },
+        ],
+      },
+    },
+  },
+  {
+    tempCode: 'DGSI-RPW-PIN-0049',
+    dgsiCode: null,                       // PENDING — vezi conflict codificare
+    dgsiCodeCandidates: {
+      cartusPdf: 'PIN-10.8-52-01',        // Ø corp (10,8mm) · L=52mm
+    },
+    docerawEquivalent: 'EZ2',
+    family: 'pcp',
+    name: 'Ceramic centering pin Ø10,8 · L52 · M8',
+    specs: [
+      ['Ø corp',        '10,8 mm  (+0 / -0,05)'],
+      ['Ø cap',         '8,4 mm  (+0 / -0,05)'],
+      ['Ø bloc bază',   '12 mm  (+0,1 / -0)'],
+      ['Lăsări plane',  '10,8 mm între fețe  (Y 11…21)'],
+      ['Filet interior','M8 · adâncime 15 mm  (orb, din bază)'],
+      ['Ø față vârf',   '7,4 mm  (plată)'],
+      ['Rază muchie',   'R0,5 mm  (doar muchia superioară)'],
+      ['Trunchi con',   '77,32° (inclus, necotat)'],
+      ['L (total)',     '52 mm'],
+      ['Material',      'ZrO2 (Cerazur®)'],
+      ['Rev.',          'R00 · DRAFT'],
+    ],
+    assets: {
+      drawing2d: '/welding-drawings/EZ2.png',
+      pdf: '/welding-drawings/PIN-10.8-52-01__EZ2__R00.pdf',
+      cad: null,
+    },
+    // SORĂ DE FAMILIE CU 0048 (EZ1): aceeași arhitectură — bloc Ø12 cu două
+    // lăsări plane și filet M8 orb, corp cilindric, trunchi de con, cap
+    // cilindric, muchie ruptă R0,5, față plată. Toate cotele diferă însă.
+    //
+    // ⚠️⚠️ ATENȚIE LA JSON — „EZ2_corrected" A DISTRUS PIESA.
+    // JSON-ul primit se prezenta ca o corectură (`correction_status:
+    // "dimensions_repaired_from_original_drawing"`) și declara patru valori
+    // drept greșite, înlocuindu-le cu valorile de pe desenul piesei 0048:
+    //     L 52,0 → „52,1"    Ø corp 10,8 → „8,8"
+    //     Ø cap 8,4 → „6,7"  capăt corp 47,0 → „47,5"
+    // Măsurătoarea arată că TOATE CELE PATRU VALORI ORIGINALE ERAU CORECTE
+    // și cartușul PDF le confirmă („PIN-10.8-52-01 · body diameter 10.8 mm ·
+    // overall length 52 mm"). Profilul „corectat" era identic bit cu bit cu
+    // al lui 0048 — o copie, nu o corecție. Cauza probabilă: JSON-ul inițial
+    // al lui EZ2 fusese generat citind desenul EZ1 și confundând cota
+    // „扁位10,8" (lăsările plane) cu diametrul corpului — eroarea R5 din
+    // ghidul de prompt. „Corectura" a mers mai departe pe desenul greșit.
+    // Concluzie de proces: o secțiune `dimension_validation` plină de
+    // `"error": 0.0` NU e o verificare — compară cota cu ea însăși.
+    //
+    // Desen alb pe fundal negru (EZ2.png, 752×854), cu DOUĂ vederi.
+    // Calibrare pe 5 datum-uri de înălțime (52 / 48,5 / 47 / 21 / 0) →
+    // scale = 9,443400 px/mm, y0 = 591,4198 px; AX = 317,5000 (vederea din
+    // stânga, fereastră [317,494 · 317,506] — cea mai strânsă din catalog)
+    // și AX = 642,6717 (vederea din dreapta). Δ max 0,045 mm.
+    //
+    // Toate cele TREI lățimi cotate se reproduc EXACT, 6/6 muchii:
+    //     Ø12 → 261/374 ✓✓   Ø10,8 → 267/368 ✓✓   Ø8,4 → 278/357 ✓✓
+    //
+    // Validare forward-raster pe VEDEREA DIN DREAPTA (singura în care tot
+    // profilul e de revoluție): 968 muchii pe 484 rânduri ·
+    // 99,9% potrivire EXACTĂ · 100,0% în ±1px · 0 abateri > 1px.
+    // Pe zone: bloc Ø12 100% · corp Ø10,8 100% · trunchi 100% ·
+    // cap Ø8,4 100% · R0,5 87,5% (100% în ±1px).
+    //
+    // ⚠️ LĂSĂRILE PLANE — deschidere 10,8 mm, IDENTICĂ cu Ø corpului.
+    // Coincidența asta face silueta din vederea din stânga CONTINUĂ de la
+    // Y=11 până la Y=47 (267/368 neîntrerupt), ceea ce poate induce în
+    // eroare: pare un singur cilindru Ø10,8 de 36 mm. Nu e. Dovada, ca la
+    // 0048, e comparația celor două vederi pe ACELEAȘI rânduri:
+    //     vederea din stânga,  Y ∈ [11 · 21] → 267/368 = 10,8 mm
+    //     vederea din dreapta, Y ∈ [11 · 21] → 586/699 = Ø12
+    // Pe vederea din stânga modelul de revoluție se abate exact 6 px pe
+    // ambele muchii în tot intervalul (174 muchii) — adică 0,635 mm, față
+    // de adâncimea teoretică (12 − 10,8)/2 = 0,6 mm. Confirmare directă.
+    // Capătul de jos al lăsării: Y = 11,004 (măsurat, necotat pe desen).
+    // Lăsarea urcă până la Y=21, unde începe corpul strunjit Ø10,8.
+    //
+    // ✅ VÂRFUL — plat, cu muchia ruptă R0,5, fără coroană (ca la 0048):
+    //   • fața plată are r = 4,2 − 0,5 = 3,7 → Ø7,4, iar linia de cotă 52
+    //     se termină la x=352, adică EXACT round(317,5 + 9,4434×3,7) = 352 ✓
+    //   • tangența arcului la cilindrul Ø8,4 iese la Y = 52 − 0,5 = 51,5,
+    //     care se rasterizează la round(105,0) = 105 — EXACT linia
+    //     orizontală desenată pe lățimea Ø8,4 ✓
+    //
+    // ✅ TRUNCHIUL Ø10,8 → Ø8,4 pe 1,5 mm (Y 47 → 48,5, ambele cotate) →
+    // Δr = 1,2 ⇒ 77,32° inclus. Necotat, dar determinat fără presupuneri.
+    // 100% exact pe raster. (La 0048 același tip de trunchi are 92,79°, pe
+    // 1,0 mm — încă o confirmare că unghiurile nu au constantă de familie.)
+    //
+    // ✅ FILETUL M8 × 15 adâncime: linia întreruptă a fundului găurii e
+    // desenată la y=449 → Y = 15,081 (cotat 15, Δ 0,081). Liniile laterale
+    // (280/355 și 284/350) dau 7,942 mm și 6,989 mm — Ø nominal M8 și Ø de
+    // fund ≈ 7,0. Necotate pe desen.
+    //
+    // ⚠️ VEDEREA ISO DIN CARTUȘUL PDF — aceeași eroare ca la 0048.
+    // (centru x=682, scală 2,85 pt/mm, Y=0 la top=351,28; liniile de la
+    // x=663 sunt chenarul cartușului, nu geometrie.) Siluetele dau:
+    //     Ø12   → Y ∈ [0,00 ·  1,00]   ✗ (desenul: 0 → 21)
+    //     Ø8    → Y ∈ [0,00 · 15,00]   ✓ filet M8
+    //     Ø10,8 → Y ∈ [2,00 · 47,00]   ✗ jos (desenul: strunjit doar de la 21)
+    //     Ø8,4  → Y ∈ [48,50 · 51,50]  ✓
+    // Modelează lăsările ca diametru strunjit și pune treapta la Y=2,00 în
+    // loc de Y≈11. Ca la 0048, eroarea NU se repară doar prin regenerare:
+    // un generator pur de revoluție nu poate reda fețele plane.
+    //
+    // STRUCTURA (Y=0 bază → Y=52 vârf):
+    //   • bloc cilindric Ø12                 Y ∈ [0.00, 21.00]
+    //     (cu două lăsări plane 10,8 pe Y ∈ [11.00, 21.00] — nemodelate)
+    //     (cu filet interior M8, orb, adâncime 15 din bază — nemodelat)
+    //   • treaptă radială Ø12→Ø10,8          Y = 21.00
+    //   • corp cilindric Ø10,8               Y ∈ [21.00, 47.00]
+    //   • trunchi 77,32° inclus Ø10,8→Ø8,4   Y ∈ [47.00, 48.50]
+    //   • cap cilindric Ø8,4                 Y ∈ [48.50, 51.50]
+    //   • muchie ruptă R0,5                  Y ∈ [51.50, 52.00]
+    //   • față plată Ø7,4 la vârf            Y = 52.00
+    profile3d: {
+      material3d: 'zro2',        // preset material: 'zro2' | 'kcf' | 'cupru'
+      lathePoints: [
+        [6.0,     0.0],
+        [6.0,     21.0],
+        [5.4,     21.0],
+        [5.4,     47.0],
+        [4.2,     48.5],
+        [4.2,     51.5],
+        [4.1904,  51.5975],
+        [4.1619,  51.6913],
+        [4.1157,  51.7778],
+        [4.0536,  51.8536],
+        [3.9778,  51.9157],
+        [3.8913,  51.9619],
+        [3.7975,  51.9904],
+        [3.7,     52.0],
+        [0.0,     52.0],
+      ],
+      height: 52.0,
+      footprint: 16,
+      camera: { theta: 0.6, phi: 1.15, radius: 140 },
+      orthoSize: 36,
+      drawing2d: '/welding-drawings/EZ2.png',
+      pdf: '/welding-drawings/PIN-10.8-52-01__EZ2__R00.pdf',
+      dims3d: {
+        items: [
+          { type: 'diameter', y: 10,   r: 6.0,  lineY: -4, label: 'Ø12',   radial: true  },
+          { type: 'diameter', y: 34,   r: 5.4,  lineY: 30, label: 'Ø10,8', radial: true  },
+          { type: 'diameter', y: 50,   r: 4.2,  lineY: 33, label: 'Ø8,4',  radial: false },
+          { type: 'length', y1: 0, y2: 52,   edgeR1: 6.0, edgeR2: 3.7, label: 'L 52', radial: false },
+          { type: 'length', y1: 0, y2: 48.5, edgeR1: 6.0, edgeR2: 4.2, label: '48,5', radial: false },
+          { type: 'length', y1: 0, y2: 47,   edgeR1: 6.0, edgeR2: 5.4, label: '47',   radial: false },
+          { type: 'length', y1: 0, y2: 21,   edgeR1: 6.0, edgeR2: 6.0, label: '21',   radial: false },
+        ],
+      },
+    },
+  },
+];  

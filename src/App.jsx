@@ -1,9 +1,12 @@
+// src/App.jsx
+// v · 04.08.26 · Impact Sockets — cataloage multilingve RO/EN/FR/DE cu butoane-steag
 import React, { useState, useEffect, useRef } from 'react';
 import { ShoppingBag, FileText, Zap, Wrench, Phone, Monitor, Settings, Truck, X, Target, CheckCircle, Droplets, Ruler, ShieldCheck, Download, ChevronRight, Mail, MapPin, MessageCircle, ArrowUp, Package, Database, ExternalLink } from 'lucide-react';
 import SubcategoryIcon from './components/SubcategoryIcons';
 import WeldingModal, { WeldingAnimation } from './components/WeldingModal';
 import { RFQProvider, AddToRFQButton, RFQFloatingBadge, RFQWizard, useRFQ } from './components/RFQSystem';
 import { translations, LANGS } from './i18n';
+
 // ─── Custom Icons ─────────────────────────────────────────────────────────────
 function LinkedInIcon({ size = 24, className = '' }) {
   return (
@@ -12,6 +15,7 @@ function LinkedInIcon({ size = 24, className = '' }) {
     </svg>
   );
 }
+
 function TeamsIcon({ size = 24, className = '' }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
@@ -19,24 +23,81 @@ function TeamsIcon({ size = 24, className = '' }) {
     </svg>
   );
 }
-// ─── Certification Badge — uniform inline SVG (DGSI dark/teal system) ─────
-// v1 · 08.07.26 · consistent self-contained badges (replaces mismatched raster PNGs)
-function CertBadge({ primary, secondary, size = 92 }) {
+
+// ─── Country Flags — inline SVG, zero assets ──────────────────────────────────
+function Flag({ code }) {
+  const uid = React.useId().replace(/:/g, '');
+  const box = 'block w-full h-full';
+
+  if (code === 'RO') return (
+    <svg viewBox="0 0 3 2" preserveAspectRatio="xMidYMid slice" className={box} aria-hidden="true">
+      <rect width="1" height="2" fill="#002B7F" />
+      <rect x="1" width="1" height="2" fill="#FCD116" />
+      <rect x="2" width="1" height="2" fill="#CE1126" />
+    </svg>
+  );
+
+  if (code === 'FR') return (
+    <svg viewBox="0 0 3 2" preserveAspectRatio="xMidYMid slice" className={box} aria-hidden="true">
+      <rect width="1" height="2" fill="#002395" />
+      <rect x="1" width="1" height="2" fill="#FFFFFF" />
+      <rect x="2" width="1" height="2" fill="#ED2939" />
+    </svg>
+  );
+
+  if (code === 'DE') return (
+    <svg viewBox="0 0 5 3" preserveAspectRatio="xMidYMid slice" className={box} aria-hidden="true">
+      <rect width="5" height="1" fill="#000000" />
+      <rect y="1" width="5" height="1" fill="#DD0000" />
+      <rect y="2" width="5" height="1" fill="#FFCE00" />
+    </svg>
+  );
+
+  // EN → Union Jack
   return (
-    <svg width={size} height={size} viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <circle cx="60" cy="60" r="56" fill="#0C1512" stroke="#5EEAD4" strokeOpacity="0.35" strokeWidth="1.5" />
-      <circle cx="60" cy="60" r="49" fill="none" stroke="#5EEAD4" strokeOpacity="0.5" strokeWidth="1" strokeDasharray="2 4" />
-      <circle cx="60" cy="60" r="43" fill="none" stroke="#5EEAD4" strokeOpacity="0.16" strokeWidth="1" />
-      <text x="60" y="31" textAnchor="middle" fontFamily="'Space Mono', monospace" fontSize="7" letterSpacing="2.5" fill="#5EEAD4" fillOpacity="0.85">CERTIFIED</text>
-      <text x="60" y="60" textAnchor="middle" fontFamily="Inter, sans-serif" fontSize="16" fontWeight="800" letterSpacing="1.5" fill="#5EEAD4">{primary}</text>
-      <text x="60" y="83" textAnchor="middle" fontFamily="Inter, sans-serif" fontSize="20" fontWeight="900" letterSpacing="1" fill="#FFFFFF">{secondary}</text>
-      <g transform="translate(60,99)">
-        <circle cx="0" cy="0" r="8" fill="#5EEAD4" />
-        <path d="M-3.4 0 L-1 2.4 L3.6 -2.6" stroke="#0A0E11" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-      </g>
+    <svg viewBox="0 0 60 30" preserveAspectRatio="xMidYMid slice" className={box} aria-hidden="true">
+      <clipPath id={`uk-${uid}`}>
+        <path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z" />
+      </clipPath>
+      <rect width="60" height="30" fill="#012169" />
+      <path d="M0,0 L60,30 M60,0 L0,30" stroke="#FFFFFF" strokeWidth="6" />
+      <path d="M0,0 L60,30 M60,0 L0,30" clipPath={`url(#uk-${uid})`} stroke="#C8102E" strokeWidth="4" />
+      <path d="M30,0 v30 M0,15 h60" stroke="#FFFFFF" strokeWidth="10" />
+      <path d="M30,0 v30 M0,15 h60" stroke="#C8102E" strokeWidth="6" />
     </svg>
   );
 }
+
+// ─── Impact Sockets — cataloage multilingve ───────────────────────────────────
+// Fișierele stau în /public/catalogs/ — schimbă doar aici dacă se modifică numele
+const SOCKET_CATALOGS = [
+  { code: 'RO', file: '/catalogs/Catalog-tubulare-RO-w32.pdf' },
+  { code: 'EN', file: '/catalogs/Catalog-tubulare-EN-w32.pdf' },
+  { code: 'FR', file: '/catalogs/Catalog-tubulare-FR-w32.pdf' },
+  { code: 'DE', file: '/catalogs/Catalog-tubulare-DE-w32.pdf' },
+];
+
+// ─── Prezentare de firmă — PDF multilingv ─────────────────────────────────────
+// Fișierele stau în /public/business-presentations/
+// Când primești FR/DE: urci fișierul și treci ready: true — atât.
+const PRESENTATIONS = [
+  { code: 'RO', file: '/business-presentations/Prezentare-DGSI-RO-w31.pdf', ready: true },
+  { code: 'EN', file: '/business-presentations/Prezentare-DGSI-EN-w31.pdf', ready: true },
+  { code: 'FR', file: '/business-presentations/Prezentare-DGSI-FR-w31.pdf', ready: true },
+  { code: 'DE', file: '/business-presentations/Prezentare-DGSI-DE-w31.pdf', ready: true },
+];
+
+// ─── Constants: Certifications (imagini PNG cu fundal negru) ──────────────
+// Fișierele stau în /public/certifications/ — ordine: ISO crescător, EcoVadis ultimul
+const CERT_DIR = '/certifications';
+const CERTIFICATIONS = [
+  { name: 'ISO 9001',  file: 'iso-9001',  title: 'Quality Management' },
+  { name: 'ISO 14001', file: 'iso-14001', title: 'Environmental Management' },
+  { name: 'ISO 27001', file: 'iso-27001', title: 'Information Security' },
+  { name: 'ISO 45001', file: 'iso-45001', title: 'Occupational Health & Safety' },
+  { name: 'EcoVadis',  file: 'ecovadis',  title: 'Sustainability Rating — Silver, Top 15%' },
+];
+
 // ─── Constants: Supplier Logos (Local SVG/PNG Files) ──────────────────────
 const supplierLogos = [
   { name: 'Beta', src: '/logos/beta.png', color: '#F25322', scale: 3 },
@@ -65,6 +126,7 @@ const supplierLogos = [
   { name: 'Kyocera', src: '/logos/kyocera.png', color: '#E2001A', scale: 1 },
   { name: 'Komet', src: '/logos/komet.jpg', color: '#003D7C', scale: 1 }
 ];
+
 // ─── Constants: Client Logos (Local Files) ──────────────────────
 const clientLogos = [
   { name: 'Dacia', src: '/logos/dacia.png', scale: 1 },
@@ -80,6 +142,7 @@ const clientLogos = [
   { name: 'UKS', src: '/logos/uks.png', scale: 1 },
   { name: 'Opsan', src: '/logos/opsan.jpeg', scale: 3 }
 ];
+
 // ─── Constants: Product Categories (aligned with business presentation) ─────
 // Each subcategory item: { name, brands: [{ name, src?, scale? }] }
 // Brands with `src` render as image; without `src` render as text pill until you add the file to /public/logos/
@@ -175,6 +238,7 @@ const productCategories = [
     ]
   }
 ];
+
 // ─── Utilities & Components ───────────────────────────────────────────
 function useInView(threshold = 0.15) {
   const ref = useRef(null);
@@ -186,6 +250,7 @@ function useInView(threshold = 0.15) {
   }, []);
   return [ref, visible];
 }
+
 function Section({ id, children, className = '', bgImage = null }) {
   const [ref, visible] = useInView();
   return (
@@ -203,6 +268,7 @@ function Section({ id, children, className = '', bgImage = null }) {
     </section>
   );
 }
+
 function Eyebrow({ code, label }) {
   return (
     <div className="flex items-center gap-4 mb-10">
@@ -212,6 +278,7 @@ function Eyebrow({ code, label }) {
     </div>
   );
 }
+
 function Counter({ end, suffix = '', decimals = 0 }) {
   const [count, setCount] = useState(0);
   const [ref, visible] = useInView(0.5);
@@ -230,9 +297,11 @@ function Counter({ end, suffix = '', decimals = 0 }) {
   }, [visible, end, decimals]);
   return <span ref={ref}>{decimals > 0 ? count.toFixed(decimals) : Math.round(count)}{suffix}</span>;
 }
+
 // ─── Text Scramble Effect ("CNC decoding") ─────────────────────────────────
 // Characters decode from random glyphs to real text on scroll-in, one at a time.
 const CNC_CHARS = '⌀╳▓░█▒◆◇●○■□△▽⬡⬢⏣⏢';
+
 function ScrambleText({ text, className = '', as: Tag = 'span', children }) {
   const displayText = text || (typeof children === 'string' ? children : '');
   const [output, setOutput] = useState(displayText);
@@ -263,6 +332,7 @@ function ScrambleText({ text, className = '', as: Tag = 'span', children }) {
   }, [visible, hasPlayed, displayText]);
   return <Tag ref={ref} className={className}>{output}</Tag>;
 }
+
 // ─── Cursor Spotlight (radial glow following mouse) ────────────────────────
 function useMouseGlow() {
   const [pos, setPos] = useState({ x: -1000, y: -1000 });
@@ -273,6 +343,7 @@ function useMouseGlow() {
   }, []);
   return pos;
 }
+
 function CursorSpotlight() {
   const { x, y } = useMouseGlow();
   return (
@@ -284,6 +355,7 @@ function CursorSpotlight() {
     />
   );
 }
+
 // ─── Premium Logo Card (reusable for suppliers & clients) ──────────────────
 function LogoCard({ logo, className = '' }) {
   const [failed, setFailed] = useState(false);
@@ -306,6 +378,7 @@ function LogoCard({ logo, className = '' }) {
     </div>
   );
 }
+
 // ─── Infinite Logo Marquee (premium "trusted by" scroller) ─────────────────
 function LogoMarquee({ logos, direction = 'left', speed = 45, cardClass = '', fadeColor = '#080808' }) {
   const doubled = [...logos, ...logos];
@@ -330,6 +403,7 @@ function LogoMarquee({ logos, direction = 'left', speed = 45, cardClass = '', fa
     </div>
   );
 }
+
 const EmergencyTimeline = ({ expanded = false }) => {
   const steps = [
     { time: '00h', label: expanded ? 'SOS Request' : 'REQ', icon: <Phone size={expanded ? 36 : 12} /> },
@@ -353,6 +427,7 @@ const EmergencyTimeline = ({ expanded = false }) => {
       </div>
   );
 };
+
 // ═══════════════════════════════════════════════════════════════════════════
 // ─── Contact Form — dual submit: Netlify Forms + mailto fallback ──────────
 function ContactForm({ t }) {
@@ -410,6 +485,7 @@ function ContactForm({ t }) {
     </>
   );
 }
+
 function AppInner() {
   const { setWizardOpen } = useRFQ();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -454,10 +530,12 @@ function AppInner() {
     <div className="min-h-screen bg-[#080808] text-[#F0EDE8] font-sans selection:bg-[#5EEAD4] selection:text-black overflow-x-hidden">
       {/* ── CURSOR SPOTLIGHT — radial glow following mouse ── */}
       <CursorSpotlight />
+
       {/* ── SCROLL PROGRESS BAR ── */}
       <div className="fixed top-0 left-0 right-0 h-[3px] z-[60] bg-transparent">
         <div className="h-full bg-gradient-to-r from-[#5EEAD4] to-[#5fffd9] shadow-[0_0_10px_rgba(94, 234, 212,0.6)] transition-all duration-150" style={{ width: `${scrollProgress}%` }} />
       </div>
+
       {/* ── HEADER ─────────────────────────────────────────────────────── */}
       <header className={`fixed top-0 w-full z-50 transition-all duration-500 ${scrolled ? 'bg-[#080808]/98 backdrop-blur-md shadow-[0_1px_0_rgba(94, 234, 212,0.15)]' : 'bg-gradient-to-b from-[#080808]/95 via-[#080808]/60 to-transparent'}`}>
         {/* ═══ TIER 1 — utility strip: language + request quote ═══ */}
@@ -470,14 +548,17 @@ function AppInner() {
                 <span>{t.header.requestQuote}</span>
               </button>
               <div className="w-px h-4 bg-white/10" />
-              <div className="flex items-center gap-0.5">
+              <div className="flex items-center gap-1">
                 {LANGS.map(l => (
                   <button
                     key={l}
                     onClick={() => setLang(l)}
                     aria-label={`Switch language to ${l.toUpperCase()}`}
-                    className={`px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.15em] rounded-[2px] transition-all duration-300 ${lang === l ? 'bg-[#5EEAD4] text-black shadow-[0_0_10px_rgba(94, 234, 212,0.3)]' : 'text-[#8A8A8A] hover:text-white'}`}
+                    className={`group/lang flex items-center gap-1.5 px-2 py-1 text-[10px] font-black uppercase tracking-[0.15em] rounded-[2px] transition-all duration-300 ${lang === l ? 'bg-[#5EEAD4] text-black shadow-[0_0_10px_rgba(94, 234, 212,0.3)]' : 'text-[#8A8A8A] hover:text-white'}`}
                   >
+                    <span className={`block w-[15px] h-[10px] overflow-hidden rounded-[1px] transition-all duration-300 ${lang === l ? 'opacity-100 ring-1 ring-black/25' : 'opacity-40 grayscale group-hover/lang:opacity-100 group-hover/lang:grayscale-0'}`}>
+                      <Flag code={l.toUpperCase()} />
+                    </span>
                     {l}
                   </button>
                 ))}
@@ -485,6 +566,7 @@ function AppInner() {
             </div>
           </div>
         </div>
+
         {/* ═══ TIER 2 — main bar: logo · nav (single row) · shop CTA ═══ */}
         <div className={`max-w-[98%] 2xl:max-w-7xl mx-auto px-6 flex justify-between items-center gap-6 transition-all duration-500 ${scrolled ? 'py-3' : 'py-4'}`}>
           <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center gap-3 group cursor-pointer shrink-0">
@@ -560,8 +642,11 @@ function AppInner() {
                 <button
                   key={l}
                   onClick={() => setLang(l)}
-                  className={`px-3 py-2 text-[11px] font-black uppercase tracking-[0.15em] rounded-sm border transition-all ${lang === l ? 'bg-[#5EEAD4] text-black border-[#5EEAD4]' : 'text-[#8A8A8A] border-white/10 hover:text-white hover:border-white/30'}`}
+                  className={`group/lang flex items-center gap-2 px-3 py-2 text-[11px] font-black uppercase tracking-[0.15em] rounded-sm border transition-all ${lang === l ? 'bg-[#5EEAD4] text-black border-[#5EEAD4]' : 'text-[#8A8A8A] border-white/10 hover:text-white hover:border-white/30'}`}
                 >
+                  <span className={`block w-[18px] h-[12px] overflow-hidden rounded-[2px] transition-all ${lang === l ? 'opacity-100 ring-1 ring-black/25' : 'opacity-45 grayscale group-hover/lang:opacity-100 group-hover/lang:grayscale-0'}`}>
+                    <Flag code={l.toUpperCase()} />
+                  </span>
                   {l}
                 </button>
               ))}
@@ -579,6 +664,7 @@ function AppInner() {
           </div>
         )}
       </header>
+
       {/* ── HERO ───────────────────────────────────────────────────────── */}
       <section className="relative min-h-screen w-full flex items-center overflow-hidden">
         <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url('/hero-bg.webp')" }}>
@@ -622,6 +708,7 @@ function AppInner() {
           <div className="w-px h-12 bg-gradient-to-b from-[#5EEAD4]/40 to-transparent" />
         </div>
       </section>
+
       {/* ── STATS BAR ──────────────────────────────────────────────────── */}
       <div className="bg-[#0D0D0D] border-y border-white/5 py-10">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-0 md:divide-x md:divide-white/5">
@@ -642,6 +729,7 @@ function AppInner() {
           ))}
         </div>
       </div>
+
       {/* ── ABOUT ──────────────────────────────────────────────────────── */}
       <Section id="about" bgImage="/about-bg.webp">
         <div className="max-w-7xl mx-auto">
@@ -654,15 +742,46 @@ function AppInner() {
             <p className="text-[#C0C0C0] text-lg leading-relaxed mb-10">
               {t.about.lead}
             </p>
-            <a
-              href="/DGSI-pres-EN.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-3 px-8 py-4 border border-[#5EEAD4]/50 text-[#5EEAD4] text-[11px] font-bold uppercase tracking-[0.2em] hover:bg-[#5EEAD4] hover:text-black hover:border-[#5EEAD4] transition-all duration-300 rounded-sm group shadow-[0_0_15px_rgba(94, 234, 212,0.1)]"
-            >
-              <FileText size={14} className="group-hover:rotate-12 transition-transform" />
-              <span>{t.about.viewProfile}</span>
-            </a>
+            {/* ── Prezentare de firmă — 4 limbi, flag buttons ── */}
+            <div className="inline-flex flex-wrap items-center gap-x-4 gap-y-3 px-5 py-4 border border-[#5EEAD4]/30 bg-[#5EEAD4]/[0.04] rounded-sm shadow-[0_0_15px_rgba(94, 234, 212,0.08)]">
+              <span className="inline-flex items-center gap-2.5 text-[11px] font-bold uppercase tracking-[0.2em] text-[#5EEAD4]">
+                <FileText size={14} />
+                {t.about.viewProfile}
+              </span>
+              <span className="hidden sm:block h-6 w-px bg-[#5EEAD4]/25" />
+              <div className="flex items-center gap-2">
+                {PRESENTATIONS.map((p) => (
+                  p.ready ? (
+                    <a
+                      key={p.code}
+                      href={p.file}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title={`DGSI company profile — ${p.code} (PDF)`}
+                      aria-label={`View company profile in ${p.code}`}
+                      className="group/pres flex items-center gap-2 px-3 py-2 border border-[#5EEAD4]/25 bg-[#5EEAD4]/[0.06] rounded-sm hover:bg-[#5EEAD4] hover:border-[#5EEAD4] transition-all duration-200"
+                    >
+                      <span className="block w-[18px] h-[12px] overflow-hidden rounded-[2px] ring-1 ring-black/30">
+                        <Flag code={p.code} />
+                      </span>
+                      <span className="text-[10px] font-black tracking-[0.15em] text-[#5EEAD4] group-hover/pres:text-black transition-colors">{p.code}</span>
+                    </a>
+                  ) : (
+                    <span
+                      key={p.code}
+                      title={`${p.code} — coming soon`}
+                      aria-disabled="true"
+                      className="flex items-center gap-2 px-3 py-2 border border-white/10 bg-white/[0.02] rounded-sm opacity-40 cursor-not-allowed"
+                    >
+                      <span className="block w-[18px] h-[12px] overflow-hidden rounded-[2px] grayscale">
+                        <Flag code={p.code} />
+                      </span>
+                      <span className="text-[10px] font-black tracking-[0.15em] text-[#7A7A7A]">{p.code}</span>
+                    </span>
+                  )
+                ))}
+              </div>
+            </div>
           </div>
           {/* Full-width 4-column cards (CHANGE #1: bigger, sub paragraph) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -686,12 +805,14 @@ function AppInner() {
           </div>
         </div>
       </Section>
+
       {/* ── PRODUCTS ───────────────────────────────────────────────────── */}
       <Section id="products" bgImage="/products-bg.webp">
         <div className="max-w-7xl mx-auto">
           <Eyebrow code="02 /" label={t.products.eyebrow} />
           <h2 className="text-4xl md:text-5xl font-black uppercase leading-tight tracking-tight text-white mb-6"><ScrambleText text={t.products.h2a} /><br /><span className="text-[#5EEAD4]"><ScrambleText text={t.products.h2b} /></span></h2>
           <p className="max-w-2xl text-[#B8B8B8] text-lg font-light leading-relaxed mb-16">{t.products.lead}</p>
+
           {/* ═══ SUB-GROUP 1: OWN MANUFACTURING · INDUSTRYTOOLS BY DGSI ═══ */}
           <div className="mb-20">
             <div className="flex items-center gap-4 mb-8">
@@ -700,6 +821,7 @@ function AppInner() {
               <div className="h-px flex-1 bg-[#5EEAD4]/20" />
             </div>
             <div className="grid md:grid-cols-2 gap-6">
+
               {/* Card 1 — RPW Ceramic Electrodes */}
               <div className="group relative bg-gradient-to-br from-[#0D1210] to-[#080808] border border-[#5EEAD4]/25 hover:border-[#5EEAD4]/60 rounded-xl p-8 md:p-9 transition-all duration-300 overflow-hidden flex flex-col hover:shadow-[0_0_40px_rgba(94, 234, 212,0.15)] hover:-translate-y-0.5">
                 <div className="absolute top-0 left-0 w-5 h-5 border-t border-l border-[#5EEAD4]/60" />
@@ -735,6 +857,7 @@ function AppInner() {
                   </div>
                 </div>
               </div>
+
               {/* Card 2 — Impact Sockets & Accessories */}
               <div className="group relative bg-gradient-to-br from-[#0D1210] to-[#080808] border border-[#5EEAD4]/25 hover:border-[#5EEAD4]/60 rounded-xl p-8 md:p-9 transition-all duration-300 overflow-hidden flex flex-col hover:shadow-[0_0_40px_rgba(94, 234, 212,0.15)] hover:-translate-y-0.5">
                 <div className="absolute top-0 left-0 w-5 h-5 border-t border-l border-[#5EEAD4]/60" />
@@ -752,19 +875,36 @@ function AppInner() {
                   <h3 className="text-2xl md:text-[26px] font-black uppercase tracking-tight text-white mb-2 leading-tight">{t.products.socketsTitle}</h3>
                   <div className="text-[11px] font-mono text-[#5EEAD4] tracking-[0.15em] mb-5">{t.products.socketsMeta}</div>
                   <p className="text-[#B8B8B8] text-sm leading-relaxed mb-8 flex-1">{t.products.socketsDesc}</p>
-                  <div className="flex flex-col sm:flex-row gap-3 mt-auto">
-                    <a
-                      href="/catalogs/IndustryTools — Impact Sockets Catalog final EN.pdf"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex-1 inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-[#5EEAD4] text-black text-[11px] font-black uppercase tracking-[0.2em] rounded-sm hover:bg-white transition-all shadow-[0_0_20px_rgba(94, 234, 212,0.25)]"
-                    >
-                      <Download size={14} />
-                      <span>{t.products.socketsDownload}</span>
-                    </a>
+
+                  {/* ── Cataloage multilingve: 4 butoane-steag + request pricing ── */}
+                  <div className="mt-auto">
+                    <div className="flex items-center gap-3 mb-3">
+                      <span className="text-[10px] font-mono text-[#5EEAD4] tracking-[0.3em] uppercase">{t.products.socketsDownload}</span>
+                      <div className="h-px flex-1 bg-[#5EEAD4]/20" />
+                    </div>
+
+                    <div className="grid grid-cols-4 gap-2 mb-3">
+                      {SOCKET_CATALOGS.map((c) => (
+                        <a
+                          key={c.code}
+                          href={c.file}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title={`Impact Sockets Catalog — ${c.code} (PDF)`}
+                          aria-label={`Download catalog ${c.code}`}
+                          className="group/flag flex flex-col items-center justify-center gap-1.5 py-3 bg-[#5EEAD4]/[0.06] border border-[#5EEAD4]/25 rounded-sm hover:bg-[#5EEAD4]/15 hover:border-[#5EEAD4] hover:-translate-y-0.5 hover:shadow-[0_0_20px_rgba(94,234,212,0.25)] transition-all duration-200"
+                        >
+                          <span className="block w-[26px] h-[17px] overflow-hidden rounded-[2px] ring-1 ring-black/40 group-hover/flag:ring-[#5EEAD4]/60 transition">
+                            <Flag code={c.code} />
+                          </span>
+                          <span className="text-[9px] font-black tracking-[0.15em] text-[#B8B8B8] group-hover/flag:text-[#5EEAD4] transition-colors">{c.code}</span>
+                        </a>
+                      ))}
+                    </div>
+
                     <a
                       href={`mailto:office@industrytools.ro?subject=${encodeURIComponent('IndustryTools Sockets — pricing request')}`}
-                      className="flex-1 inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-[#5EEAD4]/10 border border-[#5EEAD4]/30 text-[#5EEAD4] text-[11px] font-black uppercase tracking-[0.2em] rounded-sm hover:bg-[#5EEAD4] hover:text-black transition-all"
+                      className="w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-[#5EEAD4]/10 border border-[#5EEAD4]/30 text-[#5EEAD4] text-[11px] font-black uppercase tracking-[0.2em] rounded-sm hover:bg-[#5EEAD4] hover:text-black transition-all"
                     >
                       <Mail size={14} />
                       <span>{t.products.socketsPricing}</span>
@@ -772,14 +912,17 @@ function AppInner() {
                   </div>
                 </div>
               </div>
+
             </div>
           </div>
+
           {/* ═══ SUB-GROUP 2: DISTRIBUTION PARTNERS ═══ */}
           <div className="flex items-center gap-4 mb-8">
             <div className="h-px w-10 bg-[#5EEAD4]" />
             <span className="text-[10px] md:text-[11px] font-mono text-[#5EEAD4] tracking-[0.3em] uppercase">{t.products.partnerGroup}</span>
             <div className="h-px flex-1 bg-[#5EEAD4]/20" />
           </div>
+
           {/* ── Filter bar — BIGGER (user requested these to be larger) ── */}
           <div className="flex flex-wrap gap-3 mb-12">
             {productFilters.map((f) => (
@@ -792,6 +935,7 @@ function AppInner() {
               </button>
             ))}
           </div>
+
           {/* Product cards — clean 3-col grid, click opens fullscreen modal with details */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
             {visibleProducts.map((prod) => (
@@ -832,6 +976,7 @@ function AppInner() {
           </div>
         </div>
       </Section>
+
       {/* ── RPW DATABASE SECTION ── */}
       <Section id="rpw" className="bg-[#0A0F0D]" bgImage="/welding-bg.webp">
         <div className="max-w-7xl mx-auto">
@@ -895,6 +1040,7 @@ function AppInner() {
           <p className="mt-6 text-xs font-mono text-[#7A7A7A] tracking-wide">{t.rpw.note}</p>
         </div>
       </Section>
+
       {/* ── SERVICES SECTION ── */}
       <Section id="services" className="bg-[#0B0B0B]" bgImage="/services-bg.webp">
         <div className="max-w-7xl mx-auto">
@@ -919,6 +1065,7 @@ function AppInner() {
           </div>
         </div>
       </Section>
+
       {/* ── CLIENTS ── */}
       <Section id="clients" bgImage="/clients-bg.webp">
         <div className="max-w-7xl mx-auto">
@@ -931,6 +1078,7 @@ function AppInner() {
           <LogoMarquee logos={clientLogos.slice(6)} direction="right" speed={48} cardClass="w-44 h-28 md:w-52 md:h-32" />
         </div>
       </Section>
+
       {/* ── PROCESS — interactive hover with detail reveal ── */}
       <Section id="process" className="bg-[#0B0B0B]" bgImage="/process-bg.webp">
         <div className="max-w-7xl mx-auto text-center">
@@ -991,6 +1139,7 @@ function AppInner() {
            <p className="text-[#B0B0B0] text-[11px] font-mono uppercase tracking-[0.3em] mt-10">{t.process.hint}</p>
         </div>
       </Section>
+
       {/* ── CONTACT (CHANGE #4: unified business card + active channels + live indicators) ── */}
       <Section id="contact">
         <div className="max-w-7xl mx-auto">
@@ -1093,29 +1242,27 @@ function AppInner() {
            </div>
         </div>
       </Section>
+
       {/* FOOTER */}
       <footer className="bg-[#050505] border-t border-white/5">
-        {/* ── Certifications strip ── */}
-        <div className="border-b border-white/5 py-10 px-6">
-          <div className="max-w-5xl mx-auto flex flex-col items-center gap-8">
-            <div className="flex items-center gap-4 w-full">
+        {/* ── Certifications strip — PNG pe fundal negru, fără borduri vizibile ── */}
+        <div className="bg-black py-14 px-6">
+          <div className="max-w-6xl mx-auto flex flex-col items-center gap-12">
+            <div className="flex items-center gap-6 w-full">
               <div className="h-px flex-1 bg-gradient-to-r from-transparent to-[#5EEAD4]/30" />
-              <span className="text-[10px] font-mono text-[#5EEAD4] tracking-[0.3em] uppercase shrink-0">{t.footer.certifications}</span>
+              <span className="text-[14px] md:text-[17px] font-mono font-bold text-[#5EEAD4] tracking-[0.35em] uppercase shrink-0 text-center">{t.footer.certifications}</span>
               <div className="h-px flex-1 bg-gradient-to-l from-transparent to-[#5EEAD4]/30" />
             </div>
-            <div className="flex items-center justify-center gap-8 md:gap-14 flex-wrap">
-              {[
-                { primary: 'ISO', secondary: '45001', name: 'ISO 45001', title: 'Occupational Health & Safety' },
-                { primary: 'ECO', secondary: 'VADIS', name: 'EcoVadis',  title: 'Sustainability Rating' },
-                { primary: 'ISO', secondary: '9001',  name: 'ISO 9001',  title: 'Quality Management' },
-                { primary: 'ISO', secondary: '14001', name: 'ISO 14001', title: 'Environmental Management' },
-                { primary: 'ISO', secondary: '27001', name: 'ISO 27001', title: 'Information Security' },
-              ].map((cert) => (
-                <div key={cert.name} className="group/cert flex flex-col items-center gap-3" title={cert.title}>
-                  <div className="opacity-85 group-hover/cert:opacity-100 transition-all duration-300 group-hover/cert:scale-110 group-hover/cert:drop-shadow-[0_0_18px_rgba(94, 234, 212,0.45)]">
-                    <CertBadge primary={cert.primary} secondary={cert.secondary} />
-                  </div>
-                  <span className="text-[9px] font-mono text-[#777] tracking-[0.15em] uppercase group-hover/cert:text-[#5EEAD4] transition-colors">{cert.name}</span>
+            <div className="w-full flex flex-wrap items-start justify-center gap-x-10 md:gap-x-16 gap-y-10">
+              {CERTIFICATIONS.map((cert) => (
+                <div key={cert.name} className="group/cert flex flex-col items-center gap-3.5" title={cert.title}>
+                  <img
+                    src={`${CERT_DIR}/${cert.file}.png`}
+                    alt={cert.name}
+                    loading="lazy"
+                    className="block w-[118px] h-[118px] md:w-[140px] md:h-[140px] object-contain bg-black transition-all duration-300 group-hover/cert:scale-105 group-hover/cert:drop-shadow-[0_0_22px_rgba(94,234,212,0.35)]"
+                  />
+                  <span className="text-[10px] md:text-[11px] font-mono text-[#8A8A8A] tracking-[0.18em] uppercase group-hover/cert:text-[#5EEAD4] transition-colors">{cert.name}</span>
                 </div>
               ))}
             </div>
@@ -1131,6 +1278,7 @@ function AppInner() {
           </div>
         </div>
       </footer>
+
       {/* ── FLOATING ACTIONS ── */}
       <a
         href="https://wa.me/40770852576"
@@ -1157,6 +1305,7 @@ function AppInner() {
       >
         <ArrowUp size={22} />
       </button>
+
       {/* MODAL SYSTEM */}
       {expandedCard && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 animate-fade-in" onClick={() => setExpandedCard(null)}>
@@ -1301,22 +1450,17 @@ function AppInner() {
           </div>
         </div>
       )}
+
       {/* ── WELDING MODAL — configurator RPW CONSUMABILE (41 piese + 3D) ── */}
       {weldingOpen && <WeldingModal onClose={() => setWeldingOpen(false)} />}
+
       {/* ── RFQ SYSTEM — floating badge + wizard ── */}
       <RFQFloatingBadge />
       <RFQWizard />
     </div>
   );
 }
-// ─── Certifications Banner — fixed bottom strip ────────────────────────────
-const CERTIFICATIONS = [
-  { name: 'ISO 45001', file: 'iso-45001', title: 'Occupational Health & Safety' },
-  { name: 'EcoVadis',  file: 'ecovadis',  title: 'Sustainability Rating' },
-  { name: 'ISO 9001',  file: 'iso-9001',  title: 'Quality Management' },
-  { name: 'ISO 14001', file: 'iso-14001', title: 'Environmental Management' },
-  { name: 'ISO 27001', file: 'iso-27001', title: 'Information Security' },
-];
+
 // ═══════════════════════════════════════════════════════════════════════════
 // Wrap the whole app in the RFQ provider so cart state is available everywhere
 export default function App() {
